@@ -5,10 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
     <title>POS System | Modern Retail Management</title>
     <meta name="description" content="Modern Point of Sale System for Retail Businesses">
-    <meta name="theme-color" content="#2563eb">
-    
-    <!-- PWA Manifest -->
-    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#007AFF">
     
     <!-- Apple Touch Icon -->
     <link rel="apple-touch-icon" href="/icon-192x192.png">
@@ -17,115 +14,126 @@
     <meta name="apple-mobile-web-app-title" content="POS System">
     
     <!-- Fonts & Icons -->
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=SF+Pro+Display:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
-    <!-- Chart.js for reports -->
+    <!-- Chart.js -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     
-    <!-- Barcode Scanner Library -->
-    <script src="https://cdn.jsdelivr.net/npm/quagga@0.12.1/dist/quagga.min.js"></script>
-    
     <style>
-        /* CSS Variables - Modern Professional Blue Theme */
+        /* CSS Variables - iPhone Glassmorphism Theme */
         :root {
-            /* Professional Blue Gradient Colors */
-            --primary: #2563eb;
-            --primary-light: #3b82f6;
-            --primary-dark: #1d4ed8;
-            --secondary: #1e40af;
-            --accent: #60a5fa;
+            /* iOS Color Palette */
+            --primary: #007AFF;
+            --primary-light: #5AC8FA;
+            --primary-dark: #0056CC;
+            --secondary: #5856D6;
+            --accent: #FF2D55;
             
-            /* Status Colors */
-            --success: #10b981;
-            --success-light: #34d399;
-            --warning: #f59e0b;
-            --warning-light: #fbbf24;
-            --danger: #ef4444;
-            --danger-light: #f87171;
-            --info: #0ea5e9;
-            --info-light: #38bdf8;
+            /* System Colors */
+            --system-blue: #007AFF;
+            --system-green: #34C759;
+            --system-red: #FF3B30;
+            --system-orange: #FF9500;
+            --system-purple: #5856D6;
+            --system-pink: #FF2D55;
+            --system-yellow: #FFCC00;
             
-            /* Gradients */
-            --gradient-primary: linear-gradient(135deg, var(--primary), var(--secondary));
-            --gradient-primary-light: linear-gradient(135deg, var(--primary-light), var(--accent));
-            --gradient-dark: linear-gradient(135deg, #1e293b, #0f172a);
-            
-            /* Backgrounds */
-            --bg-primary: #ffffff;
-            --bg-secondary: #f8fafc;
-            --bg-tertiary: #f1f5f9;
-            --bg-overlay: rgba(0, 0, 0, 0.7);
-            --bg-surface: rgba(255, 255, 255, 0.98);
+            /* Light Theme */
+            --bg-primary: #F2F2F7;
+            --bg-secondary: rgba(255, 255, 255, 0.9);
+            --bg-tertiary: rgba(255, 255, 255, 0.7);
+            --bg-surface: rgba(255, 255, 255, 0.8);
+            --bg-card: rgba(255, 255, 255, 0.95);
+            --bg-overlay: rgba(0, 0, 0, 0.4);
+            --bg-blur: rgba(255, 255, 255, 0.7);
             
             /* Text */
-            --text-primary: #1e293b;
-            --text-secondary: #475569;
-            --text-muted: #64748b;
-            --text-light: #ffffff;
+            --text-primary: #000000;
+            --text-secondary: #3C3C43;
+            --text-tertiary: #8E8E93;
+            --text-muted: #AEAEB2;
+            --text-light: #FFFFFF;
             
-            /* Borders */
-            --border: #e2e8f0;
-            --border-light: #f1f5f9;
-            --border-dark: #cbd5e1;
-            --radius: 12px;
-            --radius-sm: 8px;
-            --radius-lg: 16px;
-            --radius-xl: 24px;
+            /* Borders & Glass Effects */
+            --border: rgba(60, 60, 67, 0.18);
+            --border-light: rgba(60, 60, 67, 0.12);
+            --border-dark: rgba(60, 60, 67, 0.3);
+            --glass-border: rgba(255, 255, 255, 0.2);
+            --glass-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
             
-            /* Shadows */
-            --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
-            --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.08);
-            --shadow-md: 0 10px 15px -3px rgba(0, 0, 0, 0.08);
-            --shadow-lg: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
-            --shadow-xl: 0 25px 50px -12px rgba(0, 0, 0, 0.15);
-            --shadow-primary: 0 4px 20px rgba(37, 99, 235, 0.15);
-            --shadow-elevated: 0 8px 30px rgba(0, 0, 0, 0.12);
+            /* Gradients */
+            --gradient-primary: linear-gradient(135deg, #007AFF, #5AC8FA);
+            --gradient-glass: linear-gradient(135deg, rgba(255, 255, 255, 0.25), rgba(255, 255, 255, 0.1));
+            --gradient-dark: linear-gradient(135deg, rgba(0, 0, 0, 0.3), rgba(0, 0, 0, 0.1));
             
-            /* Transitions */
-            --transition-fast: 150ms cubic-bezier(0.4, 0, 0.2, 1);
-            --transition: 250ms cubic-bezier(0.4, 0, 0.2, 1);
-            --transition-slow: 350ms cubic-bezier(0.4, 0, 0.2, 1);
+            /* Shadows - Subtle iOS style */
+            --shadow-sm: 0 2px 10px rgba(0, 0, 0, 0.05);
+            --shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+            --shadow-md: 0 8px 30px rgba(0, 0, 0, 0.12);
+            --shadow-lg: 0 15px 40px rgba(0, 0, 0, 0.15);
+            --shadow-xl: 0 20px 50px rgba(0, 0, 0, 0.2);
+            --shadow-2xl: 0 25px 60px rgba(0, 0, 0, 0.25);
             
-            /* Spacing */
+            /* Transitions - iOS style */
+            --transition-fast: 200ms cubic-bezier(0.4, 0, 0.2, 1);
+            --transition: 300ms cubic-bezier(0.4, 0, 0.2, 1);
+            --transition-slow: 400ms cubic-bezier(0.4, 0, 0.2, 1);
+            
+            /* Spacing - Compact for mobile */
             --space-xs: 0.25rem;
             --space-sm: 0.5rem;
-            --space-md: 1rem;
-            --space-lg: 1.5rem;
-            --space-xl: 2rem;
-            --space-2xl: 3rem;
+            --space-md: 0.75rem;
+            --space-lg: 1rem;
+            --space-xl: 1.25rem;
+            --space-2xl: 1.5rem;
             
-            /* Typography */
-            --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
-            --font-mono: 'SF Mono', Monaco, monospace;
+            /* Typography - SF Pro style */
+            --font-sans: 'SF Pro Display', -apple-system, BlinkMacSystemFont, 'Inter', sans-serif;
+            --font-system: -apple-system, BlinkMacSystemFont, 'SF Pro Display', sans-serif;
             
             /* Layout */
-            --header-height: 60px;
-            --bottom-nav-height: 70px;
-            --safe-area-inset-top: env(safe-area-inset-top);
-            --safe-area-inset-bottom: env(safe-area-inset-bottom);
+            --header-height: 50px;
+            --bottom-nav-height: 65px;
+            --safe-area-top: env(safe-area-inset-top, 0px);
+            --safe-area-bottom: env(safe-area-inset-bottom, 0px);
+            
+            /* Radius - iOS style */
+            --radius-sm: 8px;
+            --radius: 12px;
+            --radius-lg: 16px;
+            --radius-xl: 20px;
+            --radius-2xl: 24px;
+            --radius-full: 9999px;
+            
+            /* Blur effects */
+            --blur-sm: blur(8px);
+            --blur-md: blur(12px);
+            --blur-lg: blur(20px);
+            --blur-xl: blur(30px);
         }
 
         /* Dark Theme */
         [data-theme="dark"] {
-            --primary: #3b82f6;
-            --primary-light: #60a5fa;
-            --primary-dark: #1d4ed8;
-            --secondary: #1e40af;
-            --accent: #93c5fd;
+            --bg-primary: #000000;
+            --bg-secondary: rgba(28, 28, 30, 0.9);
+            --bg-tertiary: rgba(44, 44, 46, 0.7);
+            --bg-surface: rgba(28, 28, 30, 0.8);
+            --bg-card: rgba(28, 28, 30, 0.95);
+            --bg-blur: rgba(28, 28, 30, 0.7);
             
-            --bg-primary: #0f172a;
-            --bg-secondary: #1e293b;
-            --bg-tertiary: #334155;
-            --bg-surface: rgba(30, 41, 59, 0.98);
+            --text-primary: #FFFFFF;
+            --text-secondary: #EBEBF5;
+            --text-tertiary: #C7C7CC;
+            --text-muted: #8E8E93;
             
-            --text-primary: #f1f5f9;
-            --text-secondary: #cbd5e1;
-            --text-muted: #94a3b8;
+            --border: rgba(118, 118, 128, 0.24);
+            --border-light: rgba(118, 118, 128, 0.18);
+            --border-dark: rgba(118, 118, 128, 0.36);
+            --glass-border: rgba(255, 255, 255, 0.1);
             
-            --border: #475569;
-            --border-light: #334155;
-            --border-dark: #64748b;
+            --gradient-glass: linear-gradient(135deg, rgba(255, 255, 255, 0.1), rgba(255, 255, 255, 0.05));
+            --glass-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
         }
 
         /* Reset & Base */
@@ -142,16 +150,17 @@
         }
 
         body {
-            font-family: var(--font-sans);
+            font-family: var(--font-system);
             color: var(--text-primary);
             background: var(--bg-primary);
-            line-height: 1.6;
-            font-size: 16px;
+            line-height: 1.5;
+            font-size: 15px;
             overflow: hidden;
             transition: background-color var(--transition);
             height: 100%;
             -webkit-font-smoothing: antialiased;
             -moz-osx-font-smoothing: grayscale;
+            font-weight: 400;
         }
 
         #app {
@@ -160,8 +169,9 @@
             display: flex;
             flex-direction: column;
             overflow: hidden;
-            padding-top: var(--safe-area-inset-top);
-            padding-bottom: var(--safe-area-inset-bottom);
+            padding-top: var(--safe-area-top);
+            padding-bottom: var(--safe-area-bottom);
+            background: var(--bg-primary);
         }
 
         /* Utility Classes */
@@ -171,121 +181,161 @@
         .items-center { align-items: center; }
         .justify-center { justify-content: center; }
         .justify-between { justify-content: space-between; }
-        .gap-2 { gap: var(--space-sm); }
-        .gap-4 { gap: var(--space-md); }
-        .gap-6 { gap: var(--space-lg); }
+        .gap-1 { gap: var(--space-sm); }
+        .gap-2 { gap: var(--space-md); }
+        .gap-3 { gap: var(--space-lg); }
+        .gap-4 { gap: var(--space-xl); }
         .w-full { width: 100%; }
         .h-full { height: 100%; }
         .text-center { text-align: center; }
         .text-right { text-align: right; }
-        .text-sm { font-size: 0.875rem; }
-        .text-lg { font-size: 1.125rem; }
+        .text-sm { font-size: 13px; }
+        .text-base { font-size: 15px; }
+        .text-lg { font-size: 17px; }
+        .text-xl { font-size: 20px; }
+        .text-2xl { font-size: 24px; }
+        .font-medium { font-weight: 500; }
         .font-semibold { font-weight: 600; }
         .font-bold { font-weight: 700; }
         .rounded { border-radius: var(--radius); }
         .rounded-lg { border-radius: var(--radius-lg); }
         .rounded-xl { border-radius: var(--radius-xl); }
+        .rounded-full { border-radius: var(--radius-full); }
         .shadow { box-shadow: var(--shadow); }
         .shadow-lg { box-shadow: var(--shadow-lg); }
-        .p-4 { padding: var(--space-md); }
-        .p-6 { padding: var(--space-lg); }
-        .mb-4 { margin-bottom: var(--space-md); }
-        .mb-6 { margin-bottom: var(--space-lg); }
-        .mt-2 { margin-top: var(--space-sm); }
-        .mt-4 { margin-top: var(--space-md); }
-        .mt-6 { margin-top: var(--space-lg); }
+        .p-2 { padding: var(--space-md); }
+        .p-3 { padding: var(--space-lg); }
+        .p-4 { padding: var(--space-xl); }
+        .px-2 { padding-left: var(--space-md); padding-right: var(--space-md); }
+        .px-3 { padding-left: var(--space-lg); padding-right: var(--space-lg); }
+        .py-2 { padding-top: var(--space-md); padding-bottom: var(--space-md); }
+        .mb-2 { margin-bottom: var(--space-md); }
+        .mb-3 { margin-bottom: var(--space-lg); }
+        .mb-4 { margin-bottom: var(--space-xl); }
+        .mt-2 { margin-top: var(--space-md); }
+        .mt-3 { margin-top: var(--space-lg); }
         .ml-auto { margin-left: auto; }
         .flex-1 { flex: 1; }
 
-        /* Mobile Optimized Buttons */
+        /* Glass Effect Classes */
+        .glass {
+            background: var(--bg-blur);
+            backdrop-filter: var(--blur-lg);
+            -webkit-backdrop-filter: var(--blur-lg);
+            border: 1px solid var(--glass-border);
+            box-shadow: var(--glass-shadow);
+        }
+
+        .glass-card {
+            background: var(--bg-card);
+            backdrop-filter: var(--blur-md);
+            -webkit-backdrop-filter: var(--blur-md);
+            border: 1px solid var(--glass-border);
+            box-shadow: var(--shadow);
+        }
+
+        .glass-surface {
+            background: var(--bg-surface);
+            backdrop-filter: var(--blur-md);
+            -webkit-backdrop-filter: var(--blur-md);
+            border: 1px solid var(--glass-border);
+        }
+
+        /* iOS Style Buttons */
         .btn {
             display: inline-flex;
             align-items: center;
             justify-content: center;
             gap: var(--space-sm);
-            padding: var(--space-md) var(--space-xl);
+            padding: var(--space-md) var(--space-lg);
             border-radius: var(--radius-lg);
-            border: 2px solid transparent;
+            border: none;
             font-weight: 600;
-            font-size: 16px;
+            font-size: 15px;
             cursor: pointer;
             transition: all var(--transition-fast);
             user-select: none;
             white-space: nowrap;
-            font-family: var(--font-sans);
-            min-height: 56px;
+            font-family: var(--font-system);
+            min-height: 44px;
             touch-action: manipulation;
+            background: var(--bg-secondary);
+            color: var(--text-primary);
+            backdrop-filter: var(--blur-sm);
+            -webkit-backdrop-filter: var(--blur-sm);
+            border: 0.5px solid var(--border);
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
         }
 
         .btn:active {
             transform: scale(0.98);
+            opacity: 0.9;
         }
 
         .btn-primary {
             background: var(--gradient-primary);
             color: white;
-            border-color: transparent;
-        }
-
-        .btn-primary:hover, .btn-primary:active {
-            background: var(--gradient-primary-light);
-            box-shadow: var(--shadow-primary);
+            border: none;
+            box-shadow: 0 4px 20px rgba(0, 122, 255, 0.3);
         }
 
         .btn-secondary {
-            background: var(--bg-secondary);
+            background: var(--bg-tertiary);
             color: var(--text-primary);
-            border-color: var(--border);
         }
 
         .btn-success {
-            background: var(--success);
+            background: var(--system-green);
             color: white;
-            border-color: transparent;
+            border: none;
+            box-shadow: 0 4px 20px rgba(52, 199, 89, 0.3);
         }
 
         .btn-danger {
-            background: var(--danger);
+            background: var(--system-red);
             color: white;
-            border-color: transparent;
+            border: none;
+            box-shadow: 0 4px 20px rgba(255, 59, 48, 0.3);
         }
 
         .btn-outline {
             background: transparent;
-            border-color: var(--border);
+            border: 1px solid var(--border);
             color: var(--text-primary);
         }
 
         .btn-lg {
             padding: var(--space-lg) var(--space-xl);
-            font-size: 18px;
+            font-size: 17px;
             font-weight: 600;
-            min-height: 64px;
+            min-height: 52px;
         }
 
         .btn-icon {
-            width: 52px;
-            height: 52px;
+            width: 44px;
+            height: 44px;
             padding: 0;
-            border-radius: 50%;
+            border-radius: var(--radius);
             min-height: auto;
         }
 
         .btn-sm {
             padding: var(--space-sm) var(--space-md);
-            font-size: 14px;
-            min-height: 44px;
+            font-size: 13px;
+            min-height: 36px;
+            border-radius: var(--radius);
         }
 
-        /* Cards for Mobile */
+        /* Cards */
         .card {
-            background: var(--bg-primary);
+            background: var(--bg-card);
             border-radius: var(--radius-xl);
             border: 1px solid var(--border);
             padding: var(--space-lg);
             box-shadow: var(--shadow-sm);
             transition: var(--transition);
-            backdrop-filter: blur(10px);
+            backdrop-filter: var(--blur-sm);
+            -webkit-backdrop-filter: var(--blur-sm);
         }
 
         .card-header {
@@ -297,48 +347,50 @@
             border-bottom: 1px solid var(--border-light);
         }
 
-        /* Forms for Mobile */
+        /* Forms */
         .form-group {
-            margin-bottom: var(--space-xl);
+            margin-bottom: var(--space-lg);
         }
 
         .form-label {
             display: block;
             margin-bottom: var(--space-sm);
-            font-weight: 600;
-            color: var(--text-primary);
-            font-size: 16px;
+            font-weight: 500;
+            color: var(--text-secondary);
+            font-size: 14px;
         }
 
         .form-control {
             width: 100%;
-            padding: var(--space-lg);
-            border: 2px solid var(--border);
-            border-radius: var(--radius-lg);
-            background: var(--bg-primary);
+            padding: var(--space-md) var(--space-lg);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            background: var(--bg-secondary);
             color: var(--text-primary);
-            font-family: var(--font-sans);
-            font-size: 18px;
+            font-family: var(--font-system);
+            font-size: 16px;
             transition: var(--transition-fast);
-            min-height: 60px;
+            min-height: 44px;
             -webkit-appearance: none;
             appearance: none;
+            backdrop-filter: var(--blur-sm);
+            -webkit-backdrop-filter: var(--blur-sm);
         }
 
         .form-control:focus {
             outline: none;
             border-color: var(--primary);
-            box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.1);
+            box-shadow: 0 0 0 3px rgba(0, 122, 255, 0.1);
         }
 
-        /* Login Screen - Mobile Optimized */
+        /* Login Screen */
         #loginScreen {
             height: 100%;
             background: var(--gradient-primary);
             display: flex;
             align-items: center;
             justify-content: center;
-            padding: var(--space-md);
+            padding: var(--space-lg);
             position: relative;
             overflow: hidden;
         }
@@ -350,22 +402,23 @@
             left: 0;
             right: 0;
             bottom: 0;
-            background: radial-gradient(circle at 20% 80%, rgba(59, 130, 246, 0.1) 0%, transparent 50%),
-                       radial-gradient(circle at 80% 20%, rgba(30, 64, 175, 0.1) 0%, transparent 50%);
+            background: radial-gradient(circle at 20% 80%, rgba(90, 200, 250, 0.2) 0%, transparent 50%),
+                       radial-gradient(circle at 80% 20%, rgba(0, 86, 204, 0.2) 0%, transparent 50%);
         }
 
         .login-container {
             background: var(--bg-surface);
-            border-radius: var(--radius-xl);
+            backdrop-filter: var(--blur-xl);
+            -webkit-backdrop-filter: var(--blur-xl);
+            border-radius: var(--radius-2xl);
             padding: var(--space-2xl);
             width: 100%;
-            max-width: 420px;
-            box-shadow: var(--shadow-xl);
-            animation: slideUp 0.5s ease;
+            max-width: 400px;
+            box-shadow: var(--shadow-2xl);
+            animation: slideUp 0.5s cubic-bezier(0.4, 0, 0.2, 1);
             position: relative;
             z-index: 1;
-            backdrop-filter: blur(20px);
-            border: 1px solid rgba(255, 255, 255, 0.1);
+            border: 1px solid var(--glass-border);
         }
 
         @keyframes slideUp {
@@ -389,28 +442,32 @@
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             background-clip: text;
-            font-size: 2.5rem;
+            font-size: 32px;
             margin-bottom: var(--space-sm);
-            font-weight: 800;
+            font-weight: 700;
+            letter-spacing: -0.5px;
         }
 
         .login-header p {
             color: var(--text-secondary);
-            font-size: 1.1rem;
+            font-size: 15px;
+            opacity: 0.8;
         }
 
-        /* POS Layout - Mobile Optimized */
+        /* POS Layout */
         #posScreen {
             display: none;
             height: 100%;
-            background: var(--bg-secondary);
+            background: var(--bg-primary);
             flex-direction: column;
         }
 
-        /* Header - Mobile Optimized */
+        /* Header */
         .pos-header {
             height: var(--header-height);
-            background: var(--gradient-primary);
+            background: var(--bg-surface);
+            backdrop-filter: var(--blur-lg);
+            -webkit-backdrop-filter: var(--blur-lg);
             padding: 0 var(--space-lg);
             display: flex;
             align-items: center;
@@ -418,61 +475,53 @@
             position: sticky;
             top: 0;
             z-index: 100;
-            box-shadow: var(--shadow-lg);
-            color: white;
-        }
-
-        .header-left {
-            display: flex;
-            align-items: center;
-            gap: var(--space-md);
+            border-bottom: 1px solid var(--border);
         }
 
         .logo {
             display: flex;
             align-items: center;
-            gap: var(--space-sm);
-            font-size: 1.25rem;
+            gap: var(--space-md);
+            font-size: 18px;
             font-weight: 700;
-            color: white;
+            color: var(--text-primary);
+            letter-spacing: -0.5px;
         }
 
         .logo i {
-            font-size: 1.5rem;
+            font-size: 20px;
+            color: var(--primary);
         }
 
         .user-info {
             display: flex;
             align-items: center;
             gap: var(--space-sm);
-            background: rgba(255, 255, 255, 0.1);
+            background: var(--bg-tertiary);
             padding: var(--space-sm) var(--space-md);
             border-radius: var(--radius);
-            backdrop-filter: blur(10px);
-            font-size: 14px;
+            backdrop-filter: var(--blur-sm);
+            -webkit-backdrop-filter: var(--blur-sm);
+            border: 1px solid var(--border);
         }
 
         .role-badge {
-            background: rgba(255, 255, 255, 0.2);
+            background: var(--gradient-primary);
             color: white;
-            padding: var(--space-xs) var(--space-md);
-            border-radius: 20px;
-            font-size: 0.75rem;
+            padding: 2px 8px;
+            border-radius: var(--radius-sm);
+            font-size: 11px;
             font-weight: 600;
-            border: 1px solid rgba(255, 255, 255, 0.3);
+            letter-spacing: 0.3px;
         }
 
         .datetime {
-            background: rgba(255, 255, 255, 0.1);
-            padding: var(--space-sm) var(--space-md);
-            border-radius: var(--radius);
-            backdrop-filter: blur(10px);
-            color: white;
+            font-size: 13px;
+            color: var(--text-tertiary);
             font-weight: 500;
-            font-size: 14px;
         }
 
-        /* Bottom Navigation - Mobile First */
+        /* Bottom Navigation - iPhone Style */
         .bottom-nav {
             position: fixed;
             bottom: 0;
@@ -480,14 +529,15 @@
             right: 0;
             height: var(--bottom-nav-height);
             background: var(--bg-surface);
+            backdrop-filter: var(--blur-xl);
+            -webkit-backdrop-filter: var(--blur-xl);
             border-top: 1px solid var(--border);
             display: flex;
             justify-content: space-around;
             align-items: center;
             padding: var(--space-sm) var(--space-md);
             z-index: 100;
-            backdrop-filter: blur(20px);
-            padding-bottom: calc(var(--space-md) + var(--safe-area-inset-bottom));
+            padding-bottom: calc(var(--space-md) + var(--safe-area-bottom));
         }
 
         .nav-item {
@@ -495,42 +545,60 @@
             flex-direction: column;
             align-items: center;
             justify-content: center;
-            gap: var(--space-xs);
+            gap: 4px;
             padding: var(--space-sm);
             border: none;
             background: transparent;
-            color: var(--text-secondary);
+            color: var(--text-tertiary);
             cursor: pointer;
             flex: 1;
             border-radius: var(--radius);
-            transition: var(--transition-fast);
-            min-height: 56px;
+            transition: all var(--transition-fast);
+            min-height: 44px;
+            position: relative;
         }
 
         .nav-item:hover, .nav-item.active {
             color: var(--primary);
-            background: rgba(37, 99, 235, 0.1);
+            transform: translateY(-2px);
         }
 
         .nav-item.active {
             font-weight: 600;
         }
 
+        .nav-item.active::after {
+            content: '';
+            position: absolute;
+            bottom: -8px;
+            width: 4px;
+            height: 4px;
+            background: var(--primary);
+            border-radius: 50%;
+        }
+
         .nav-icon {
-            font-size: 1.25rem;
+            font-size: 20px;
+            transition: transform var(--transition-fast);
+        }
+
+        .nav-item.active .nav-icon {
+            transform: scale(1.1);
         }
 
         .nav-label {
-            font-size: 0.75rem;
+            font-size: 11px;
             font-weight: 500;
+            letter-spacing: 0.3px;
         }
 
-        /* Main Content Area */
+        /* Main Content */
         .main-content {
             flex: 1;
             overflow: hidden;
-            padding-bottom: calc(var(--bottom-nav-height) + var(--safe-area-inset-bottom));
+            padding-bottom: calc(var(--bottom-nav-height) + var(--safe-area-bottom));
             -webkit-overflow-scrolling: touch;
+            padding: var(--space-lg);
         }
 
         /* Pages */
@@ -539,55 +607,56 @@
             flex-direction: column;
             height: 100%;
             overflow: hidden;
+            gap: var(--space-lg);
         }
 
         .page.active {
             display: flex;
+            animation: fadeIn 0.3s ease;
         }
 
-        /* Sales Page - Mobile Optimized */
-        .sales-page {
-            height: 100%;
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        /* Sales Page */
+        .sales-header {
             display: flex;
             flex-direction: column;
-            overflow: hidden;
-        }
-
-        .sales-header {
-            background: var(--bg-primary);
-            padding: var(--space-lg);
-            border-bottom: 1px solid var(--border);
-            box-shadow: var(--shadow-sm);
+            gap: var(--space-md);
         }
 
         .search-container {
             display: flex;
             align-items: center;
-            gap: var(--space-sm);
-            margin-bottom: var(--space-lg);
+            gap: var(--space-md);
         }
 
         .search-input {
             flex: 1;
-            padding: var(--space-lg);
-            font-size: 18px;
+            padding: var(--space-md) var(--space-lg);
+            font-size: 16px;
             background: var(--bg-secondary);
-            border: 2px solid var(--border);
-            border-radius: var(--radius-lg);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
             transition: var(--transition-fast);
-            min-height: 56px;
+            min-height: 44px;
+            backdrop-filter: var(--blur-sm);
+            -webkit-backdrop-filter: var(--blur-sm);
         }
 
-        .search-container .btn {
-            min-height: 56px;
-            padding: 0 var(--space-lg);
+        .search-input:focus {
+            background: var(--bg-surface);
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(0, 122, 255, 0.1);
         }
 
         .category-tabs {
             display: flex;
             gap: var(--space-sm);
             overflow-x: auto;
-            padding-bottom: var(--space-sm);
+            padding: var(--space-sm) 0;
             scrollbar-width: none;
             -webkit-overflow-scrolling: touch;
         }
@@ -598,32 +667,25 @@
 
         .category-tab {
             padding: var(--space-sm) var(--space-lg);
-            background: var(--bg-secondary);
-            border: 2px solid transparent;
-            border-radius: var(--radius-lg);
-            color: var(--text-secondary);
+            background: var(--bg-tertiary);
+            border: 1px solid transparent;
+            border-radius: var(--radius);
+            color: var(--text-tertiary);
             cursor: pointer;
             white-space: nowrap;
             transition: var(--transition-fast);
             font-weight: 500;
             font-size: 14px;
             flex-shrink: 0;
+            backdrop-filter: var(--blur-sm);
+            -webkit-backdrop-filter: var(--blur-sm);
         }
 
         .category-tab.active {
             background: var(--primary);
             color: white;
             border-color: var(--primary);
-            box-shadow: var(--shadow-primary);
-        }
-
-        .sales-container {
-            flex: 1;
-            display: flex;
-            flex-direction: column;
-            overflow: hidden;
-            padding: var(--space-lg);
-            gap: var(--space-lg);
+            box-shadow: 0 4px 12px rgba(0, 122, 255, 0.3);
         }
 
         .products-section {
@@ -642,11 +704,11 @@
         }
 
         .product-card {
-            background: var(--bg-primary);
-            border-radius: var(--radius-lg);
+            background: var(--bg-card);
+            border-radius: var(--radius-xl);
             padding: var(--space-lg);
             cursor: pointer;
-            transition: var(--transition);
+            transition: all var(--transition);
             border: 1px solid var(--border);
             position: relative;
             overflow: hidden;
@@ -654,50 +716,76 @@
             display: flex;
             flex-direction: column;
             justify-content: space-between;
+            backdrop-filter: var(--blur-sm);
+            -webkit-backdrop-filter: var(--blur-sm);
         }
 
         .product-card:active {
             transform: scale(0.98);
+            opacity: 0.9;
+        }
+
+        .product-card.low-stock::before {
+            content: '';
+            position: absolute;
+            top: 8px;
+            right: 8px;
+            width: 8px;
+            height: 8px;
+            background: var(--system-orange);
+            border-radius: 50%;
+            box-shadow: 0 0 0 3px rgba(255, 149, 0, 0.2);
+        }
+
+        .product-card.out-of-stock {
+            opacity: 0.5;
+            cursor: not-allowed;
         }
 
         .product-name {
             font-weight: 600;
-            font-size: 16px;
+            font-size: 15px;
             color: var(--text-primary);
             line-height: 1.4;
+            margin-bottom: var(--space-sm);
         }
 
         .product-price {
-            color: var(--success);
+            color: var(--system-green);
             font-weight: 700;
-            font-size: 1.25rem;
+            font-size: 18px;
             margin-top: auto;
         }
 
         .product-stock {
-            color: var(--text-muted);
+            color: var(--text-tertiary);
             font-size: 12px;
             margin-top: var(--space-xs);
+            opacity: 0.8;
         }
 
-        /* Cart Section - Mobile Drawer Style */
-        .cart-section {
+        /* Cart Drawer */
+        .cart-drawer {
             position: fixed;
-            bottom: calc(var(--bottom-nav-height) + var(--safe-area-inset-bottom));
-            left: 0;
-            right: 0;
+            bottom: calc(var(--bottom-nav-height) + var(--safe-area-bottom));
+            left: var(--space-lg);
+            right: var(--space-lg);
             background: var(--bg-surface);
-            border-radius: var(--radius-xl) var(--radius-xl) 0 0;
-            box-shadow: var(--shadow-elevated);
+            backdrop-filter: var(--blur-xl);
+            -webkit-backdrop-filter: var(--blur-xl);
+            border-radius: var(--radius-2xl) var(--radius-2xl) 0 0;
+            box-shadow: var(--shadow-2xl);
             z-index: 90;
             transform: translateY(100%);
-            transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-            max-height: 70vh;
+            transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            max-height: 65vh;
             display: flex;
             flex-direction: column;
+            border: 1px solid var(--glass-border);
+            overflow: hidden;
         }
 
-        .cart-section.open {
+        .cart-drawer.open {
             transform: translateY(0);
         }
 
@@ -706,14 +794,14 @@
             justify-content: space-between;
             align-items: center;
             padding: var(--space-lg);
-            background: var(--gradient-primary);
-            color: white;
-            border-radius: var(--radius-xl) var(--radius-xl) 0 0;
+            background: var(--bg-tertiary);
+            border-bottom: 1px solid var(--border);
         }
 
         .cart-header h2 {
-            font-size: 1.25rem;
+            font-size: 18px;
             font-weight: 600;
+            color: var(--text-primary);
         }
 
         .cart-items {
@@ -727,10 +815,12 @@
             display: flex;
             align-items: center;
             padding: var(--space-md);
-            background: var(--bg-primary);
+            background: var(--bg-card);
             border-radius: var(--radius-lg);
             margin-bottom: var(--space-md);
-            box-shadow: var(--shadow-sm);
+            border: 1px solid var(--border);
+            backdrop-filter: var(--blur-sm);
+            -webkit-backdrop-filter: var(--blur-sm);
         }
 
         .cart-item-details {
@@ -740,15 +830,15 @@
 
         .cart-item-name {
             font-weight: 600;
-            margin-bottom: var(--space-xs);
+            margin-bottom: 2px;
             color: var(--text-primary);
-            font-size: 16px;
+            font-size: 15px;
         }
 
         .cart-item-price {
-            color: var(--success);
+            color: var(--system-green);
             font-weight: 600;
-            font-size: 14px;
+            font-size: 13px;
         }
 
         .cart-item-actions {
@@ -761,30 +851,29 @@
             display: flex;
             align-items: center;
             gap: var(--space-md);
-            background: var(--bg-secondary);
-            padding: var(--space-xs);
+            background: var(--bg-tertiary);
+            padding: 2px;
             border-radius: var(--radius);
         }
 
         .quantity-btn {
-            width: 36px;
-            height: 36px;
-            border-radius: 50%;
+            width: 32px;
+            height: 32px;
+            border-radius: var(--radius);
             border: none;
-            background: var(--bg-primary);
+            background: var(--bg-surface);
             color: var(--text-primary);
             cursor: pointer;
             display: flex;
             align-items: center;
             justify-content: center;
             transition: var(--transition-fast);
-            box-shadow: var(--shadow-sm);
-            font-size: 18px;
+            font-size: 16px;
             font-weight: 600;
         }
 
         .cart-summary {
-            background: var(--bg-primary);
+            background: var(--bg-tertiary);
             padding: var(--space-lg);
             border-top: 1px solid var(--border);
         }
@@ -795,11 +884,12 @@
             margin-bottom: var(--space-md);
             padding-bottom: var(--space-md);
             border-bottom: 1px solid var(--border-light);
-            font-size: 16px;
+            font-size: 15px;
+            color: var(--text-secondary);
         }
 
         .summary-row.total {
-            font-size: 1.5rem;
+            font-size: 18px;
             font-weight: 700;
             border-top: 2px solid var(--border);
             padding-top: var(--space-md);
@@ -810,52 +900,55 @@
 
         .cart-actions {
             padding: var(--space-lg);
-            background: var(--bg-secondary);
+            background: var(--bg-surface);
             border-top: 1px solid var(--border);
         }
 
         /* Floating Cart Button */
         .floating-cart-btn {
             position: fixed;
-            bottom: calc(var(--bottom-nav-height) + var(--space-lg) + var(--safe-area-inset-bottom));
+            bottom: calc(var(--bottom-nav-height) + var(--space-lg) + var(--safe-area-bottom));
             right: var(--space-lg);
-            width: 64px;
-            height: 64px;
-            border-radius: 50%;
+            width: 56px;
+            height: 56px;
+            border-radius: var(--radius-xl);
             background: var(--gradient-primary);
             color: white;
             border: none;
             cursor: pointer;
-            box-shadow: var(--shadow-elevated);
+            box-shadow: var(--shadow-xl);
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 1.5rem;
+            font-size: 20px;
             z-index: 80;
-            transition: var(--transition);
+            transition: all var(--transition);
+            backdrop-filter: var(--blur-md);
+            -webkit-backdrop-filter: var(--blur-md);
         }
 
         .floating-cart-btn:active {
             transform: scale(0.95);
+            opacity: 0.9;
         }
 
         .cart-badge {
             position: absolute;
-            top: -4px;
-            right: -4px;
-            background: var(--danger);
+            top: -6px;
+            right: -6px;
+            background: var(--system-red);
             color: white;
             border-radius: 50%;
-            width: 24px;
-            height: 24px;
-            font-size: 12px;
-            font-weight: 600;
+            width: 20px;
+            height: 20px;
+            font-size: 11px;
+            font-weight: 700;
             display: flex;
             align-items: center;
             justify-content: center;
         }
 
-        /* Modals - Mobile Optimized */
+        /* Modals */
         .modal-overlay {
             position: fixed;
             top: 0;
@@ -863,27 +956,26 @@
             right: 0;
             bottom: 0;
             background: var(--bg-overlay);
+            backdrop-filter: var(--blur-sm);
+            -webkit-backdrop-filter: var(--blur-sm);
             display: flex;
             align-items: flex-end;
             justify-content: center;
             z-index: 1000;
-            animation: fadeIn 150ms ease;
-            backdrop-filter: blur(4px);
-        }
-
-        @keyframes fadeIn {
-            from { opacity: 0; }
-            to { opacity: 1; }
+            animation: fadeIn 0.3s ease;
         }
 
         .modal-content {
             background: var(--bg-surface);
-            border-radius: var(--radius-xl) var(--radius-xl) 0 0;
+            backdrop-filter: var(--blur-xl);
+            -webkit-backdrop-filter: var(--blur-xl);
+            border-radius: var(--radius-2xl) var(--radius-2xl) 0 0;
             width: 100%;
-            max-height: 90vh;
+            max-height: 85vh;
             overflow-y: auto;
-            animation: slideUpModal 300ms cubic-bezier(0.4, 0, 0.2, 1);
+            animation: slideUpModal 0.4s cubic-bezier(0.4, 0, 0.2, 1);
             -webkit-overflow-scrolling: touch;
+            border: 1px solid var(--glass-border);
         }
 
         @keyframes slideUpModal {
@@ -900,13 +992,14 @@
             justify-content: space-between;
             align-items: center;
             padding: var(--space-lg);
-            border-bottom: 1px solid var(--border-light);
-            background: var(--gradient-primary);
-            color: white;
-            border-radius: var(--radius-xl) var(--radius-xl) 0 0;
+            border-bottom: 1px solid var(--border);
             position: sticky;
             top: 0;
             z-index: 1;
+            background: var(--bg-surface);
+            backdrop-filter: var(--blur-md);
+            -webkit-backdrop-filter: var(--blur-md);
+            border-radius: var(--radius-2xl) var(--radius-2xl) 0 0;
         }
 
         .modal-body {
@@ -917,10 +1010,12 @@
             display: flex;
             gap: var(--space-sm);
             padding: var(--space-lg);
-            border-top: 1px solid var(--border-light);
-            background: var(--bg-secondary);
+            border-top: 1px solid var(--border);
+            background: var(--bg-tertiary);
             position: sticky;
             bottom: 0;
+            backdrop-filter: var(--blur-md);
+            -webkit-backdrop-filter: var(--blur-md);
         }
 
         .payment-methods {
@@ -936,23 +1031,23 @@
             align-items: center;
             gap: var(--space-sm);
             padding: var(--space-lg);
-            border: 2px solid var(--border);
+            border: 1px solid var(--border);
             border-radius: var(--radius-lg);
             cursor: pointer;
             transition: var(--transition-fast);
-            background: var(--bg-secondary);
+            background: var(--bg-tertiary);
+            backdrop-filter: var(--blur-sm);
+            -webkit-backdrop-filter: var(--blur-sm);
         }
 
         .payment-method.active {
             border-color: var(--primary);
-            background: rgba(37, 99, 235, 0.1);
-            box-shadow: var(--shadow-primary);
+            background: rgba(0, 122, 255, 0.1);
+            box-shadow: 0 4px 12px rgba(0, 122, 255, 0.2);
         }
 
         /* Inventory Page */
         .inventory-page {
-            padding: var(--space-lg);
-            background: var(--bg-secondary);
             height: 100%;
             overflow-y: auto;
             -webkit-overflow-scrolling: touch;
@@ -964,9 +1059,11 @@
             align-items: center;
             margin-bottom: var(--space-lg);
             padding: var(--space-lg);
-            background: var(--bg-primary);
+            background: var(--bg-surface);
             border-radius: var(--radius-xl);
-            box-shadow: var(--shadow);
+            border: 1px solid var(--border);
+            backdrop-filter: var(--blur-md);
+            -webkit-backdrop-filter: var(--blur-md);
         }
 
         .inventory-controls {
@@ -975,34 +1072,37 @@
             gap: var(--space-md);
             margin-bottom: var(--space-lg);
             padding: var(--space-lg);
-            background: var(--bg-primary);
+            background: var(--bg-surface);
             border-radius: var(--radius-xl);
-            box-shadow: var(--shadow-sm);
+            border: 1px solid var(--border);
+            backdrop-filter: var(--blur-sm);
+            -webkit-backdrop-filter: var(--blur-sm);
         }
 
         .table-container {
             overflow-x: auto;
-            border-radius: var(--radius);
+            border-radius: var(--radius-xl);
             border: 1px solid var(--border);
-            background: var(--bg-primary);
+            background: var(--bg-surface);
             -webkit-overflow-scrolling: touch;
+            backdrop-filter: var(--blur-sm);
+            -webkit-backdrop-filter: var(--blur-sm);
         }
 
         .table {
             width: 100%;
             border-collapse: collapse;
-            background: var(--bg-primary);
             min-width: 600px;
         }
 
         .table th {
-            background: var(--bg-secondary);
+            background: var(--bg-tertiary);
             padding: var(--space-md);
             text-align: left;
             font-weight: 600;
             color: var(--text-primary);
-            border-bottom: 2px solid var(--border);
-            font-size: 14px;
+            border-bottom: 1px solid var(--border);
+            font-size: 13px;
         }
 
         .table td {
@@ -1013,8 +1113,6 @@
 
         /* Reports Page */
         .reports-page {
-            padding: var(--space-lg);
-            background: var(--bg-secondary);
             height: 100%;
             overflow-y: auto;
             -webkit-overflow-scrolling: touch;
@@ -1023,9 +1121,11 @@
         .reports-header {
             margin-bottom: var(--space-lg);
             padding: var(--space-lg);
-            background: var(--bg-primary);
+            background: var(--bg-surface);
             border-radius: var(--radius-xl);
-            box-shadow: var(--shadow);
+            border: 1px solid var(--border);
+            backdrop-filter: var(--blur-md);
+            -webkit-backdrop-filter: var(--blur-md);
         }
 
         .reports-grid {
@@ -1035,18 +1135,17 @@
         }
 
         .chart-container {
-            background: var(--bg-primary);
+            background: var(--bg-surface);
             border-radius: var(--radius-xl);
             padding: var(--space-lg);
             border: 1px solid var(--border);
-            box-shadow: var(--shadow);
-            min-height: 300px;
+            backdrop-filter: var(--blur-sm);
+            -webkit-backdrop-filter: var(--blur-sm);
+            min-height: 250px;
         }
 
         /* Settings Page */
         .settings-page {
-            padding: var(--space-lg);
-            background: var(--bg-secondary);
             height: 100%;
             overflow-y: auto;
             -webkit-overflow-scrolling: touch;
@@ -1065,25 +1164,27 @@
         .theme-option {
             text-align: center;
             padding: var(--space-xl);
-            border: 2px solid var(--border);
+            border: 1px solid var(--border);
             border-radius: var(--radius-xl);
             cursor: pointer;
             transition: var(--transition);
-            background: var(--bg-primary);
+            background: var(--bg-surface);
+            backdrop-filter: var(--blur-sm);
+            -webkit-backdrop-filter: var(--blur-sm);
         }
 
         .theme-option.active {
             border-color: var(--primary);
-            background: rgba(37, 99, 235, 0.1);
-            box-shadow: var(--shadow-primary);
+            background: rgba(0, 122, 255, 0.1);
+            box-shadow: 0 4px 12px rgba(0, 122, 255, 0.2);
         }
 
         /* Notifications */
         .notifications-container {
             position: fixed;
-            top: calc(var(--header-height) + var(--space-sm));
-            left: var(--space-sm);
-            right: var(--space-sm);
+            top: calc(var(--header-height) + var(--safe-area-top) + var(--space-md));
+            left: var(--space-lg);
+            right: var(--space-lg);
             z-index: 9999;
             display: flex;
             flex-direction: column;
@@ -1092,17 +1193,17 @@
 
         .notification {
             background: var(--bg-surface);
-            border-left: 4px solid;
-            border-radius: var(--radius-lg);
+            border-radius: var(--radius-xl);
             padding: var(--space-lg);
             width: 100%;
             box-shadow: var(--shadow-xl);
-            animation: slideInDown 300ms ease;
+            animation: slideInDown 0.3s cubic-bezier(0.4, 0, 0.2, 1);
             display: flex;
             align-items: center;
             gap: var(--space-md);
-            backdrop-filter: blur(20px);
-            border: 1px solid var(--border);
+            backdrop-filter: var(--blur-lg);
+            -webkit-backdrop-filter: var(--blur-lg);
+            border: 1px solid var(--glass-border);
         }
 
         @keyframes slideInDown {
@@ -1118,18 +1219,20 @@
 
         /* Demo Credentials */
         .demo-credentials {
-            background: var(--bg-secondary);
+            background: var(--bg-tertiary);
             padding: var(--space-lg);
-            border-radius: var(--radius-lg);
+            border-radius: var(--radius-xl);
             margin-top: var(--space-xl);
             border: 1px solid var(--border);
-            font-size: 14px;
+            font-size: 13px;
+            backdrop-filter: var(--blur-sm);
+            -webkit-backdrop-filter: var(--blur-sm);
         }
 
         /* Custom Scrollbar */
         ::-webkit-scrollbar {
-            width: 6px;
-            height: 6px;
+            width: 4px;
+            height: 4px;
         }
 
         ::-webkit-scrollbar-track {
@@ -1137,8 +1240,8 @@
         }
 
         ::-webkit-scrollbar-thumb {
-            background: var(--border-dark);
-            border-radius: 3px;
+            background: var(--border);
+            border-radius: 2px;
         }
 
         /* Loading States */
@@ -1163,25 +1266,6 @@
             100% { transform: translateX(100%); }
         }
 
-        /* Swipe gestures */
-        .swipe-area {
-            position: relative;
-            overflow: hidden;
-        }
-
-        /* Pull to refresh */
-        .pull-to-refresh {
-            position: absolute;
-            top: -60px;
-            left: 0;
-            right: 0;
-            height: 60px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: var(--text-muted);
-        }
-
         /* Grid utilities */
         .grid {
             display: grid;
@@ -1194,8 +1278,8 @@
         /* Responsive adjustments */
         @media (min-width: 640px) {
             .modal-content {
-                max-width: 520px;
-                border-radius: var(--radius-xl);
+                max-width: 480px;
+                border-radius: var(--radius-2xl);
                 margin: auto;
                 align-items: center;
             }
@@ -1204,11 +1288,11 @@
                 align-items: center;
             }
             
-            .cart-section {
-                max-width: 400px;
+            .cart-drawer {
+                max-width: 360px;
                 left: auto;
                 right: var(--space-lg);
-                border-radius: var(--radius-xl);
+                border-radius: var(--radius-2xl);
             }
         }
 
@@ -1225,36 +1309,21 @@
                 font-size: 16px;
                 padding: var(--space-md) var(--space-lg);
             }
+            
+            .main-content {
+                padding: var(--space-md);
+            }
         }
 
         /* iOS Safe Areas */
         @supports (padding: max(0px)) {
             .bottom-nav, .floating-cart-btn {
-                padding-bottom: max(var(--space-md), var(--safe-area-inset-bottom));
+                padding-bottom: max(var(--space-md), var(--safe-area-bottom));
             }
             
             #app {
-                padding-top: max(0px, var(--safe-area-inset-top));
-                padding-bottom: max(0px, var(--safe-area-inset-bottom));
-            }
-        }
-
-        /* Print Styles */
-        @media print {
-            body * {
-                visibility: hidden;
-            }
-            
-            .receipt,
-            .receipt * {
-                visibility: visible;
-            }
-            
-            .receipt {
-                position: absolute;
-                left: 0;
-                top: 0;
-                width: 100%;
+                padding-top: max(0px, var(--safe-area-top));
+                padding-bottom: max(0px, var(--safe-area-bottom));
             }
         }
 
@@ -1277,7 +1346,26 @@
             }
             
             input, select, textarea {
-                font-size: 16px; /* Prevents iOS zoom on focus */
+                font-size: 16px;
+            }
+        }
+
+        /* Print Styles */
+        @media print {
+            body * {
+                visibility: hidden;
+            }
+            
+            .receipt,
+            .receipt * {
+                visibility: visible;
+            }
+            
+            .receipt {
+                position: absolute;
+                left: 0;
+                top: 0;
+                width: 100%;
             }
         }
     </style>
@@ -1286,7 +1374,7 @@
     <div id="app">
         <!-- Login Screen -->
         <div id="loginScreen" class="login-screen">
-            <div class="login-container">
+            <div class="login-container glass">
                 <div class="login-header">
                     <h1><i class="fas fa-cash-register"></i> POS System</h1>
                     <p>Modern Retail Management Solution</p>
@@ -1312,14 +1400,14 @@
                         </select>
                     </div>
                     
-                    <button id="loginBtn" class="btn btn-primary w-full btn-lg">
+                    <button id="loginBtn" class="btn btn-primary w-full">
                         <i class="fas fa-sign-in-alt"></i> Login to Dashboard
                     </button>
                     
-                    <div class="demo-credentials text-center text-sm text-secondary">
-                        <p class="mb-2 font-semibold">Demo Credentials:</p>
-                        <p class="mb-1">admin / admin123 (Admin)</p>
-                        <p>cashier / cashier123 (Cashier)</p>
+                    <div class="demo-credentials text-center mt-3">
+                        <p class="font-semibold mb-1 text-sm">Demo Credentials:</p>
+                        <p class="mb-1 text-sm">admin / admin123 (Admin)</p>
+                        <p class="text-sm">cashier / cashier123 (Cashier)</p>
                     </div>
                 </div>
             </div>
@@ -1328,11 +1416,11 @@
         <!-- POS Screen -->
         <div id="posScreen" class="pos-screen">
             <!-- Header -->
-            <header class="pos-header">
+            <header class="pos-header glass">
                 <div class="header-left">
                     <div class="logo">
                         <i class="fas fa-store"></i>
-                        <span>POS System</span>
+                        <span>POS</span>
                     </div>
                 </div>
                 
@@ -1340,7 +1428,7 @@
                 
                 <div class="header-right">
                     <div class="user-info">
-                        <span id="currentUser">User</span>
+                        <span id="currentUser" class="text-sm">User</span>
                         <span id="currentRole" class="role-badge">Cashier</span>
                     </div>
                 </div>
@@ -1350,27 +1438,23 @@
             <main class="main-content">
                 <!-- Sales Page -->
                 <div id="salesPage" class="page active">
-                    <div class="sales-page">
-                        <div class="sales-header">
-                            <div class="search-container">
-                                <input type="text" id="productSearch" class="search-input" 
-                                       placeholder="🔍 Search products...">
-                                <button id="scanBtn" class="btn btn-primary">
-                                    <i class="fas fa-barcode"></i>
-                                </button>
-                            </div>
-                            
-                            <div class="category-tabs" id="categoryTabs">
-                                <!-- Categories will be populated dynamically -->
-                            </div>
+                    <div class="sales-header">
+                        <div class="search-container">
+                            <input type="text" id="productSearch" class="search-input" 
+                                   placeholder="🔍 Search products...">
+                            <button id="scanBtn" class="btn btn-primary btn-icon">
+                                <i class="fas fa-barcode"></i>
+                            </button>
                         </div>
                         
-                        <div class="sales-container">
-                            <div class="products-section">
-                                <div class="products-grid" id="productsGrid">
-                                    <!-- Products will be populated dynamically -->
-                                </div>
-                            </div>
+                        <div class="category-tabs" id="categoryTabs">
+                            <!-- Categories will be populated dynamically -->
+                        </div>
+                    </div>
+                    
+                    <div class="products-section">
+                        <div class="products-grid" id="productsGrid">
+                            <!-- Products will be populated dynamically -->
                         </div>
                     </div>
                 </div>
@@ -1378,14 +1462,14 @@
                 <!-- Inventory Page -->
                 <div id="inventoryPage" class="page">
                     <div class="inventory-page">
-                        <div class="inventory-header">
-                            <h2><i class="fas fa-boxes"></i> Inventory</h2>
+                        <div class="inventory-header glass-card">
+                            <h2 class="text-lg font-semibold"><i class="fas fa-boxes"></i> Inventory</h2>
                             <button id="addProductBtn" class="btn btn-primary btn-sm">
                                 <i class="fas fa-plus"></i> Add
                             </button>
                         </div>
                         
-                        <div class="inventory-controls">
+                        <div class="inventory-controls glass-card">
                             <input type="text" id="inventorySearch" class="form-control" 
                                    placeholder="Search inventory...">
                             <select id="inventoryFilter" class="form-control">
@@ -1395,7 +1479,7 @@
                             </select>
                         </div>
                         
-                        <div class="table-container">
+                        <div class="table-container glass-card">
                             <table class="table" id="inventoryTable">
                                 <thead>
                                     <tr>
@@ -1416,8 +1500,8 @@
                 <!-- Reports Page -->
                 <div id="reportsPage" class="page">
                     <div class="reports-page">
-                        <div class="reports-header">
-                            <h2><i class="fas fa-chart-bar"></i> Reports</h2>
+                        <div class="reports-header glass-card">
+                            <h2 class="text-lg font-semibold"><i class="fas fa-chart-bar"></i> Reports</h2>
                             <div class="flex gap-2">
                                 <select id="reportPeriod" class="form-control">
                                     <option value="today">Today</option>
@@ -1428,13 +1512,13 @@
                         </div>
                         
                         <div class="reports-grid">
-                            <div class="chart-container">
-                                <h3>Sales Overview</h3>
+                            <div class="chart-container glass-card">
+                                <h3 class="font-semibold mb-3">Sales Overview</h3>
                                 <canvas id="salesChart"></canvas>
                             </div>
                             
-                            <div class="chart-container">
-                                <h3>Top Products</h3>
+                            <div class="chart-container glass-card">
+                                <h3 class="font-semibold mb-3">Top Products</h3>
                                 <canvas id="productsChart"></canvas>
                             </div>
                         </div>
@@ -1445,10 +1529,8 @@
                 <div id="settingsPage" class="page">
                     <div class="settings-page">
                         <div class="settings-section">
-                            <h2><i class="fas fa-cog"></i> Settings</h2>
-                            
-                            <div class="card mb-6">
-                                <h3 class="mb-4">Store Info</h3>
+                            <div class="glass-card mb-4">
+                                <h3 class="font-semibold mb-3"><i class="fas fa-store"></i> Store Info</h3>
                                 <div class="form-group">
                                     <label class="form-label">Store Name</label>
                                     <input type="text" id="storeName" class="form-control" value="Retail Store">
@@ -1460,23 +1542,23 @@
                                 </div>
                             </div>
                             
-                            <div class="card mb-6">
-                                <h3 class="mb-4">Appearance</h3>
+                            <div class="glass-card mb-4">
+                                <h3 class="font-semibold mb-3"><i class="fas fa-palette"></i> Appearance</h3>
                                 <div class="theme-selector">
                                     <div class="theme-option active" data-theme="light">
-                                        <i class="fas fa-sun fa-2x mb-2"></i>
-                                        <div>Light</div>
+                                        <i class="fas fa-sun fa-xl mb-2"></i>
+                                        <div class="font-medium">Light</div>
                                     </div>
                                     
                                     <div class="theme-option" data-theme="dark">
-                                        <i class="fas fa-moon fa-2x mb-2"></i>
-                                        <div>Dark</div>
+                                        <i class="fas fa-moon fa-xl mb-2"></i>
+                                        <div class="font-medium">Dark</div>
                                     </div>
                                 </div>
                             </div>
                             
-                            <div class="card">
-                                <h3 class="mb-4">Data</h3>
+                            <div class="glass-card">
+                                <h3 class="font-semibold mb-3"><i class="fas fa-database"></i> Data</h3>
                                 <div class="flex flex-col gap-2">
                                     <button id="backupBtn" class="btn btn-outline">
                                         <i class="fas fa-download"></i> Backup Data
@@ -1497,7 +1579,7 @@
             </main>
 
             <!-- Bottom Navigation -->
-            <nav class="bottom-nav">
+            <nav class="bottom-nav glass">
                 <button class="nav-item active" data-page="sales">
                     <i class="fas fa-shopping-cart nav-icon"></i>
                     <span class="nav-label">Sales</span>
@@ -1520,13 +1602,13 @@
             </nav>
 
             <!-- Floating Cart Button -->
-            <button id="floatingCartBtn" class="floating-cart-btn">
+            <button id="floatingCartBtn" class="floating-cart-btn glass">
                 <i class="fas fa-shopping-cart"></i>
                 <span id="cartBadge" class="cart-badge">0</span>
             </button>
 
             <!-- Cart Drawer -->
-            <div id="cartDrawer" class="cart-section">
+            <div id="cartDrawer" class="cart-drawer glass">
                 <div class="cart-header">
                     <h2><i class="fas fa-shopping-cart"></i> Cart</h2>
                     <button id="clearCartBtn" class="btn btn-danger btn-sm">
@@ -1556,7 +1638,7 @@
                 </div>
                 
                 <div class="cart-actions">
-                    <button id="checkoutBtn" class="btn btn-success btn-lg w-full">
+                    <button id="checkoutBtn" class="btn btn-success w-full">
                         <i class="fas fa-credit-card"></i> Checkout
                     </button>
                 </div>
@@ -1566,10 +1648,10 @@
         <!-- Modals -->
         <!-- Payment Modal -->
         <div id="paymentModal" class="modal-overlay hidden">
-            <div class="modal-content">
+            <div class="modal-content glass">
                 <div class="modal-header">
-                    <h3><i class="fas fa-credit-card"></i> Payment</h3>
-                    <button id="closePaymentModal" class="btn btn-icon">
+                    <h3 class="font-semibold"><i class="fas fa-credit-card"></i> Payment</h3>
+                    <button id="closePaymentModal" class="btn btn-icon btn-sm">
                         <i class="fas fa-times"></i>
                     </button>
                 </div>
@@ -1577,18 +1659,18 @@
                 <div class="modal-body">
                     <div class="payment-methods">
                         <div class="payment-method active" data-method="cash">
-                            <i class="fas fa-money-bill-wave fa-2x"></i>
-                            <span>Cash</span>
+                            <i class="fas fa-money-bill-wave fa-xl"></i>
+                            <span class="text-sm font-medium">Cash</span>
                         </div>
                         
                         <div class="payment-method" data-method="card">
-                            <i class="fas fa-credit-card fa-2x"></i>
-                            <span>Card</span>
+                            <i class="fas fa-credit-card fa-xl"></i>
+                            <span class="text-sm font-medium">Card</span>
                         </div>
                         
                         <div class="payment-method" data-method="mobile">
-                            <i class="fas fa-mobile-alt fa-2x"></i>
-                            <span>Mobile</span>
+                            <i class="fas fa-mobile-alt fa-xl"></i>
+                            <span class="text-sm font-medium">Mobile</span>
                         </div>
                     </div>
                     
@@ -1610,11 +1692,11 @@
                 </div>
                 
                 <div class="modal-footer">
-                    <button id="cancelPaymentBtn" class="btn btn-outline">
+                    <button id="cancelPaymentBtn" class="btn btn-outline flex-1">
                         Cancel
                     </button>
                     
-                    <button id="confirmPaymentBtn" class="btn btn-success btn-lg">
+                    <button id="confirmPaymentBtn" class="btn btn-success flex-1">
                         <i class="fas fa-check"></i> Confirm
                     </button>
                 </div>
@@ -1623,10 +1705,10 @@
 
         <!-- Product Modal -->
         <div id="productModal" class="modal-overlay hidden">
-            <div class="modal-content">
+            <div class="modal-content glass">
                 <div class="modal-header">
-                    <h3><i class="fas fa-box"></i> Product</h3>
-                    <button id="closeProductModal" class="btn btn-icon">
+                    <h3 class="font-semibold"><i class="fas fa-box"></i> Product</h3>
+                    <button id="closeProductModal" class="btn btn-icon btn-sm">
                         <i class="fas fa-times"></i>
                     </button>
                 </div>
@@ -1638,7 +1720,7 @@
                             <input type="text" id="productName" class="form-control" required>
                         </div>
                         
-                        <div class="grid grid-cols-2 gap-4 mb-4">
+                        <div class="grid grid-cols-2 gap-3 mb-3">
                             <div class="form-group">
                                 <label class="form-label">Price *</label>
                                 <input type="number" id="productPrice" class="form-control" 
@@ -1678,10 +1760,10 @@
 
         <!-- Receipt Modal -->
         <div id="receiptModal" class="modal-overlay hidden">
-            <div class="modal-content">
+            <div class="modal-content glass">
                 <div class="modal-header">
-                    <h3><i class="fas fa-receipt"></i> Receipt</h3>
-                    <button id="closeReceiptModal" class="btn btn-icon">
+                    <h3 class="font-semibold"><i class="fas fa-receipt"></i> Receipt</h3>
+                    <button id="closeReceiptModal" class="btn btn-icon btn-sm">
                         <i class="fas fa-times"></i>
                     </button>
                 </div>
@@ -1709,7 +1791,7 @@
     </div>
 
     <script>
-        // Mobile Optimized POS System
+        // iPhone-Style POS System with Glassmorphism
         class POSSystem {
             constructor() {
                 this.currentUser = null;
@@ -1721,29 +1803,19 @@
                 this.isCartOpen = false;
                 this.currentTheme = localStorage.getItem('theme') || 'light';
                 
-                // Initialize the system
                 this.init();
             }
 
             init() {
-                // Load data from localStorage
                 this.loadData();
-                
-                // Setup event listeners
                 this.setupEventListeners();
-                
-                // Update date and time
                 this.updateDateTime();
-                
-                // Apply theme
                 this.applyTheme(this.currentTheme);
                 
-                // Initialize demo data if none exists
                 if (this.products.length === 0) {
                     this.createDemoData();
                 }
                 
-                // Update UI
                 this.updateProductsDisplay();
                 this.updateCategories();
                 this.updateInventoryTable();
@@ -1751,19 +1823,16 @@
             }
 
             loadData() {
-                // Load products
                 const storedProducts = localStorage.getItem('pos_products');
                 if (storedProducts) {
                     this.products = JSON.parse(storedProducts);
                 }
                 
-                // Load sales
                 const storedSales = localStorage.getItem('pos_sales');
                 if (storedSales) {
                     this.sales = JSON.parse(storedSales);
                 }
                 
-                // Load users
                 const storedUsers = localStorage.getItem('pos_users');
                 if (storedUsers) {
                     this.users = JSON.parse(storedUsers);
@@ -1771,7 +1840,6 @@
                     this.createDemoUsers();
                 }
                 
-                // Load settings
                 const storedSettings = localStorage.getItem('pos_settings');
                 if (storedSettings) {
                     this.settings = JSON.parse(storedSettings);
@@ -1791,7 +1859,6 @@
             }
 
             createDemoData() {
-                // Demo products
                 this.products = [
                     {
                         id: 1,
@@ -1864,6 +1931,30 @@
                         stock: 45,
                         minStock: 10,
                         barcode: '654987321'
+                    },
+                    {
+                        id: 7,
+                        sku: 'PROD007',
+                        name: 'Coffee',
+                        description: 'Arabica blend',
+                        category: 'beverages',
+                        price: 3.50,
+                        cost: 1.80,
+                        stock: 20,
+                        minStock: 10,
+                        barcode: '123789456'
+                    },
+                    {
+                        id: 8,
+                        sku: 'PROD008',
+                        name: 'Cookies',
+                        description: 'Chocolate chip',
+                        category: 'food',
+                        price: 2.80,
+                        cost: 1.40,
+                        stock: 35,
+                        minStock: 10,
+                        barcode: '456789123'
                     }
                 ];
                 
@@ -1966,7 +2057,7 @@
                     }
                 });
 
-                // Touch gestures for cart
+                // Swipe to close cart
                 let startY = 0;
                 document.getElementById('cartDrawer').addEventListener('touchstart', (e) => {
                     startY = e.touches[0].clientY;
@@ -1976,7 +2067,7 @@
                     const currentY = e.touches[0].clientY;
                     const diff = currentY - startY;
                     
-                    if (diff > 50) { // Swipe down to close
+                    if (diff > 30) {
                         this.closeCart();
                     }
                 });
@@ -1987,7 +2078,6 @@
                 const password = document.getElementById('loginPassword').value;
                 const role = document.getElementById('loginRole').value;
 
-                // Demo authentication
                 const user = this.users.find(u => 
                     (u.username === username || u.email === username) && 
                     u.password === password &&
@@ -1998,28 +2088,22 @@
                     this.currentUser = user;
                     this.currentRole = role;
                     
-                    // Show POS screen
                     document.getElementById('loginScreen').style.display = 'none';
                     document.getElementById('posScreen').style.display = 'flex';
                     
-                    // Update user info
                     document.getElementById('currentUser').textContent = user.name;
                     document.getElementById('currentRole').textContent = role;
                     
-                    // Show success notification
                     this.showNotification(`Welcome, ${user.name}!`, 'success');
                     
-                    // Reset login form
                     document.getElementById('loginUsername').value = '';
                     document.getElementById('loginPassword').value = '';
                     
-                    // Save login state
                     localStorage.setItem('pos_last_user', JSON.stringify({
                         username: user.username,
                         role: user.role
                     }));
                     
-                    // Prevent scroll on body
                     document.body.style.overflow = 'hidden';
                 } else {
                     this.showNotification('Invalid credentials!', 'error');
@@ -2031,17 +2115,13 @@
                 this.currentRole = null;
                 this.cart = [];
                 
-                // Show login screen
                 document.getElementById('loginScreen').style.display = 'flex';
                 document.getElementById('posScreen').style.display = 'none';
                 
-                // Clear cart display
                 this.updateCartDisplay();
                 this.closeCart();
                 
                 this.showNotification('Logged out successfully', 'success');
-                
-                // Restore scroll on body
                 document.body.style.overflow = 'auto';
             }
 
@@ -2055,7 +2135,7 @@
                     productCard.innerHTML = `
                         <div class="product-name">${product.name}</div>
                         <div class="product-price">$${product.price.toFixed(2)}</div>
-                        <div class="product-stock">Stock: ${product.stock}</div>
+                        <div class="product-stock">${product.stock} in stock</div>
                     `;
                     
                     productCard.addEventListener('click', () => {
@@ -2074,17 +2154,14 @@
                 const categoryTabs = document.getElementById('categoryTabs');
                 categoryTabs.innerHTML = '';
                 
-                // Add "All" category
                 this.categories.add('all');
                 
-                // Add all categories from products
                 this.products.forEach(product => {
                     if (product.category) {
                         this.categories.add(product.category);
                     }
                 });
                 
-                // Create category tabs
                 Array.from(this.categories).forEach(category => {
                     const tab = document.createElement('button');
                     tab.className = `category-tab ${category === 'all' ? 'active' : ''}`;
@@ -2092,9 +2169,7 @@
                     tab.dataset.category = category;
                     
                     tab.addEventListener('click', (e) => {
-                        // Remove active class from all tabs
                         document.querySelectorAll('.category-tab').forEach(t => t.classList.remove('active'));
-                        // Add active class to clicked tab
                         e.target.classList.add('active');
                         
                         this.filterProductsByCategory(category);
@@ -2118,7 +2193,7 @@
                     productCard.innerHTML = `
                         <div class="product-name">${product.name}</div>
                         <div class="product-price">$${product.price.toFixed(2)}</div>
-                        <div class="product-stock">Stock: ${product.stock}</div>
+                        <div class="product-stock">${product.stock} in stock</div>
                     `;
                     
                     productCard.addEventListener('click', () => {
@@ -2147,7 +2222,7 @@
                     productCard.innerHTML = `
                         <div class="product-name">${product.name}</div>
                         <div class="product-price">$${product.price.toFixed(2)}</div>
-                        <div class="product-stock">Stock: ${product.stock}</div>
+                        <div class="product-stock">${product.stock} in stock</div>
                     `;
                     
                     productCard.addEventListener('click', () => {
@@ -2189,7 +2264,6 @@
                 this.updateCartBadge();
                 this.showNotification(`${product.name} added to cart`, 'success');
                 
-                // Open cart if not already open
                 if (!this.isCartOpen) {
                     this.openCart();
                 }
@@ -2215,7 +2289,7 @@
                         <div class="cart-item-actions">
                             <div class="quantity-control">
                                 <button class="quantity-btn decrease" data-id="${item.id}">-</button>
-                                <span>${item.quantity}</span>
+                                <span class="font-medium">${item.quantity}</span>
                                 <button class="quantity-btn increase" data-id="${item.id}">+</button>
                             </div>
                             <div class="font-semibold">$${itemTotal.toFixed(2)}</div>
@@ -2228,7 +2302,6 @@
                     cartItems.appendChild(cartItem);
                 });
 
-                // Add event listeners
                 cartItems.querySelectorAll('.decrease').forEach(btn => {
                     btn.addEventListener('click', (e) => this.updateQuantity(e.target.dataset.id, -1));
                 });
@@ -2241,7 +2314,6 @@
                     btn.addEventListener('click', (e) => this.removeFromCart(e.target.closest('button').dataset.id));
                 });
 
-                // Update totals
                 const taxRate = this.settings.taxRate || 10;
                 const tax = subtotal * (taxRate / 100);
                 const total = subtotal + tax;
@@ -2249,8 +2321,6 @@
                 document.getElementById('cartSubtotal').textContent = `$${subtotal.toFixed(2)}`;
                 document.getElementById('cartTax').textContent = `$${tax.toFixed(2)}`;
                 document.getElementById('cartTotal').textContent = `$${total.toFixed(2)}`;
-                
-                // Update payment modal total
                 document.getElementById('paymentTotal').textContent = `$${total.toFixed(2)}`;
             }
 
@@ -2314,7 +2384,7 @@
 
             clearCart() {
                 if (this.cart.length === 0) {
-                    this.showNotification('Cart is already empty!', 'warning');
+                    this.showNotification('Cart is empty!', 'warning');
                     return;
                 }
                 
@@ -2344,9 +2414,7 @@
             }
 
             selectPaymentMethod(methodElement) {
-                // Remove active class from all methods
                 document.querySelectorAll('.payment-method').forEach(m => m.classList.remove('active'));
-                // Add active class to selected method
                 methodElement.classList.add('active');
             }
 
@@ -2356,7 +2424,7 @@
                 const change = amount - total;
                 
                 document.getElementById('paymentChange').textContent = `$${change >= 0 ? change.toFixed(2) : '0.00'}`;
-                document.getElementById('paymentChange').style.color = change >= 0 ? 'var(--success)' : 'var(--danger)';
+                document.getElementById('paymentChange').style.color = change >= 0 ? 'var(--system-green)' : 'var(--system-red)';
             }
 
             processPayment() {
@@ -2364,13 +2432,12 @@
                 const total = parseFloat(document.getElementById('paymentTotal').textContent.replace('$', ''));
                 
                 if (amount < total) {
-                    this.showNotification(`Insufficient amount! Need $${(total - amount).toFixed(2)} more`, 'error');
+                    this.showNotification(`Need $${(total - amount).toFixed(2)} more`, 'error');
                     return;
                 }
 
                 const paymentMethod = document.querySelector('.payment-method.active').dataset.method;
                 
-                // Create sale record
                 const sale = {
                     id: Date.now(),
                     date: new Date().toISOString(),
@@ -2384,7 +2451,6 @@
                     cashier: this.currentUser.name
                 };
 
-                // Update product stocks
                 this.cart.forEach(cartItem => {
                     const product = this.products.find(p => p.id === cartItem.id);
                     if (product) {
@@ -2392,18 +2458,14 @@
                     }
                 });
 
-                // Save sale and update products
                 this.sales.push(sale);
                 this.saveData();
                 
-                // Update UI
                 this.updateProductsDisplay();
                 this.updateInventoryTable();
                 
-                // Show receipt
                 this.showReceipt(sale);
                 
-                // Clear cart and reset
                 this.cart = [];
                 this.updateCartDisplay();
                 this.updateCartBadge();
@@ -2416,22 +2478,22 @@
                 const receiptContent = document.getElementById('receiptContent');
                 receiptContent.innerHTML = `
                     <div class="text-center mb-4">
-                        <h3 class="font-bold">${this.settings.storeName}</h3>
-                        <p class="text-sm">${new Date(sale.date).toLocaleString()}</p>
-                        <p class="text-sm">Invoice: #${sale.id}</p>
-                        <p class="text-sm">Cashier: ${sale.cashier}</p>
+                        <h3 class="font-bold text-lg">${this.settings.storeName}</h3>
+                        <p class="text-sm text-tertiary">${new Date(sale.date).toLocaleString()}</p>
+                        <p class="text-sm text-tertiary">Invoice: #${sale.id}</p>
+                        <p class="text-sm text-tertiary">Cashier: ${sale.cashier}</p>
                     </div>
                     
-                    <div class="border-t border-b border-gray-300 py-2 my-2">
+                    <div class="border-t border-b border-border py-3 my-3">
                         ${sale.items.map(item => `
-                            <div class="flex justify-between text-sm mb-1">
+                            <div class="flex justify-between text-sm mb-2">
                                 <span>${item.name} x${item.quantity}</span>
                                 <span>$${(item.price * item.quantity).toFixed(2)}</span>
                             </div>
                         `).join('')}
                     </div>
                     
-                    <div class="space-y-1 text-sm">
+                    <div class="space-y-2 text-sm">
                         <div class="flex justify-between">
                             <span>Subtotal:</span>
                             <span>$${sale.subtotal.toFixed(2)}</span>
@@ -2440,7 +2502,7 @@
                             <span>Tax (${this.settings.taxRate}%):</span>
                             <span>$${sale.tax.toFixed(2)}</span>
                         </div>
-                        <div class="flex justify-between font-bold text-lg">
+                        <div class="flex justify-between font-bold text-lg pt-2 border-t border-border">
                             <span>Total:</span>
                             <span>$${sale.total.toFixed(2)}</span>
                         </div>
@@ -2458,8 +2520,8 @@
                         </div>
                     </div>
                     
-                    <div class="text-center mt-4 pt-4 border-t border-gray-300">
-                        <p class="text-sm">Thank you for your purchase!</p>
+                    <div class="text-center mt-4 pt-4 border-t border-border">
+                        <p class="text-sm font-medium">Thank you for your purchase!</p>
                     </div>
                 `;
                 
@@ -2480,21 +2542,22 @@
                     <head>
                         <title>Receipt</title>
                         <style>
-                            body { font-family: monospace; padding: 20px; max-width: 300px; margin: 0 auto; }
+                            body { font-family: 'SF Mono', monospace; padding: 20px; max-width: 300px; margin: 0 auto; }
                             .text-center { text-align: center; }
                             .font-bold { font-weight: bold; }
                             .border-t { border-top: 1px solid #000; }
                             .border-b { border-bottom: 1px solid #000; }
-                            .my-2 { margin-top: 8px; margin-bottom: 8px; }
-                            .py-2 { padding-top: 8px; padding-bottom: 8px; }
-                            .space-y-1 > * + * { margin-top: 4px; }
+                            .my-3 { margin-top: 12px; margin-bottom: 12px; }
+                            .py-3 { padding-top: 12px; padding-bottom: 12px; }
+                            .space-y-2 > * + * { margin-top: 8px; }
                             .text-sm { font-size: 12px; }
                             .text-lg { font-size: 16px; }
                             .flex { display: flex; }
                             .justify-between { justify-content: space-between; }
-                            .mb-1 { margin-bottom: 4px; }
+                            .mb-2 { margin-bottom: 8px; }
                             .mt-4 { margin-top: 16px; }
                             .pt-4 { padding-top: 16px; }
+                            .pt-2 { padding-top: 8px; }
                         </style>
                     </head>
                     <body>
@@ -2510,25 +2573,18 @@
             }
 
             showScannerModal() {
-                this.showNotification('Scanner requires camera permission', 'info');
-                // In a real app, implement camera barcode scanning here
+                this.showNotification('Point camera at barcode', 'info');
             }
 
             switchPage(page) {
-                // Remove active class from all nav items
                 document.querySelectorAll('.nav-item').forEach(item => item.classList.remove('active'));
-                // Add active class to clicked nav item
                 document.querySelector(`[data-page="${page}"]`).classList.add('active');
                 
-                // Hide all pages
                 document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
-                // Show selected page
                 document.getElementById(page + 'Page').classList.add('active');
                 
-                // Close cart when switching pages
                 this.closeCart();
                 
-                // Load page-specific data
                 if (page === 'reports') {
                     this.generateReports();
                 } else if (page === 'inventory') {
@@ -2554,14 +2610,14 @@
                     
                     row.innerHTML = `
                         <td>
-                            <div class="font-semibold">${product.name}</div>
-                            <div class="text-sm text-muted">${product.category}</div>
+                            <div class="font-medium">${product.name}</div>
+                            <div class="text-sm text-tertiary">${product.category}</div>
                         </td>
-                        <td class="${product.stock <= product.minStock ? 'text-warning' : ''}">
+                        <td class="${product.stock <= product.minStock ? 'font-medium text-system-orange' : 'font-medium'}">
                             ${product.stock}
-                            ${product.stock <= product.minStock ? ' (Low)' : ''}
+                            ${product.stock <= product.minStock ? ' ⚠️' : ''}
                         </td>
-                        <td>$${product.price.toFixed(2)}</td>
+                        <td class="font-semibold">$${product.price.toFixed(2)}</td>
                         <td>
                             <button class="btn btn-outline btn-sm edit-product" data-id="${product.id}">
                                 <i class="fas fa-edit"></i>
@@ -2575,7 +2631,6 @@
                     tableBody.appendChild(row);
                 });
                 
-                // Add event listeners
                 tableBody.querySelectorAll('.edit-product').forEach(btn => {
                     btn.addEventListener('click', (e) => this.editProduct(e.target.closest('button').dataset.id));
                 });
@@ -2590,7 +2645,6 @@
                 const form = document.getElementById('productForm');
                 
                 if (product) {
-                    // Edit mode
                     document.querySelector('.modal-header h3').textContent = 'Edit Product';
                     document.getElementById('saveProductBtn').innerHTML = '<i class="fas fa-save"></i> Update';
                     
@@ -2601,15 +2655,12 @@
                     
                     form.dataset.editId = product.id;
                 } else {
-                    // Add mode
                     document.querySelector('.modal-header h3').textContent = 'Add Product';
                     document.getElementById('saveProductBtn').innerHTML = '<i class="fas fa-save"></i> Save';
                     
                     form.reset();
                     delete form.dataset.editId;
                     
-                    // Generate SKU
-                    const nextId = this.products.length > 0 ? Math.max(...this.products.map(p => p.id)) + 1 : 1;
                     document.getElementById('productCategory').value = 'general';
                 }
                 
@@ -2632,7 +2683,7 @@
                     price: parseFloat(document.getElementById('productPrice').value),
                     stock: parseInt(document.getElementById('productStock').value),
                     minStock: 10,
-                    cost: parseFloat(document.getElementById('productPrice').value) * 0.6, // 40% margin
+                    cost: parseFloat(document.getElementById('productPrice').value) * 0.6,
                     barcode: Date.now().toString().slice(-12)
                 };
                 
@@ -2674,7 +2725,7 @@
             }
 
             generateReports() {
-                // Sales overview chart
+                // Sales chart
                 const salesCtx = document.getElementById('salesChart').getContext('2d');
                 const salesData = this.getSalesData();
                 
@@ -2685,10 +2736,11 @@
                         datasets: [{
                             label: 'Sales',
                             data: salesData.amounts,
-                            borderColor: 'var(--primary)',
-                            backgroundColor: 'rgba(37, 99, 235, 0.1)',
+                            borderColor: '#007AFF',
+                            backgroundColor: 'rgba(0, 122, 255, 0.1)',
                             fill: true,
-                            tension: 0.4
+                            tension: 0.4,
+                            borderWidth: 2
                         }]
                     },
                     options: {
@@ -2696,11 +2748,24 @@
                         maintainAspectRatio: true,
                         plugins: {
                             legend: { display: false }
+                        },
+                        scales: {
+                            y: {
+                                beginAtZero: true,
+                                grid: {
+                                    color: 'rgba(0, 0, 0, 0.05)'
+                                }
+                            },
+                            x: {
+                                grid: {
+                                    color: 'rgba(0, 0, 0, 0.05)'
+                                }
+                            }
                         }
                     }
                 });
                 
-                // Top products chart
+                // Products chart
                 const productsCtx = document.getElementById('productsChart').getContext('2d');
                 const topProducts = this.getTopProducts(5);
                 
@@ -2711,7 +2776,7 @@
                         datasets: [{
                             label: 'Quantity Sold',
                             data: topProducts.map(p => p.quantity),
-                            backgroundColor: 'var(--success)'
+                            backgroundColor: '#34C759'
                         }]
                     },
                     options: {
@@ -2719,13 +2784,25 @@
                         maintainAspectRatio: true,
                         plugins: {
                             legend: { display: false }
+                        },
+                        scales: {
+                            y: {
+                                beginAtZero: true,
+                                grid: {
+                                    color: 'rgba(0, 0, 0, 0.05)'
+                                }
+                            },
+                            x: {
+                                grid: {
+                                    color: 'rgba(0, 0, 0, 0.05)'
+                                }
+                            }
                         }
                     }
                 });
             }
 
             getSalesData() {
-                // Get sales from last 7 days
                 const dates = [];
                 const amounts = [];
                 
@@ -2774,7 +2851,6 @@
                 localStorage.setItem('theme', theme);
                 this.applyTheme(theme);
                 
-                // Update theme selector
                 document.querySelectorAll('.theme-option').forEach(option => {
                     option.classList.remove('active');
                 });
@@ -2847,15 +2923,24 @@
             showNotification(message, type = 'info') {
                 const container = document.getElementById('notificationsContainer');
                 const notification = document.createElement('div');
-                notification.className = `notification ${type}`;
+                notification.className = `notification`;
+                notification.style.borderLeftColor = type === 'success' ? '#34C759' : 
+                                                   type === 'error' ? '#FF3B30' : 
+                                                   type === 'warning' ? '#FF9500' : '#007AFF';
+                
+                const icon = type === 'success' ? 'check-circle' : 
+                           type === 'error' ? 'exclamation-circle' : 
+                           type === 'warning' ? 'exclamation-triangle' : 'info-circle';
+                
                 notification.innerHTML = `
-                    <i class="fas fa-${this.getNotificationIcon(type)}"></i>
+                    <i class="fas fa-${icon}" style="color: ${type === 'success' ? '#34C759' : 
+                                                       type === 'error' ? '#FF3B30' : 
+                                                       type === 'warning' ? '#FF9500' : '#007AFF'}"></i>
                     <span>${message}</span>
                 `;
                 
                 container.appendChild(notification);
                 
-                // Auto-remove after 3 seconds
                 setTimeout(() => {
                     if (notification.parentNode) {
                         notification.style.opacity = '0';
@@ -2863,15 +2948,6 @@
                         setTimeout(() => notification.remove(), 300);
                     }
                 }, 3000);
-            }
-
-            getNotificationIcon(type) {
-                switch (type) {
-                    case 'success': return 'check-circle';
-                    case 'error': return 'exclamation-circle';
-                    case 'warning': return 'exclamation-triangle';
-                    default: return 'info-circle';
-                }
             }
 
             updateDateTime() {
@@ -2884,7 +2960,7 @@
                 
                 document.getElementById('datetime').textContent = timeStr;
                 
-                setTimeout(() => this.updateDateTime(), 60000); // Update every minute
+                setTimeout(() => this.updateDateTime(), 60000);
             }
 
             debounce(func, wait) {
@@ -2900,7 +2976,7 @@
             }
         }
 
-        // Initialize the POS system when the page loads
+        // Initialize the POS system
         document.addEventListener('DOMContentLoaded', () => {
             window.posSystem = new POSSystem();
             
@@ -2911,25 +2987,8 @@
                     const user = JSON.parse(lastUser);
                     document.getElementById('loginUsername').value = user.username;
                     document.getElementById('loginRole').value = user.role;
-                } catch (e) {
-                    // Ignore error
-                }
+                } catch (e) {}
             }
-            
-            // Make app fullscreen on mobile
-            function requestFullscreen() {
-                const elem = document.documentElement;
-                if (elem.requestFullscreen) {
-                    elem.requestFullscreen();
-                } else if (elem.webkitRequestFullscreen) { /* Safari */
-                    elem.webkitRequestFullscreen();
-                } else if (elem.msRequestFullscreen) { /* IE11 */
-                    elem.msRequestFullscreen();
-                }
-            }
-            
-            // Add fullscreen on first interaction
-            document.addEventListener('click', requestFullscreen, { once: true });
             
             // Handle orientation changes
             window.addEventListener('orientationchange', () => {
@@ -2937,16 +2996,6 @@
                     window.scrollTo(0, 0);
                 }, 100);
             });
-            
-            // Prevent pull-to-refresh on mobile
-            document.addEventListener('touchmove', (e) => {
-                if (e.target.closest('.products-grid') || 
-                    e.target.closest('.cart-items') ||
-                    e.target.closest('.inventory-page')) {
-                    return;
-                }
-                e.preventDefault();
-            }, { passive: false });
         });
 
         // PWA Service Worker

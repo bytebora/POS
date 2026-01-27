@@ -2,26 +2,17 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>Tanzania POS | Retail Management System</title>
-    <meta name="description" content="Professional Point of Sale System for Tanzanian Retail Businesses">
-    <meta name="theme-color" content="#007AFF">
-    <meta name="author" content="Tanzania POS Solutions">
-    
-    <!-- Fonts & Icons -->
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    
-    <!-- Chart.js -->
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Tanzania POS | Duka Management System</title>
+    <meta name="description" content="Point of Sale System for Tanzanian Retail Businesses">
+    <meta name="theme-color" content="#006837">
     <style>
+        /* CSS Variables */
         :root {
             --primary: #006837;
             --primary-light: #00A859;
             --primary-dark: #004D2D;
             --secondary: #2E5090;
-            --accent: #FF6B00;
             --success: #00A859;
             --warning: #FF9800;
             --danger: #E53935;
@@ -40,8 +31,8 @@
             --radius: 10px;
             --shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
             
-            --header-height: 64px;
-            --bottom-nav-height: 70px;
+            --header-height: 60px;
+            --bottom-nav-height: 65px;
         }
 
         [data-theme="dark"] {
@@ -57,6 +48,7 @@
             --border: rgba(74, 85, 104, 0.4);
         }
 
+        /* Reset & Base */
         * {
             margin: 0;
             padding: 0;
@@ -65,11 +57,12 @@
         }
 
         body {
-            font-family: 'Inter', sans-serif;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
             background: var(--bg-primary);
             color: var(--text-primary);
             height: 100vh;
             overflow: hidden;
+            line-height: 1.5;
         }
 
         #app {
@@ -85,22 +78,26 @@
         .items-center { align-items: center; }
         .justify-center { justify-content: center; }
         .justify-between { justify-content: space-between; }
+        .gap-1 { gap: 0.25rem; }
         .gap-2 { gap: 0.5rem; }
         .gap-3 { gap: 0.75rem; }
         .gap-4 { gap: 1rem; }
         .w-full { width: 100%; }
         .h-full { height: 100%; }
         .text-center { text-align: center; }
+        .text-sm { font-size: 13px; }
+        .text-base { font-size: 14px; }
         .text-lg { font-size: 16px; }
+        .text-xl { font-size: 18px; }
         .font-medium { font-weight: 500; }
         .font-semibold { font-weight: 600; }
         .font-bold { font-weight: 700; }
-        .rounded { border-radius: 10px; }
+        .rounded { border-radius: 8px; }
         .rounded-lg { border-radius: 12px; }
         .shadow { box-shadow: var(--shadow); }
+        .p-2 { padding: 0.5rem; }
         .p-3 { padding: 0.75rem; }
         .p-4 { padding: 1rem; }
-        .p-5 { padding: 1.25rem; }
         .px-3 { padding-left: 0.75rem; padding-right: 0.75rem; }
         .px-4 { padding-left: 1rem; padding-right: 1rem; }
         .py-2 { padding-top: 0.5rem; padding-bottom: 0.5rem; }
@@ -111,9 +108,13 @@
         .flex-1 { flex: 1; }
         .grid { display: grid; }
         .grid-cols-2 { grid-template-columns: repeat(2, 1fr); }
+        .grid-cols-3 { grid-template-columns: repeat(3, 1fr); }
         .grid-cols-4 { grid-template-columns: repeat(4, 1fr); }
         .relative { position: relative; }
+        .absolute { position: absolute; }
         .cursor-pointer { cursor: pointer; }
+        .overflow-hidden { overflow: hidden; }
+        .overflow-auto { overflow: auto; }
 
         /* Login Screen */
         #loginScreen {
@@ -148,8 +149,21 @@
             margin-bottom: 0.5rem;
         }
 
+        .login-header p {
+            color: var(--text-secondary);
+            font-size: 14px;
+        }
+
         .form-group {
             margin-bottom: 1rem;
+        }
+
+        .form-label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 600;
+            color: var(--text-secondary);
+            font-size: 13px;
         }
 
         .form-control {
@@ -160,13 +174,25 @@
             background: var(--bg-secondary);
             color: var(--text-primary);
             font-size: 15px;
+            transition: border-color 0.2s;
         }
 
         .form-control:focus {
             outline: none;
             border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(0, 104, 55, 0.1);
         }
 
+        .demo-credentials {
+            background: var(--bg-tertiary);
+            padding: 1rem;
+            border-radius: 10px;
+            margin-top: 1.5rem;
+            font-size: 12px;
+            color: var(--text-tertiary);
+        }
+
+        /* Buttons */
         .btn {
             display: inline-flex;
             align-items: center;
@@ -180,30 +206,46 @@
             cursor: pointer;
             transition: all 0.2s;
             min-height: 44px;
-            background: var(--primary);
-            color: white;
+            font-family: inherit;
         }
 
         .btn:hover {
+            transform: translateY(-1px);
             opacity: 0.9;
         }
 
+        .btn:active {
+            transform: translateY(0);
+        }
+
         .btn-primary {
-            background: var(--primary);
+            background: linear-gradient(135deg, var(--primary), var(--primary-light));
+            color: white;
         }
 
         .btn-success {
-            background: var(--success);
+            background: linear-gradient(135deg, var(--success), #00C853);
+            color: white;
         }
 
         .btn-danger {
-            background: var(--danger);
+            background: linear-gradient(135deg, var(--danger), #F44336);
+            color: white;
+        }
+
+        .btn-warning {
+            background: linear-gradient(135deg, var(--warning), #FFB300);
+            color: white;
         }
 
         .btn-outline {
             background: transparent;
             border: 1.5px solid var(--border);
             color: var(--text-primary);
+        }
+
+        .btn-outline:hover {
+            background: var(--bg-tertiary);
         }
 
         .btn-sm {
@@ -225,6 +267,7 @@
             flex-direction: column;
         }
 
+        /* Header */
         .pos-header {
             height: var(--header-height);
             background: var(--bg-card);
@@ -233,17 +276,26 @@
             display: flex;
             align-items: center;
             justify-content: space-between;
+            flex-shrink: 0;
         }
 
         .logo {
             font-size: 20px;
             font-weight: 700;
             color: var(--primary);
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .logo i {
+            font-size: 24px;
         }
 
         .datetime {
             font-size: 13px;
             color: var(--text-tertiary);
+            font-weight: 500;
         }
 
         .user-info {
@@ -251,17 +303,18 @@
             align-items: center;
             gap: 0.5rem;
             background: var(--bg-tertiary);
-            padding: 0.25rem 0.75rem;
+            padding: 0.5rem 1rem;
             border-radius: 10px;
         }
 
         .role-badge {
             background: var(--primary);
             color: white;
-            padding: 0.125rem 0.5rem;
-            border-radius: 4px;
+            padding: 0.25rem 0.75rem;
+            border-radius: 20px;
             font-size: 11px;
             font-weight: 600;
+            text-transform: uppercase;
         }
 
         /* Bottom Navigation */
@@ -273,6 +326,7 @@
             justify-content: space-around;
             align-items: center;
             padding: 0.5rem;
+            flex-shrink: 0;
         }
 
         .nav-item {
@@ -287,11 +341,18 @@
             cursor: pointer;
             flex: 1;
             border-radius: 8px;
+            transition: all 0.2s;
+            font-size: 12px;
+        }
+
+        .nav-item:hover {
+            background: var(--bg-tertiary);
         }
 
         .nav-item.active {
             color: var(--primary);
             background: var(--bg-tertiary);
+            font-weight: 600;
         }
 
         .nav-icon {
@@ -302,17 +363,25 @@
         .main-content {
             flex: 1;
             overflow: hidden;
+            display: flex;
+            flex-direction: column;
         }
 
         .page {
             display: none;
-            height: 100%;
+            flex: 1;
             flex-direction: column;
             overflow: hidden;
         }
 
         .page.active {
             display: flex;
+            animation: fadeIn 0.3s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
         }
 
         /* Sales Page */
@@ -336,17 +405,25 @@
             border-radius: 10px;
             padding: 0.75rem;
             text-align: center;
+            transition: transform 0.2s;
+        }
+
+        .stat-card-mini:hover {
+            transform: translateY(-2px);
         }
 
         .stat-value-mini {
             font-size: 16px;
             font-weight: 700;
             color: var(--primary);
+            margin-bottom: 0.25rem;
         }
 
         .stat-label-mini {
             font-size: 11px;
             color: var(--text-tertiary);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
         }
 
         .search-container {
@@ -361,38 +438,65 @@
             border-radius: 10px;
             background: var(--bg-secondary);
             color: var(--text-primary);
+            font-size: 15px;
+        }
+
+        .search-input:focus {
+            outline: none;
+            border-color: var(--primary);
+        }
+
+        .search-input::placeholder {
+            color: var(--text-tertiary);
         }
 
         .category-tabs {
             display: flex;
-            gap: 0.25rem;
+            gap: 0.5rem;
             overflow-x: auto;
             padding: 0.25rem 0;
+            -webkit-overflow-scrolling: touch;
+        }
+
+        .category-tabs::-webkit-scrollbar {
+            display: none;
         }
 
         .category-tab {
             padding: 0.5rem 1rem;
             background: var(--bg-tertiary);
             border: 1px solid transparent;
-            border-radius: 8px;
+            border-radius: 20px;
             color: var(--text-tertiary);
             cursor: pointer;
             white-space: nowrap;
+            font-size: 13px;
+            font-weight: 500;
+            transition: all 0.2s;
+            flex-shrink: 0;
+        }
+
+        .category-tab:hover {
+            border-color: var(--border);
         }
 
         .category-tab.active {
             background: var(--primary);
             color: white;
+            border-color: var(--primary);
         }
 
         .products-section {
             flex: 1;
             overflow: hidden;
+            display: flex;
+            flex-direction: column;
         }
 
         .products-grid-container {
-            height: 100%;
+            flex: 1;
             overflow-y: auto;
+            -webkit-overflow-scrolling: touch;
             padding: 0.25rem;
         }
 
@@ -410,17 +514,23 @@
             padding: 1rem;
             cursor: pointer;
             transition: all 0.2s;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            min-height: 120px;
         }
 
         .product-card:hover {
-            transform: translateY(-2px);
+            transform: translateY(-4px);
             box-shadow: var(--shadow);
+            border-color: var(--primary);
         }
 
         .product-name {
             font-weight: 600;
             font-size: 14px;
             margin-bottom: 0.5rem;
+            line-height: 1.3;
         }
 
         .product-price {
@@ -433,6 +543,17 @@
         .product-stock {
             font-size: 12px;
             color: var(--text-tertiary);
+            display: flex;
+            align-items: center;
+            gap: 0.25rem;
+        }
+
+        .product-stock.low {
+            color: var(--warning);
+        }
+
+        .product-stock.out {
+            color: var(--danger);
         }
 
         /* History Page */
@@ -457,6 +578,7 @@
         .history-filters {
             display: flex;
             gap: 0.5rem;
+            flex-wrap: wrap;
         }
 
         .history-table-container {
@@ -465,55 +587,78 @@
             background: var(--bg-card);
             border: 1px solid var(--border);
             border-radius: 12px;
+            -webkit-overflow-scrolling: touch;
         }
 
         .history-table {
             width: 100%;
             border-collapse: collapse;
+            min-width: 600px;
         }
 
         .history-table th {
             background: var(--bg-tertiary);
-            padding: 0.75rem;
+            padding: 0.75rem 1rem;
             text-align: left;
             font-weight: 600;
             font-size: 12px;
+            color: var(--text-primary);
             border-bottom: 1px solid var(--border);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            position: sticky;
+            top: 0;
         }
 
         .history-table td {
-            padding: 0.75rem;
-            border-bottom: 1px solid var(--border-light);
+            padding: 0.75rem 1rem;
+            border-bottom: 1px solid var(--border);
+            font-size: 14px;
+        }
+
+        .history-table tr:hover td {
+            background: var(--bg-tertiary);
         }
 
         .sale-id {
             background: var(--bg-tertiary);
-            padding: 0.125rem 0.5rem;
+            padding: 0.25rem 0.5rem;
             border-radius: 4px;
-            font-size: 12px;
             font-family: monospace;
+            font-size: 12px;
         }
 
         .payment-method-badge {
-            padding: 0.25rem 0.5rem;
-            border-radius: 4px;
+            padding: 0.25rem 0.75rem;
+            border-radius: 20px;
             font-size: 11px;
             font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
         }
 
         .payment-cash {
-            background: rgba(16, 185, 129, 0.1);
+            background: rgba(0, 168, 89, 0.1);
             color: var(--success);
+            border: 1px solid rgba(0, 168, 89, 0.2);
         }
 
         .payment-card {
-            background: rgba(37, 99, 235, 0.1);
-            color: var(--primary);
+            background: rgba(46, 80, 144, 0.1);
+            color: var(--secondary);
+            border: 1px solid rgba(46, 80, 144, 0.2);
+        }
+
+        .payment-mobile {
+            background: rgba(33, 150, 243, 0.1);
+            color: var(--info);
+            border: 1px solid rgba(33, 150, 243, 0.2);
         }
 
         .sale-total {
             font-weight: 700;
             color: var(--success);
+            font-size: 15px;
         }
 
         /* Inventory Page */
@@ -538,6 +683,7 @@
         .inventory-controls {
             display: flex;
             gap: 0.5rem;
+            flex-wrap: wrap;
         }
 
         .table-container {
@@ -546,47 +692,63 @@
             background: var(--bg-card);
             border: 1px solid var(--border);
             border-radius: 12px;
+            -webkit-overflow-scrolling: touch;
         }
 
         .table {
             width: 100%;
             border-collapse: collapse;
+            min-width: 600px;
         }
 
         .table th {
             background: var(--bg-tertiary);
-            padding: 0.75rem;
+            padding: 0.75rem 1rem;
             text-align: left;
             font-weight: 600;
             font-size: 12px;
+            color: var(--text-primary);
             border-bottom: 1px solid var(--border);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            position: sticky;
+            top: 0;
         }
 
         .table td {
-            padding: 0.75rem;
-            border-bottom: 1px solid var(--border-light);
+            padding: 0.75rem 1rem;
+            border-bottom: 1px solid var(--border);
+            font-size: 14px;
+        }
+
+        .table tr:hover td {
+            background: var(--bg-tertiary);
         }
 
         .stock-badge {
-            padding: 0.25rem 0.5rem;
-            border-radius: 4px;
+            padding: 0.25rem 0.75rem;
+            border-radius: 20px;
             font-size: 12px;
             font-weight: 600;
+            display: inline-block;
         }
 
         .stock-ok {
-            background: rgba(16, 185, 129, 0.1);
+            background: rgba(0, 168, 89, 0.1);
             color: var(--success);
+            border: 1px solid rgba(0, 168, 89, 0.2);
         }
 
         .stock-low {
-            background: rgba(245, 158, 11, 0.1);
+            background: rgba(255, 152, 0, 0.1);
             color: var(--warning);
+            border: 1px solid rgba(255, 152, 0, 0.2);
         }
 
         .stock-out {
-            background: rgba(239, 68, 68, 0.1);
+            background: rgba(229, 57, 53, 0.1);
             color: var(--danger);
+            border: 1px solid rgba(229, 57, 53, 0.2);
         }
 
         /* Reports Page */
@@ -606,11 +768,13 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
+            flex-wrap: wrap;
+            gap: 1rem;
         }
 
         .kpi-grid {
             display: grid;
-            grid-template-columns: repeat(2, 1fr);
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
             gap: 1rem;
         }
 
@@ -622,28 +786,62 @@
             display: flex;
             align-items: center;
             gap: 1rem;
+            transition: transform 0.2s;
+        }
+
+        .kpi-card:hover {
+            transform: translateY(-2px);
         }
 
         .kpi-icon {
-            width: 40px;
-            height: 40px;
-            border-radius: 10px;
+            width: 48px;
+            height: 48px;
+            border-radius: 12px;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 18px;
-            background: var(--primary);
-            color: white;
+            font-size: 20px;
+            flex-shrink: 0;
+        }
+
+        .kpi-icon.primary {
+            background: linear-gradient(135deg, rgba(0, 104, 55, 0.1), rgba(0, 168, 89, 0.05));
+            color: var(--primary);
+        }
+
+        .kpi-icon.success {
+            background: linear-gradient(135deg, rgba(0, 168, 89, 0.1), rgba(0, 200, 83, 0.05));
+            color: var(--success);
+        }
+
+        .kpi-icon.warning {
+            background: linear-gradient(135deg, rgba(255, 152, 0, 0.1), rgba(255, 179, 0, 0.05));
+            color: var(--warning);
+        }
+
+        .kpi-icon.danger {
+            background: linear-gradient(135deg, rgba(229, 57, 53, 0.1), rgba(244, 67, 54, 0.05));
+            color: var(--danger);
+        }
+
+        .kpi-content {
+            flex: 1;
         }
 
         .kpi-value {
-            font-size: 18px;
+            font-size: 20px;
             font-weight: 700;
+            color: var(--text-primary);
+            line-height: 1.2;
         }
 
         .kpi-label {
             font-size: 12px;
             color: var(--text-tertiary);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            font-weight: 600;
+            margin-top: 2px;
         }
 
         .chart-container {
@@ -651,14 +849,44 @@
             border: 1px solid var(--border);
             border-radius: 12px;
             padding: 1rem;
-            height: 300px;
+            min-height: 300px;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .chart-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+
+        .chart-title {
+            font-weight: 600;
+            font-size: 16px;
+            color: var(--text-primary);
+        }
+
+        .chart-wrapper {
+            flex: 1;
+            position: relative;
         }
 
         /* Settings Page */
         .settings-page {
             flex: 1;
             padding: 1rem;
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
             overflow-y: auto;
+        }
+
+        .settings-container {
+            flex: 1;
+            overflow-y: auto;
+            -webkit-overflow-scrolling: touch;
+            padding-bottom: 1rem;
         }
 
         .settings-section {
@@ -668,6 +896,7 @@
         .section-title {
             font-weight: 600;
             font-size: 16px;
+            color: var(--text-primary);
             margin-bottom: 1rem;
             display: flex;
             align-items: center;
@@ -678,25 +907,38 @@
             background: var(--bg-card);
             border: 1px solid var(--border);
             border-radius: 12px;
-            padding: 1rem;
+            padding: 1.5rem;
         }
 
         .theme-selector {
             display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 0.75rem;
+            grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+            gap: 1rem;
         }
 
         .theme-option {
-            padding: 1rem;
+            padding: 1.5rem;
             border: 2px solid var(--border);
-            border-radius: 10px;
+            border-radius: 12px;
             cursor: pointer;
             text-align: center;
+            transition: all 0.2s;
+            background: var(--bg-secondary);
+        }
+
+        .theme-option:hover {
+            border-color: var(--primary);
+            transform: translateY(-2px);
         }
 
         .theme-option.active {
             border-color: var(--primary);
+            background: linear-gradient(135deg, rgba(0, 104, 55, 0.1), rgba(0, 168, 89, 0.05));
+        }
+
+        .theme-option i {
+            font-size: 32px;
+            margin-bottom: 0.75rem;
         }
 
         /* Cart */
@@ -707,16 +949,22 @@
             width: 60px;
             height: 60px;
             border-radius: 50%;
-            background: var(--primary);
+            background: linear-gradient(135deg, var(--primary), var(--primary-light));
             color: white;
             border: none;
             cursor: pointer;
-            box-shadow: var(--shadow);
+            box-shadow: 0 8px 30px rgba(0, 104, 55, 0.3);
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 20px;
-            z-index: 100;
+            font-size: 22px;
+            z-index: 90;
+            transition: all 0.3s;
+        }
+
+        .floating-cart-btn:hover {
+            transform: scale(1.1);
+            box-shadow: 0 12px 40px rgba(0, 104, 55, 0.4);
         }
 
         .cart-badge {
@@ -726,13 +974,14 @@
             background: var(--danger);
             color: white;
             border-radius: 50%;
-            width: 22px;
-            height: 22px;
+            width: 24px;
+            height: 24px;
             font-size: 12px;
             font-weight: 700;
             display: flex;
             align-items: center;
             justify-content: center;
+            border: 2px solid var(--bg-card);
         }
 
         .cart-drawer {
@@ -740,14 +989,16 @@
             bottom: var(--bottom-nav-height);
             left: 0;
             right: 0;
-            height: 60vh;
+            height: 65vh;
             background: var(--bg-card);
             border-top: 1px solid var(--border);
             transform: translateY(100%);
-            transition: transform 0.3s;
+            transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
             display: flex;
             flex-direction: column;
-            z-index: 99;
+            z-index: 95;
+            box-shadow: 0 -20px 60px rgba(0, 0, 0, 0.2);
+            border-radius: 20px 20px 0 0;
         }
 
         .cart-drawer.open {
@@ -755,26 +1006,34 @@
         }
 
         .cart-header {
-            padding: 1rem;
+            padding: 1.25rem 1.5rem;
             border-bottom: 1px solid var(--border);
             display: flex;
             justify-content: space-between;
             align-items: center;
+            flex-shrink: 0;
         }
 
         .cart-items-container {
             flex: 1;
             overflow-y: auto;
+            -webkit-overflow-scrolling: touch;
             padding: 1rem;
+        }
+
+        .cart-items {
+            display: flex;
+            flex-direction: column;
+            gap: 0.75rem;
         }
 
         .cart-item {
             display: flex;
             align-items: center;
-            padding: 0.75rem;
+            padding: 1rem;
             background: var(--bg-tertiary);
-            border-radius: 8px;
-            margin-bottom: 0.5rem;
+            border-radius: 12px;
+            border: 1px solid var(--border);
             gap: 1rem;
         }
 
@@ -784,13 +1043,29 @@
 
         .cart-item-name {
             font-weight: 600;
+            color: var(--text-primary);
             margin-bottom: 0.25rem;
+        }
+
+        .cart-item-price {
+            font-size: 13px;
+            color: var(--text-tertiary);
+        }
+
+        .cart-item-actions {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
         }
 
         .quantity-control {
             display: flex;
             align-items: center;
             gap: 0.75rem;
+            background: var(--bg-secondary);
+            padding: 0.5rem;
+            border-radius: 8px;
+            border: 1px solid var(--border);
         }
 
         .quantity-btn {
@@ -798,37 +1073,59 @@
             height: 28px;
             border-radius: 6px;
             border: 1px solid var(--border);
-            background: var(--bg-secondary);
+            background: var(--bg-card);
+            color: var(--text-primary);
             cursor: pointer;
             display: flex;
             align-items: center;
             justify-content: center;
+            font-weight: 600;
+            transition: all 0.2s;
+        }
+
+        .quantity-btn:active {
+            background: var(--bg-tertiary);
+            transform: scale(0.95);
+        }
+
+        .quantity-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
         }
 
         .cart-summary {
-            padding: 1rem;
+            padding: 1.25rem 1.5rem;
             border-top: 1px solid var(--border);
+            flex-shrink: 0;
         }
 
         .summary-row {
             display: flex;
             justify-content: space-between;
-            margin-bottom: 0.5rem;
+            align-items: center;
+            margin-bottom: 0.75rem;
+            font-size: 14px;
+        }
+
+        .summary-row:last-child {
+            margin-bottom: 0;
         }
 
         .summary-row.total {
             font-weight: 700;
             font-size: 18px;
-            margin-top: 0.5rem;
-            padding-top: 0.5rem;
+            color: var(--text-primary);
+            margin-top: 0.75rem;
+            padding-top: 0.75rem;
             border-top: 1px solid var(--border);
         }
 
         .cart-actions {
-            padding: 1rem;
+            padding: 1rem 1.5rem;
             border-top: 1px solid var(--border);
+            flex-shrink: 0;
             display: flex;
-            gap: 0.5rem;
+            gap: 0.75rem;
         }
 
         /* Modals */
@@ -839,91 +1136,211 @@
             right: 0;
             bottom: 0;
             background: rgba(0, 0, 0, 0.5);
+            backdrop-filter: blur(4px);
             display: flex;
             align-items: center;
             justify-content: center;
             z-index: 1000;
             padding: 1rem;
+            animation: fadeIn 0.3s ease;
         }
 
         .modal-content {
             background: var(--bg-card);
-            border-radius: 16px;
+            border-radius: 20px;
             width: 100%;
             max-width: 500px;
             max-height: 80vh;
             overflow: hidden;
             display: flex;
             flex-direction: column;
+            animation: slideUp 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            border: 1px solid var(--border);
+        }
+
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(50px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
         }
 
         .modal-header {
-            padding: 1rem;
+            padding: 1.25rem 1.5rem;
             border-bottom: 1px solid var(--border);
             display: flex;
             justify-content: space-between;
             align-items: center;
+            flex-shrink: 0;
         }
 
         .modal-body {
             flex: 1;
             overflow-y: auto;
-            padding: 1rem;
+            -webkit-overflow-scrolling: touch;
+            padding: 1.5rem;
         }
 
         .modal-footer {
-            padding: 1rem;
+            padding: 1.25rem 1.5rem;
             border-top: 1px solid var(--border);
             display: flex;
-            gap: 0.5rem;
+            gap: 0.75rem;
+            flex-shrink: 0;
         }
 
         .payment-methods {
             display: grid;
             grid-template-columns: repeat(3, 1fr);
-            gap: 0.5rem;
-            margin-bottom: 1rem;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
         }
 
         .payment-method {
-            padding: 1rem;
+            padding: 1.5rem 1rem;
             border: 2px solid var(--border);
-            border-radius: 10px;
+            border-radius: 12px;
             cursor: pointer;
             text-align: center;
+            transition: all 0.2s;
+            background: var(--bg-secondary);
+        }
+
+        .payment-method:hover {
+            border-color: var(--primary);
+            transform: translateY(-2px);
         }
 
         .payment-method.active {
             border-color: var(--primary);
+            background: linear-gradient(135deg, rgba(0, 104, 55, 0.1), rgba(0, 168, 89, 0.05));
+        }
+
+        .payment-method i {
+            font-size: 32px;
+            margin-bottom: 0.75rem;
         }
 
         /* Toast */
-        .toast {
+        .toast-container {
             position: fixed;
             top: 1rem;
             right: 1rem;
+            z-index: 1001;
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+            max-width: 350px;
+        }
+
+        .toast {
             background: var(--bg-card);
             border-left: 4px solid var(--primary);
-            border-radius: 8px;
+            border-radius: 12px;
             padding: 1rem;
             box-shadow: var(--shadow);
-            z-index: 1001;
-            max-width: 300px;
             display: flex;
             align-items: center;
-            gap: 0.75rem;
+            gap: 1rem;
+            animation: slideInRight 0.3s ease;
+            border: 1px solid var(--border);
+        }
+
+        @keyframes slideInRight {
+            from {
+                opacity: 0;
+                transform: translateX(100%);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        .toast.hiding {
+            animation: slideOutRight 0.3s ease forwards;
+        }
+
+        @keyframes slideOutRight {
+            from {
+                opacity: 1;
+                transform: translateX(0);
+            }
+            to {
+                opacity: 0;
+                transform: translateX(100%);
+            }
         }
 
         .toast.success {
-            border-color: var(--success);
+            border-left-color: var(--success);
         }
 
         .toast.error {
-            border-color: var(--danger);
+            border-left-color: var(--danger);
         }
 
         .toast.warning {
-            border-color: var(--warning);
+            border-left-color: var(--warning);
+        }
+
+        .toast.info {
+            border-left-color: var(--info);
+        }
+
+        .toast-icon {
+            font-size: 20px;
+            flex-shrink: 0;
+        }
+
+        .toast.success .toast-icon {
+            color: var(--success);
+        }
+
+        .toast.error .toast-icon {
+            color: var(--danger);
+        }
+
+        .toast.warning .toast-icon {
+            color: var(--warning);
+        }
+
+        .toast.info .toast-icon {
+            color: var(--info);
+        }
+
+        .toast-content {
+            flex: 1;
+        }
+
+        .toast-title {
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: 2px;
+        }
+
+        .toast-message {
+            font-size: 13px;
+            color: var(--text-secondary);
+        }
+
+        .toast-close {
+            background: none;
+            border: none;
+            color: var(--text-tertiary);
+            cursor: pointer;
+            padding: 0.25rem;
+            border-radius: 6px;
+            transition: all 0.2s;
+        }
+
+        .toast-close:hover {
+            background: var(--bg-tertiary);
+            color: var(--text-primary);
         }
 
         /* Empty State */
@@ -964,11 +1381,105 @@
             height: 6px;
         }
 
+        ::-webkit-scrollbar-track {
+            background: transparent;
+        }
+
         ::-webkit-scrollbar-thumb {
             background: var(--border);
             border-radius: 3px;
         }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: var(--text-tertiary);
+        }
+
+        /* Touch optimizations */
+        @media (hover: none) and (pointer: coarse) {
+            .btn:hover {
+                transform: none;
+            }
+            
+            .btn:active {
+                transform: scale(0.98);
+            }
+            
+            .product-card:hover {
+                transform: none;
+            }
+            
+            .product-card:active {
+                transform: scale(0.98);
+            }
+            
+            input, select, textarea {
+                font-size: 16px;
+            }
+            
+            .btn {
+                min-height: 48px;
+            }
+            
+            .floating-cart-btn:hover {
+                transform: none;
+            }
+            
+            .floating-cart-btn:active {
+                transform: scale(0.95);
+            }
+        }
+
+        /* Responsive */
+        @media (max-width: 640px) {
+            .sales-stats {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            
+            .kpi-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .payment-methods {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            
+            .theme-selector {
+                grid-template-columns: 1fr;
+            }
+            
+            .products-grid {
+                grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+            }
+            
+            .history-filters {
+                flex-direction: column;
+            }
+            
+            .inventory-controls {
+                flex-direction: column;
+            }
+            
+            .modal-footer {
+                flex-direction: column;
+            }
+            
+            .cart-actions {
+                flex-direction: column;
+            }
+        }
+
+        @media (min-width: 768px) {
+            .cart-drawer {
+                width: 400px;
+                left: auto;
+                right: 1rem;
+                bottom: calc(var(--bottom-nav-height) + 1rem);
+                border-radius: 20px;
+                height: 70vh;
+            }
+        }
     </style>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
 <body>
     <div id="app">
@@ -977,32 +1488,38 @@
             <div class="login-container">
                 <div class="login-header">
                     <h1><i class="fas fa-store"></i> Tanzania POS</h1>
-                    <p>Retail Management System</p>
+                    <p>Duka Management System</p>
                 </div>
                 
                 <div class="login-form">
                     <div class="form-group">
-                        <label class="form-label">Username</label>
-                        <input type="text" id="loginUsername" class="form-control" placeholder="Enter username" value="admin">
+                        <label class="form-label">Jina la Mtumiaji</label>
+                        <input type="text" id="loginUsername" class="form-control" placeholder="Weka jina la mtumiaji" value="admin">
                     </div>
                     
                     <div class="form-group">
-                        <label class="form-label">Password</label>
-                        <input type="password" id="loginPassword" class="form-control" placeholder="Enter password" value="admin123">
+                        <label class="form-label">Nenosiri</label>
+                        <input type="password" id="loginPassword" class="form-control" placeholder="Weka nenosiri" value="admin123">
                     </div>
                     
                     <div class="form-group">
-                        <label class="form-label">Role</label>
+                        <label class="form-label">Wadhifa</label>
                         <select id="loginRole" class="form-control">
                             <option value="cashier">Cashier</option>
                             <option value="manager">Manager</option>
-                            <option value="admin" selected>Administrator</option>
+                            <option value="admin" selected>Admin</option>
                         </select>
                     </div>
                     
                     <button id="loginBtn" class="btn btn-primary w-full">
-                        <i class="fas fa-sign-in-alt"></i> Login
+                        <i class="fas fa-sign-in-alt"></i> Ingia
                     </button>
+                    
+                    <div class="demo-credentials">
+                        <p class="font-semibold mb-1">Demo Credentials:</p>
+                        <p class="mb-1">admin / admin123 (Admin)</p>
+                        <p>cashier / cashier123 (Cashier)</p>
+                    </div>
                 </div>
             </div>
         </div>
@@ -1012,7 +1529,8 @@
             <!-- Header -->
             <header class="pos-header">
                 <div class="logo">
-                    <i class="fas fa-store"></i> Tanzania POS
+                    <i class="fas fa-store"></i>
+                    <span>Tanzania POS</span>
                 </div>
                 
                 <div class="datetime" id="datetime">
@@ -1027,7 +1545,8 @@
 
             <!-- Main Content -->
             <main class="main-content">
-                <div class="page active" id="salesPage">
+                <!-- Sales Page -->
+                <div id="salesPage" class="page active">
                     <div class="sales-page">
                         <div class="sales-stats">
                             <div class="stat-card-mini">
@@ -1050,9 +1569,12 @@
                         
                         <div class="search-container">
                             <input type="text" id="productSearch" class="search-input" 
-                                   placeholder="Tafuta bidhaa...">
+                                   placeholder="🔍 Tafuta bidhaa...">
                             <button id="scanBtn" class="btn btn-primary btn-icon">
                                 <i class="fas fa-barcode"></i>
+                            </button>
+                            <button id="quickSaleBtn" class="btn btn-success">
+                                <i class="fas fa-bolt"></i> Haraka
                             </button>
                         </div>
                         
@@ -1070,13 +1592,17 @@
                     </div>
                 </div>
 
-                <div class="page" id="historyPage">
+                <!-- History Page -->
+                <div id="historyPage" class="page">
                     <div class="history-page">
                         <div class="history-header">
                             <h2 class="text-lg font-semibold"><i class="fas fa-history"></i> Historia ya Mauzo</h2>
                             <div class="flex gap-2">
                                 <button id="exportHistoryBtn" class="btn btn-primary btn-sm">
                                     <i class="fas fa-download"></i> Pakua
+                                </button>
+                                <button id="printReportBtn" class="btn btn-outline btn-sm">
+                                    <i class="fas fa-print"></i> Print
                                 </button>
                             </div>
                         </div>
@@ -1087,8 +1613,25 @@
                                 <option value="yesterday">Jana</option>
                                 <option value="week">Wiki hii</option>
                                 <option value="month">Mwezi huu</option>
+                                <option value="year">Mwaka huu</option>
+                                <option value="all">Wakati wote</option>
                             </select>
-                            <input type="text" id="historySearch" class="form-control" placeholder="Tafuta...">
+                            
+                            <select id="historyPaymentMethod" class="form-control">
+                                <option value="all">Njia zote</option>
+                                <option value="cash">Pesa Taslimu</option>
+                                <option value="card">Kadi</option>
+                                <option value="mobile">M-Pesa</option>
+                            </select>
+                            
+                            <input type="text" id="historySearch" class="form-control" placeholder="Tafuta mauzo...">
+                            
+                            <select id="historySort" class="form-control">
+                                <option value="newest">Mpya zaidi</option>
+                                <option value="oldest">Zamani zaidi</option>
+                                <option value="highest">Kubwa zaidi</option>
+                                <option value="lowest">Ndogo zaidi</option>
+                            </select>
                         </div>
                         
                         <div class="history-table-container">
@@ -1101,6 +1644,7 @@
                                         <th>Mshahara</th>
                                         <th>Malipo</th>
                                         <th>Jumla</th>
+                                        <th>Vitendo</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -1111,11 +1655,15 @@
                     </div>
                 </div>
 
-                <div class="page" id="inventoryPage">
+                <!-- Inventory Page -->
+                <div id="inventoryPage" class="page">
                     <div class="inventory-page">
                         <div class="inventory-header">
                             <h2 class="text-lg font-semibold"><i class="fas fa-boxes"></i> Usimamizi wa Bidhaa</h2>
                             <div class="flex gap-2">
+                                <button id="bulkImportBtn" class="btn btn-outline btn-sm">
+                                    <i class="fas fa-file-import"></i> Ingiza
+                                </button>
                                 <button id="addProductBtn" class="btn btn-primary btn-sm">
                                     <i class="fas fa-plus"></i> Ongeza
                                 </button>
@@ -1126,9 +1674,20 @@
                             <input type="text" id="inventorySearch" class="form-control" 
                                    placeholder="Tafuta bidhaa...">
                             <select id="inventoryFilter" class="form-control">
-                                <option value="all">Zote</option>
+                                <option value="all">Bidhaa zote</option>
                                 <option value="low">Chini</option>
                                 <option value="out">Imekwisha</option>
+                                <option value="needReorder">Haja ya Kujaza</option>
+                                <option value="bestSellers">Inauzwa Zaidi</option>
+                            </select>
+                            
+                            <select id="inventorySort" class="form-control">
+                                <option value="name">Jina (A-Z)</option>
+                                <option value="name_desc">Jina (Z-A)</option>
+                                <option value="stock_asc">Hisabu (Chini-High)</option>
+                                <option value="stock_desc">Hisabu (High-Chini)</option>
+                                <option value="price_asc">Bei (Chini-High)</option>
+                                <option value="price_desc">Bei (High-Chini)</option>
                             </select>
                         </div>
                         
@@ -1152,142 +1711,217 @@
                     </div>
                 </div>
 
-                <div class="page" id="reportsPage">
+                <!-- Reports Page -->
+                <div id="reportsPage" class="page">
                     <div class="reports-page">
                         <div class="reports-header">
-                            <h2 class="text-lg font-semibold"><i class="fas fa-chart-bar"></i> Taarifa</h2>
-                            <select id="reportPeriod" class="form-control">
-                                <option value="today">Leo</option>
-                                <option value="week">Wiki hii</option>
-                                <option value="month">Mwezi huu</option>
-                                <option value="year">Mwaka huu</option>
-                            </select>
+                            <h2 class="text-lg font-semibold"><i class="fas fa-chart-bar"></i> Taarifa za Uchambuzi</h2>
+                            <div class="flex gap-2">
+                                <select id="reportPeriod" class="form-control">
+                                    <option value="today">Leo</option>
+                                    <option value="yesterday">Jana</option>
+                                    <option value="week">Wiki hii</option>
+                                    <option value="month">Mwezi huu</option>
+                                    <option value="quarter">Robo hii</option>
+                                    <option value="year">Mwaka huu</option>
+                                </select>
+                            </div>
                         </div>
                         
                         <div class="kpi-grid">
                             <div class="kpi-card">
-                                <div class="kpi-icon">
-                                    <i class="fas fa-money-bill-wave"></i>
+                                <div class="kpi-icon primary">
+                                    <i class="fas fa-chart-line"></i>
                                 </div>
                                 <div class="kpi-content">
                                     <div class="kpi-value" id="reportTotalRevenue">TZS 0</div>
                                     <div class="kpi-label">Mapato</div>
+                                    <div class="text-sm text-tertiary" id="revenueGrowth">
+                                        <i class="fas fa-arrow-up text-success"></i> 0%
+                                    </div>
                                 </div>
                             </div>
                             
                             <div class="kpi-card">
-                                <div class="kpi-icon">
+                                <div class="kpi-icon success">
                                     <i class="fas fa-shopping-cart"></i>
                                 </div>
                                 <div class="kpi-content">
                                     <div class="kpi-value" id="reportTotalSales">0</div>
                                     <div class="kpi-label">Mauzo</div>
+                                    <div class="text-sm text-tertiary" id="salesGrowth">
+                                        <i class="fas fa-arrow-up text-success"></i> 0%
+                                    </div>
                                 </div>
                             </div>
                             
                             <div class="kpi-card">
-                                <div class="kpi-icon">
+                                <div class="kpi-icon warning">
                                     <i class="fas fa-box"></i>
                                 </div>
                                 <div class="kpi-content">
                                     <div class="kpi-value" id="reportAvgTransaction">TZS 0</div>
                                     <div class="kpi-label">Wastani</div>
+                                    <div class="text-sm text-tertiary" id="avgTransactionGrowth">
+                                        <i class="fas fa-arrow-up text-success"></i> 0%
+                                    </div>
                                 </div>
                             </div>
                             
                             <div class="kpi-card">
-                                <div class="kpi-icon">
-                                    <i class="fas fa-chart-line"></i>
+                                <div class="kpi-icon danger">
+                                    <i class="fas fa-users"></i>
                                 </div>
                                 <div class="kpi-content">
                                     <div class="kpi-value" id="reportTopProduct">-</div>
                                     <div class="kpi-label">Inauzwa Zaidi</div>
+                                    <div class="text-sm text-tertiary">
+                                        <i class="fas fa-crown text-warning"></i> #1
+                                    </div>
                                 </div>
                             </div>
                         </div>
                         
                         <div class="chart-container">
-                            <canvas id="salesChart"></canvas>
+                            <div class="chart-header">
+                                <h3 class="chart-title">Utendaji wa Mauzo</h3>
+                            </div>
+                            <div class="chart-wrapper">
+                                <canvas id="salesChart"></canvas>
+                            </div>
                         </div>
                     </div>
                 </div>
 
-                <div class="page" id="settingsPage">
+                <!-- Settings Page -->
+                <div id="settingsPage" class="page">
                     <div class="settings-page">
-                        <div class="settings-section">
-                            <h3 class="section-title">
-                                <i class="fas fa-store"></i>
-                                Maelezo ya Duka
-                            </h3>
-                            <div class="glass-card">
-                                <div class="form-group mb-3">
-                                    <label class="form-label">Jina la Duka</label>
-                                    <input type="text" id="storeName" class="form-control" value="Duka La Tanzania">
-                                </div>
-                                
-                                <div class="form-group mb-3">
-                                    <label class="form-label>Kiwango cha Kodi (%)</label>
-                                    <input type="number" id="taxRate" class="form-control" value="18" min="0" max="100">
-                                </div>
-                                
-                                <div class="form-group mb-3">
-                                    <label class="form-label>Anwani</label>
-                                    <textarea id="storeAddress" class="form-control" rows="2" placeholder="Anwani ya duka..."></textarea>
-                                </div>
-                            </div>
-                        </div>
-                        
-                        <div class="settings-section">
-                            <h3 class="section-title">
-                                <i class="fas fa-palette"></i>
-                                Muonekano
-                            </h3>
-                            <div class="glass-card">
-                                <div class="theme-selector">
-                                    <div class="theme-option active" data-theme="light">
-                                        <i class="fas fa-sun"></i>
-                                        <div>Mwanga</div>
+                        <div class="settings-container">
+                            <div class="settings-section">
+                                <h3 class="section-title">
+                                    <i class="fas fa-store"></i>
+                                    Maelezo ya Duka
+                                </h3>
+                                <div class="glass-card">
+                                    <div class="grid grid-cols-2 gap-4 mb-4">
+                                        <div class="form-group">
+                                            <label class="form-label">Jina la Duka *</label>
+                                            <input type="text" id="storeName" class="form-control" value="Duka La Tanzania">
+                                        </div>
+                                        
+                                        <div class="form-group">
+                                            <label class="form-label">Kodi (%) *</label>
+                                            <input type="number" id="taxRate" class="form-control" value="18" min="0" max="100" step="0.1">
+                                        </div>
                                     </div>
                                     
-                                    <div class="theme-option" data-theme="dark">
-                                        <i class="fas fa-moon"></i>
-                                        <div>Giza</div>
+                                    <div class="grid grid-cols-2 gap-4 mb-4">
+                                        <div class="form-group">
+                                            <label class="form-label">Namba ya Simu</label>
+                                            <input type="tel" id="storePhone" class="form-control" placeholder="+255 123 456 789">
+                                        </div>
+                                        
+                                        <div class="form-group">
+                                            <label class="form-label">Barua Pepe</label>
+                                            <input type="email" id="storeEmail" class="form-control" placeholder="duka@example.com">
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="form-group mb-4">
+                                        <label class="form-label">Anwani</label>
+                                        <textarea id="storeAddress" class="form-control" rows="3" placeholder="123 Mtaa Kuu, Jiji, Tanzania"></textarea>
+                                    </div>
+                                    
+                                    <div class="form-group">
+                                        <label class="form-label">Kiunga cha Risiti</label>
+                                        <textarea id="receiptFooter" class="form-control" rows="2" placeholder="Asante kwa kununua!"></textarea>
                                     </div>
                                 </div>
                             </div>
-                        </div>
-                        
-                        <div class="settings-section">
-                            <h3 class="section-title">
-                                <i class="fas fa-database"></i>
-                                Usimamizi wa Data
-                            </h3>
-                            <div class="glass-card">
-                                <div class="grid grid-cols-2 gap-3 mb-3">
-                                    <button id="backupBtn" class="btn btn-outline">
-                                        <i class="fas fa-download"></i> Hifadhi
-                                    </button>
-                                    
-                                    <button id="restoreBtn" class="btn btn-outline">
-                                        <i class="fas fa-upload"></i> Rejesha
-                                    </button>
+                            
+                            <div class="settings-section">
+                                <h3 class="section-title">
+                                    <i class="fas fa-palette"></i>
+                                    Muonekano
+                                </h3>
+                                <div class="glass-card">
+                                    <div class="theme-selector">
+                                        <div class="theme-option active" data-theme="light">
+                                            <i class="fas fa-sun"></i>
+                                            <div class="font-semibold mb-1">Mwanga</div>
+                                            <div class="text-sm text-tertiary">Muonekano safi</div>
+                                        </div>
+                                        
+                                        <div class="theme-option" data-theme="dark">
+                                            <i class="fas fa-moon"></i>
+                                            <div class="font-semibold mb-1">Giza</div>
+                                            <div class="text-sm text-tertiary">Usikinzani mdogo</div>
+                                        </div>
+                                    </div>
                                 </div>
-                                
-                                <button id="resetDataBtn" class="btn btn-danger w-full">
-                                    <i class="fas fa-trash"></i> Futa Data Zote
-                                </button>
                             </div>
-                        </div>
-                        
-                        <div class="settings-section">
-                            <h3 class="section-title">
-                                <i class="fas fa-user-cog"></i>
-                                Akaunti
-                            </h3>
-                            <div class="glass-card">
-                                <button id="logoutBtn" class="btn btn-danger w-full">
-                                    <i class="fas fa-sign-out-alt"></i> Toka
-                                </button>
+                            
+                            <div class="settings-section">
+                                <h3 class="section-title">
+                                    <i class="fas fa-database"></i>
+                                    Usimamizi wa Data
+                                </h3>
+                                <div class="glass-card">
+                                    <div class="grid grid-cols-2 gap-4 mb-4">
+                                        <button id="backupBtn" class="btn btn-outline">
+                                            <i class="fas fa-download"></i> Hifadhi Data
+                                        </button>
+                                        
+                                        <button id="restoreBtn" class="btn btn-outline">
+                                            <i class="fas fa-upload"></i> Rejesha Data
+                                        </button>
+                                    </div>
+                                    
+                                    <div class="grid grid-cols-2 gap-4 mb-4">
+                                        <button id="exportDataBtn" class="btn btn-outline">
+                                            <i class="fas fa-file-export"></i> Pakua Zote
+                                        </button>
+                                        
+                                        <button id="importDataBtn" class="btn btn-outline">
+                                            <i class="fas fa-file-import"></i> Ingiza Data
+                                        </button>
+                                    </div>
+                                    
+                                    <div class="mt-4">
+                                        <button id="resetDataBtn" class="btn btn-danger w-full">
+                                            <i class="fas fa-trash"></i> Futa Data Zote
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="settings-section">
+                                <h3 class="section-title">
+                                    <i class="fas fa-user-cog"></i>
+                                    Akaunti
+                                </h3>
+                                <div class="glass-card">
+                                    <div class="flex flex-col gap-4">
+                                        <button id="changePasswordBtn" class="btn btn-outline">
+                                            <i class="fas fa-key"></i> Badilisha Nenosiri
+                                        </button>
+                                        
+                                        <button id="logoutBtn" class="btn btn-danger">
+                                            <i class="fas fa-sign-out-alt"></i> Toka
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="settings-section">
+                                <div class="glass-card text-center">
+                                    <div class="text-sm text-tertiary mb-2">
+                                        Tanzania POS v1.0.0
+                                    </div>
+                                    <div class="text-xs text-muted">
+                                        © 2024 Tanzania POS Solutions. Haki zote zimehifadhiwa.
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -1298,27 +1932,27 @@
             <nav class="bottom-nav">
                 <button class="nav-item active" data-page="sales">
                     <i class="fas fa-shopping-cart nav-icon"></i>
-                    <span>Mauzo</span>
+                    <span class="nav-label">Mauzo</span>
                 </button>
                 
                 <button class="nav-item" data-page="history">
                     <i class="fas fa-history nav-icon"></i>
-                    <span>Historia</span>
+                    <span class="nav-label">Historia</span>
                 </button>
                 
                 <button class="nav-item" data-page="inventory">
                     <i class="fas fa-boxes nav-icon"></i>
-                    <span>Bidhaa</span>
+                    <span class="nav-label">Bidhaa</span>
                 </button>
                 
                 <button class="nav-item" data-page="reports">
                     <i class="fas fa-chart-bar nav-icon"></i>
-                    <span>Taarifa</span>
+                    <span class="nav-label">Taarifa</span>
                 </button>
                 
                 <button class="nav-item" data-page="settings">
                     <i class="fas fa-cog nav-icon"></i>
-                    <span>Mipangilio</span>
+                    <span class="nav-label">Mipangilio</span>
                 </button>
             </nav>
 
@@ -1331,21 +1965,26 @@
             <!-- Cart Drawer -->
             <div id="cartDrawer" class="cart-drawer">
                 <div class="cart-header">
-                    <h2 class="font-semibold"><i class="fas fa-shopping-cart"></i> Kasha</h2>
+                    <h2 class="font-semibold text-lg"><i class="fas fa-shopping-cart"></i> Kasha</h2>
                     <div class="flex gap-2">
+                        <button id="saveCartBtn" class="btn btn-outline btn-sm">
+                            <i class="fas fa-save"></i> Hifadhi
+                        </button>
                         <button id="clearCartBtn" class="btn btn-danger btn-sm">
                             <i class="fas fa-trash"></i> Futa
                         </button>
                     </div>
                 </div>
                 
-                <div class="cart-items-container" id="cartItems">
-                    <!-- Cart items will be loaded here -->
+                <div class="cart-items-container">
+                    <div class="cart-items" id="cartItems">
+                        <!-- Cart items will be loaded here -->
+                    </div>
                 </div>
                 
                 <div class="cart-summary">
                     <div class="summary-row">
-                        <span>Jumla:</span>
+                        <span>Jumla ya Kiasi:</span>
                         <span id="cartSubtotal">TZS 0</span>
                     </div>
                     
@@ -1361,8 +2000,11 @@
                 </div>
                 
                 <div class="cart-actions">
-                    <button id="checkoutBtn" class="btn btn-success w-full">
-                        <i class="fas fa-credit-card"></i> Lipa Sasa
+                    <button id="holdCartBtn" class="btn btn-outline flex-1">
+                        <i class="fas fa-pause"></i> Simamisha
+                    </button>
+                    <button id="checkoutBtn" class="btn btn-success flex-1">
+                        <i class="fas fa-credit-card"></i> Lipa
                     </button>
                 </div>
             </div>
@@ -1372,7 +2014,7 @@
         <div id="paymentModal" class="modal-overlay hidden">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h3 class="font-semibold"><i class="fas fa-credit-card"></i> Malipo</h3>
+                    <h3 class="font-semibold text-lg"><i class="fas fa-credit-card"></i> Malipo</h3>
                     <button id="closePaymentModal" class="btn btn-icon btn-sm">
                         <i class="fas fa-times"></i>
                     </button>
@@ -1382,42 +2024,52 @@
                     <div class="payment-methods">
                         <div class="payment-method active" data-method="cash">
                             <i class="fas fa-money-bill-wave"></i>
-                            <div>Pesa Taslimu</div>
+                            <div class="font-semibold">Pesa Taslimu</div>
                         </div>
                         
                         <div class="payment-method" data-method="card">
                             <i class="fas fa-credit-card"></i>
-                            <div>Kadi</div>
+                            <div class="font-semibold">Kadi</div>
                         </div>
                         
                         <div class="payment-method" data-method="mobile">
                             <i class="fas fa-mobile-alt"></i>
-                            <div>M-Pesa</div>
+                            <div class="font-semibold">M-Pesa</div>
                         </div>
                     </div>
                     
-                    <div class="form-group mb-3">
-                        <label class="form-label">Kiasi Kilichotolewa</label>
-                        <input type="number" id="amountTendered" class="form-control" placeholder="0.00" min="0">
-                    </div>
-                    
-                    <div class="summary-row mb-2">
-                        <span>Jumla ya Kulipa:</span>
-                        <span id="paymentTotal">TZS 0</span>
-                    </div>
-                    
-                    <div class="summary-row mb-3">
-                        <span>Rudisha:</span>
-                        <span id="paymentChange">TZS 0</span>
+                    <div class="mt-6">
+                        <div class="form-group">
+                            <label class="form-label">Kiasi Kilichotolewa</label>
+                            <input type="number" id="amountTendered" class="form-control" 
+                                   placeholder="0.00" step="0.01" min="0">
+                        </div>
+                        
+                        <div class="summary-row mb-2">
+                            <span>Jumla ya Kulipa:</span>
+                            <span class="font-semibold" id="paymentTotal">TZS 0</span>
+                        </div>
+                        
+                        <div class="summary-row mb-4">
+                            <span>Rudisha:</span>
+                            <span class="font-semibold text-success" id="paymentChange">TZS 0</span>
+                        </div>
+                        
+                        <div class="grid grid-cols-4 gap-2 mb-4" id="quickAmounts">
+                            <button class="btn btn-outline btn-sm" data-amount="1000">TZS 1K</button>
+                            <button class="btn btn-outline btn-sm" data-amount="5000">TZS 5K</button>
+                            <button class="btn btn-outline btn-sm" data-amount="10000">TZS 10K</button>
+                            <button class="btn btn-outline btn-sm" data-amount="20000">TZS 20K</button>
+                        </div>
                     </div>
                 </div>
                 
                 <div class="modal-footer">
-                    <button id="cancelPaymentBtn" class="btn btn-outline">
+                    <button id="cancelPaymentBtn" class="btn btn-outline flex-1">
                         Ghairi
                     </button>
                     
-                    <button id="confirmPaymentBtn" class="btn btn-success">
+                    <button id="confirmPaymentBtn" class="btn btn-success flex-1">
                         <i class="fas fa-check"></i> Thibitisha
                     </button>
                 </div>
@@ -1428,7 +2080,7 @@
         <div id="productModal" class="modal-overlay hidden">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h3 class="font-semibold"><i class="fas fa-box"></i> Ongeza Bidhaa</h3>
+                    <h3 class="font-semibold text-lg"><i class="fas fa-box"></i> Usimamizi wa Bidhaa</h3>
                     <button id="closeProductModal" class="btn btn-icon btn-sm">
                         <i class="fas fa-times"></i>
                     </button>
@@ -1436,32 +2088,66 @@
                 
                 <div class="modal-body">
                     <form id="productForm">
-                        <div class="form-group mb-3">
-                            <label class="form-label">Jina la Bidhaa</label>
-                            <input type="text" id="productName" class="form-control" required>
-                        </div>
-                        
-                        <div class="grid grid-cols-2 gap-3 mb-3">
+                        <div class="grid grid-cols-2 gap-4 mb-4">
                             <div class="form-group">
-                                <label class="form-label">Bei (TZS)</label>
-                                <input type="number" id="productPrice" class="form-control" min="0" required>
+                                <label class="form-label">SKU *</label>
+                                <input type="text" id="productSKU" class="form-control" required>
                             </div>
                             
                             <div class="form-group">
-                                <label class="form-label">Hisabu</label>
-                                <input type="number" id="productStock" class="form-control" min="0" required>
+                                <label class="form-label">Msimbo wa Mstari</label>
+                                <input type="text" id="productBarcode" class="form-control">
                             </div>
                         </div>
                         
-                        <div class="form-group mb-3">
-                            <label class="form-label">Aina</label>
-                            <select id="productCategory" class="form-control">
-                                <option value="vyakula">Vyakula</option>
-                                <option value="vinywaji">Vinywaji</option>
-                                <option value="nyumbani">Nyumbani</option>
-                                <option value="nguo">Nguo</option>
-                                <option value="zote">Zote</option>
-                            </select>
+                        <div class="form-group mb-4">
+                            <label class="form-label">Jina la Bidhaa *</label>
+                            <input type="text" id="productName" class="form-control" required>
+                        </div>
+                        
+                        <div class="grid grid-cols-3 gap-4 mb-4">
+                            <div class="form-group">
+                                <label class="form-label">Bei *</label>
+                                <input type="number" id="productPrice" class="form-control" 
+                                       min="0" step="0.01" required>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label class="form-label">Gharama</label>
+                                <input type="number" id="productCost" class="form-control" 
+                                       min="0" step="0.01">
+                            </div>
+                            
+                            <div class="form-group">
+                                <label class="form-label">Hisabu *</label>
+                                <input type="number" id="productStock" class="form-control" 
+                                       min="0" required>
+                            </div>
+                        </div>
+                        
+                        <div class="grid grid-cols-2 gap-4 mb-4">
+                            <div class="form-group">
+                                <label class="form-label">Aina</label>
+                                <select id="productCategory" class="form-control">
+                                    <option value="general">General</option>
+                                    <option value="vyakula">Vyakula</option>
+                                    <option value="vinywaji">Vinywaji</option>
+                                    <option value="electronics">Electronics</option>
+                                    <option value="nguo">Nguo</option>
+                                    <option value="nyumbani">Nyumbani</option>
+                                </select>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label class="form-label">Kiwango cha Chini</label>
+                                <input type="number" id="productMinStock" class="form-control" 
+                                       min="0" value="10">
+                            </div>
+                        </div>
+                        
+                        <div class="form-group mb-4">
+                            <label class="form-label">Maelezo</label>
+                            <textarea id="productDescription" class="form-control" rows="3"></textarea>
                         </div>
                     </form>
                 </div>
@@ -1472,16 +2158,17 @@
                     </button>
                     
                     <button id="saveProductBtn" class="btn btn-primary">
-                        <i class="fas fa-save"></i> Hifadhi
+                        <i class="fas fa-save"></i> Hifadhi Bidhaa
                     </button>
                 </div>
             </div>
         </div>
 
         <!-- Toast Container -->
-        <div id="toastContainer"></div>
+        <div id="toastContainer" class="toast-container"></div>
     </div>
 
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script>
         class TanzaniaPOS {
             constructor() {
@@ -1490,9 +2177,12 @@
                 this.cart = [];
                 this.products = [];
                 this.sales = [];
-                this.categories = new Set(['zote']);
-                this.settings = {};
-                this.currentTheme = 'light';
+                this.heldCarts = [];
+                this.categories = new Set(['all']);
+                this.isCartOpen = false;
+                this.currentTheme = localStorage.getItem('tanzania_pos_theme') || 'light';
+                this.isProcessing = false;
+                this.salesChart = null;
                 
                 this.init();
             }
@@ -1501,6 +2191,7 @@
                 this.loadData();
                 this.setupEventListeners();
                 this.updateDateTime();
+                this.applyTheme(this.currentTheme);
                 
                 if (this.products.length === 0) {
                     this.createSampleData();
@@ -1510,31 +2201,39 @@
                 this.updateCategories();
                 this.updateInventoryTable();
                 this.updateCartBadge();
-                this.loadSettings();
+                this.loadSettingsUI();
                 
                 if (this.sales.length === 0) {
                     this.createSampleSales();
                 }
                 
                 this.updateDashboardStats();
-                this.updateReports();
             }
 
             loadData() {
-                // Load from localStorage
+                // Load all data from localStorage
                 this.products = JSON.parse(localStorage.getItem('tanzania_pos_products') || '[]');
                 this.sales = JSON.parse(localStorage.getItem('tanzania_pos_sales') || '[]');
                 this.cart = JSON.parse(localStorage.getItem('tanzania_pos_cart') || '[]');
+                this.heldCarts = JSON.parse(localStorage.getItem('tanzania_pos_held_carts') || '[]');
                 this.settings = JSON.parse(localStorage.getItem('tanzania_pos_settings') || '{}');
                 this.currentTheme = localStorage.getItem('tanzania_pos_theme') || 'light';
                 
-                this.applyTheme(this.currentTheme);
+                // Initialize categories
+                this.categories = new Set(['all']);
+                this.products.forEach(product => {
+                    if (product.category) {
+                        this.categories.add(product.category);
+                    }
+                });
             }
 
             saveData() {
+                // Save all data to localStorage
                 localStorage.setItem('tanzania_pos_products', JSON.stringify(this.products));
                 localStorage.setItem('tanzania_pos_sales', JSON.stringify(this.sales));
                 localStorage.setItem('tanzania_pos_cart', JSON.stringify(this.cart));
+                localStorage.setItem('tanzania_pos_held_carts', JSON.stringify(this.heldCarts));
                 localStorage.setItem('tanzania_pos_settings', JSON.stringify(this.settings));
                 localStorage.setItem('tanzania_pos_theme', this.currentTheme);
             }
@@ -1543,58 +2242,91 @@
                 this.products = [
                     {
                         id: 1,
+                        sku: 'SUG001',
                         name: 'Sukari 1kg',
+                        description: 'Sukari nyeupe 1kg',
                         category: 'vyakula',
                         price: 2500,
+                        cost: 2000,
                         stock: 50,
-                        sku: 'SUG001'
+                        minStock: 10,
+                        barcode: '123456789012',
+                        createdAt: new Date().toISOString()
                     },
                     {
                         id: 2,
+                        sku: 'FLR001',
                         name: 'Unga wa Ngano 5kg',
+                        description: 'Unga bora wa ngano',
                         category: 'vyakula',
                         price: 15000,
+                        cost: 12000,
                         stock: 30,
-                        sku: 'FLR001'
+                        minStock: 5,
+                        barcode: '123456789013',
+                        createdAt: new Date().toISOString()
                     },
                     {
                         id: 3,
+                        sku: 'OIL001',
                         name: 'Mafuta ya Kupikia 1L',
+                        description: 'Mafuta ya kupikia ya sunflower',
                         category: 'vyakula',
                         price: 3500,
+                        cost: 2800,
                         stock: 40,
-                        sku: 'OIL001'
+                        minStock: 8,
+                        barcode: '123456789014',
+                        createdAt: new Date().toISOString()
                     },
                     {
                         id: 4,
+                        sku: 'WTR001',
                         name: 'Maji 1.5L',
+                        description: 'Maji safi ya kunywa',
                         category: 'vinywaji',
                         price: 1500,
+                        cost: 1000,
                         stock: 100,
-                        sku: 'WTR001'
+                        minStock: 20,
+                        barcode: '123456789015',
+                        createdAt: new Date().toISOString()
                     },
                     {
                         id: 5,
+                        sku: 'SOD001',
                         name: 'Soda 500ml',
+                        description: 'Soda baridi ya Coca-Cola',
                         category: 'vinywaji',
                         price: 1200,
+                        cost: 800,
                         stock: 80,
-                        sku: 'SOD001'
+                        minStock: 15,
+                        barcode: '123456789016',
+                        createdAt: new Date().toISOString()
                     },
                     {
                         id: 6,
+                        sku: 'SAP001',
                         name: 'Sabuni ya Kufulia 500g',
+                        description: 'Sabuni nzuri ya kufulia',
                         category: 'nyumbani',
                         price: 2800,
+                        cost: 2000,
                         stock: 60,
-                        sku: 'SAP001'
+                        minStock: 12,
+                        barcode: '123456789017',
+                        createdAt: new Date().toISOString()
                     }
                 ];
                 
                 this.settings = {
                     storeName: 'Duka La Tanzania',
+                    storeAddress: '123 Mtaa Kuu, Dar es Salaam',
+                    storePhone: '+255 123 456 789',
+                    storeEmail: 'duka@tanzania.com',
                     taxRate: 18,
-                    storeAddress: 'Dar es Salaam, Tanzania'
+                    receiptFooter: 'Asante kwa kununua! Karibu tena.'
                 };
                 
                 this.saveData();
@@ -1602,34 +2334,57 @@
 
             createSampleSales() {
                 const now = new Date();
+                const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+                
                 this.sales = [
                     {
                         id: 1001,
-                        date: new Date(now.getTime() - 24 * 60 * 60 * 1000).toISOString(),
+                        date: new Date(today.getTime() - 24 * 60 * 60 * 1000).toISOString(),
                         items: [
-                            { name: 'Sukari 1kg', price: 2500, quantity: 2 },
-                            { name: 'Maji 1.5L', price: 1500, quantity: 3 }
+                            { id: 1, name: 'Sukari 1kg', price: 2500, quantity: 2, sku: 'SUG001' },
+                            { id: 4, name: 'Maji 1.5L', price: 1500, quantity: 3, sku: 'WTR001' }
                         ],
-                        total: 9500,
+                        subtotal: 9500,
                         tax: 1710,
-                        subtotal: 7790,
+                        total: 11210,
                         paymentMethod: 'cash',
+                        amountTendered: 12000,
+                        change: 790,
                         cashier: 'Admin',
-                        change: 0
+                        store: 'Duka La Tanzania'
                     },
                     {
                         id: 1002,
-                        date: new Date(now.getTime() - 12 * 60 * 60 * 1000).toISOString(),
+                        date: new Date(today.getTime() - 12 * 60 * 60 * 1000).toISOString(),
                         items: [
-                            { name: 'Unga wa Ngano 5kg', price: 15000, quantity: 1 },
-                            { name: 'Mafuta ya Kupikia 1L', price: 3500, quantity: 2 }
+                            { id: 2, name: 'Unga wa Ngano 5kg', price: 15000, quantity: 1, sku: 'FLR001' },
+                            { id: 3, name: 'Mafuta ya Kupikia 1L', price: 3500, quantity: 2, sku: 'OIL001' },
+                            { id: 6, name: 'Sabuni ya Kufulia 500g', price: 2800, quantity: 1, sku: 'SAP001' }
                         ],
-                        total: 22000,
-                        tax: 3960,
-                        subtotal: 18040,
+                        subtotal: 24800,
+                        tax: 4464,
+                        total: 29264,
                         paymentMethod: 'mobile',
+                        amountTendered: 30000,
+                        change: 736,
                         cashier: 'Admin',
-                        change: 0
+                        store: 'Duka La Tanzania'
+                    },
+                    {
+                        id: 1003,
+                        date: new Date(today.getTime() - 6 * 60 * 60 * 1000).toISOString(),
+                        items: [
+                            { id: 5, name: 'Soda 500ml', price: 1200, quantity: 5, sku: 'SOD001' },
+                            { id: 1, name: 'Sukari 1kg', price: 2500, quantity: 1, sku: 'SUG001' }
+                        ],
+                        subtotal: 8500,
+                        tax: 1530,
+                        total: 10030,
+                        paymentMethod: 'card',
+                        amountTendered: 10030,
+                        change: 0,
+                        cashier: 'Cashier',
+                        store: 'Duka La Tanzania'
                     }
                 ];
                 
@@ -1658,12 +2413,15 @@
                 document.getElementById('floatingCartBtn').addEventListener('click', () => this.toggleCart());
                 document.getElementById('clearCartBtn').addEventListener('click', () => this.clearCart());
                 document.getElementById('checkoutBtn').addEventListener('click', () => this.showPaymentModal());
+                document.getElementById('holdCartBtn').addEventListener('click', () => this.holdCart());
+                document.getElementById('saveCartBtn').addEventListener('click', () => this.saveCart());
 
                 // Search
                 document.getElementById('productSearch').addEventListener('input', 
                     this.debounce((e) => this.searchProducts(e.target.value), 300)
                 );
 
+                // Inventory
                 document.getElementById('inventorySearch').addEventListener('input',
                     this.debounce((e) => this.searchInventory(e.target.value), 300)
                 );
@@ -1672,11 +2430,34 @@
                     this.updateInventoryTable();
                 });
 
+                document.getElementById('inventorySort').addEventListener('change', () => {
+                    this.updateInventoryTable();
+                });
+
+                // Quick sale
+                document.getElementById('quickSaleBtn').addEventListener('click', () => this.quickSale());
+
+                // Scan
+                document.getElementById('scanBtn').addEventListener('click', () => this.showScanner());
+
                 // Payment modal
                 document.getElementById('closePaymentModal').addEventListener('click', () => this.hidePaymentModal());
                 document.getElementById('cancelPaymentBtn').addEventListener('click', () => this.hidePaymentModal());
                 document.getElementById('confirmPaymentBtn').addEventListener('click', () => this.processPayment());
                 document.getElementById('amountTendered').addEventListener('input', () => this.calculateChange());
+                document.getElementById('amountTendered').addEventListener('keypress', (e) => {
+                    if (e.key === 'Enter') this.processPayment();
+                });
+
+                // Quick amounts
+                document.querySelectorAll('#quickAmounts button').forEach(btn => {
+                    btn.addEventListener('click', (e) => {
+                        const amount = parseFloat(e.target.dataset.amount);
+                        const currentAmount = parseFloat(document.getElementById('amountTendered').value) || 0;
+                        document.getElementById('amountTendered').value = (currentAmount + amount).toFixed(2);
+                        this.calculateChange();
+                    });
+                });
 
                 // Payment methods
                 document.querySelectorAll('.payment-method').forEach(method => {
@@ -1685,6 +2466,7 @@
 
                 // Product modal
                 document.getElementById('addProductBtn').addEventListener('click', () => this.showProductModal());
+                document.getElementById('bulkImportBtn').addEventListener('click', () => this.bulkImport());
                 document.getElementById('closeProductModal').addEventListener('click', () => this.hideProductModal());
                 document.getElementById('cancelProductBtn').addEventListener('click', () => this.hideProductModal());
                 document.getElementById('saveProductBtn').addEventListener('click', () => this.saveProduct());
@@ -1701,11 +2483,26 @@
                     this.saveData();
                     this.updateCartDisplay();
                     this.updateTaxRateDisplay();
-                    this.showToast('Kiwango cha kodi kimebadilishwa', 'success');
+                    this.showToast('Kodi imebadilishwa', 'success');
+                });
+
+                document.getElementById('storePhone').addEventListener('change', (e) => {
+                    this.settings.storePhone = e.target.value;
+                    this.saveData();
+                });
+
+                document.getElementById('storeEmail').addEventListener('change', (e) => {
+                    this.settings.storeEmail = e.target.value;
+                    this.saveData();
                 });
 
                 document.getElementById('storeAddress').addEventListener('change', (e) => {
                     this.settings.storeAddress = e.target.value;
+                    this.saveData();
+                });
+
+                document.getElementById('receiptFooter').addEventListener('change', (e) => {
+                    this.settings.receiptFooter = e.target.value;
                     this.saveData();
                 });
 
@@ -1717,13 +2514,25 @@
                 // Backup/Restore
                 document.getElementById('backupBtn').addEventListener('click', () => this.backupData());
                 document.getElementById('restoreBtn').addEventListener('click', () => this.restoreData());
+                document.getElementById('exportDataBtn').addEventListener('click', () => this.exportAllData());
+                document.getElementById('importDataBtn').addEventListener('click', () => this.importData());
                 document.getElementById('resetDataBtn').addEventListener('click', () => this.resetData());
+                document.getElementById('changePasswordBtn').addEventListener('click', () => this.changePassword());
 
-                // Export
+                // Export/Print
                 document.getElementById('exportHistoryBtn').addEventListener('click', () => this.exportHistory());
+                document.getElementById('printReportBtn').addEventListener('click', () => this.printReport());
 
                 // History filters
                 document.getElementById('historyPeriod').addEventListener('change', () => {
+                    this.updateSalesHistory();
+                });
+
+                document.getElementById('historyPaymentMethod').addEventListener('change', () => {
+                    this.updateSalesHistory();
+                });
+
+                document.getElementById('historySort').addEventListener('change', () => {
                     this.updateSalesHistory();
                 });
 
@@ -1736,56 +2545,123 @@
                     this.updateReports();
                 });
 
-                // Scan button
-                document.getElementById('scanBtn').addEventListener('click', () => this.scanBarcode());
-
                 // Close cart when clicking outside
                 document.addEventListener('click', (e) => {
                     const cartDrawer = document.getElementById('cartDrawer');
                     const cartBtn = document.getElementById('floatingCartBtn');
                     
-                    if (cartDrawer.classList.contains('open') && 
+                    if (this.isCartOpen && 
                         !cartDrawer.contains(e.target) && 
                         !cartBtn.contains(e.target)) {
                         this.closeCart();
                     }
                 });
+
+                // Swipe to close cart
+                let startY = 0;
+                const cartDrawer = document.getElementById('cartDrawer');
+                cartDrawer.addEventListener('touchstart', (e) => {
+                    startY = e.touches[0].clientY;
+                });
+
+                cartDrawer.addEventListener('touchmove', (e) => {
+                    if (!this.isCartOpen) return;
+                    
+                    const currentY = e.touches[0].clientY;
+                    const diff = currentY - startY;
+                    
+                    if (diff > 50) {
+                        this.closeCart();
+                    }
+                });
+
+                // Keyboard shortcuts
+                document.addEventListener('keydown', (e) => {
+                    // Ctrl/Cmd + S to save cart
+                    if ((e.ctrlKey || e.metaKey) && e.key === 's') {
+                        e.preventDefault();
+                        this.saveCart();
+                    }
+                    
+                    // Ctrl/Cmd + P to process payment
+                    if ((e.ctrlKey || e.metaKey) && e.key === 'p') {
+                        e.preventDefault();
+                        if (this.cart.length > 0 && !this.isProcessing) {
+                            this.showPaymentModal();
+                        }
+                    }
+                    
+                    // Escape to close modals
+                    if (e.key === 'Escape') {
+                        this.hideAllModals();
+                    }
+                });
+            }
+
+            loadSettingsUI() {
+                document.getElementById('storeName').value = this.settings.storeName || 'Duka La Tanzania';
+                document.getElementById('taxRate').value = this.settings.taxRate || 18;
+                document.getElementById('storePhone').value = this.settings.storePhone || '';
+                document.getElementById('storeEmail').value = this.settings.storeEmail || '';
+                document.getElementById('storeAddress').value = this.settings.storeAddress || '';
+                document.getElementById('receiptFooter').value = this.settings.receiptFooter || '';
+                this.updateTaxRateDisplay();
+                
+                // Set theme
+                document.querySelectorAll('.theme-option').forEach(option => {
+                    option.classList.remove('active');
+                });
+                document.querySelector(`[data-theme="${this.currentTheme}"]`).classList.add('active');
+            }
+
+            updateTaxRateDisplay() {
+                document.getElementById('taxRateDisplay').textContent = this.settings.taxRate || 18;
             }
 
             login() {
+                if (this.isProcessing) return;
+                this.isProcessing = true;
+                
                 const username = document.getElementById('loginUsername').value;
                 const password = document.getElementById('loginPassword').value;
                 const role = document.getElementById('loginRole').value;
 
                 // Simple authentication
-                if (username === 'admin' && password === 'admin123') {
-                    this.currentUser = 'Admin';
+                const validUsers = {
+                    'admin': { password: 'admin123', name: 'Admin' },
+                    'cashier': { password: 'cashier123', name: 'Cashier' },
+                    'manager': { password: 'manager123', name: 'Manager' }
+                };
+
+                if (validUsers[username] && validUsers[username].password === password) {
+                    this.currentUser = validUsers[username].name;
                     this.currentRole = role;
                     
-                    document.getElementById('loginScreen').style.display = 'none';
-                    document.getElementById('posScreen').classList.remove('hidden');
+                    // Add loading animation
+                    const loginBtn = document.getElementById('loginBtn');
+                    const originalHTML = loginBtn.innerHTML;
+                    loginBtn.innerHTML = '<div class="loading"></div>';
                     
-                    document.getElementById('currentUser').textContent = 'Admin';
-                    document.getElementById('currentRole').textContent = role;
-                    
-                    this.showToast('Karibu Admin!', 'success');
-                    
-                    this.updateCartDisplay();
-                    this.updateCartBadge();
-                    this.updateDashboardStats();
-                } else if (username === 'cashier' && password === 'cashier123') {
-                    this.currentUser = 'Cashier';
-                    this.currentRole = 'cashier';
-                    
-                    document.getElementById('loginScreen').style.display = 'none';
-                    document.getElementById('posScreen').classList.remove('hidden');
-                    
-                    document.getElementById('currentUser').textContent = 'Cashier';
-                    document.getElementById('currentRole').textContent = 'cashier';
-                    
-                    this.showToast('Karibu Cashier!', 'success');
+                    setTimeout(() => {
+                        document.getElementById('loginScreen').style.display = 'none';
+                        document.getElementById('posScreen').style.display = 'flex';
+                        
+                        document.getElementById('currentUser').textContent = this.currentUser;
+                        document.getElementById('currentRole').textContent = role;
+                        
+                        this.showToast(`Karibu, ${this.currentUser}!`, 'success');
+                        
+                        this.updateCartDisplay();
+                        this.updateCartBadge();
+                        this.updateDashboardStats();
+                        
+                        // Restore button
+                        loginBtn.innerHTML = originalHTML;
+                        this.isProcessing = false;
+                    }, 800);
                 } else {
                     this.showToast('Jina au nenosiri sio sahihi!', 'error');
+                    this.isProcessing = false;
                 }
             }
 
@@ -1798,29 +2674,12 @@
                     this.cart = [];
                     
                     document.getElementById('loginScreen').style.display = 'flex';
-                    document.getElementById('posScreen').classList.add('hidden');
+                    document.getElementById('posScreen').style.display = 'none';
                     
                     this.closeCart();
                     
                     this.showToast('Umefanikiwa kutoka', 'info');
                 }
-            }
-
-            loadSettings() {
-                document.getElementById('storeName').value = this.settings.storeName || 'Duka La Tanzania';
-                document.getElementById('taxRate').value = this.settings.taxRate || 18;
-                document.getElementById('storeAddress').value = this.settings.storeAddress || '';
-                this.updateTaxRateDisplay();
-                
-                // Set theme
-                document.querySelectorAll('.theme-option').forEach(option => {
-                    option.classList.remove('active');
-                });
-                document.querySelector(`[data-theme="${this.currentTheme}"]`).classList.add('active');
-            }
-
-            updateTaxRateDisplay() {
-                document.getElementById('taxRateDisplay').textContent = this.settings.taxRate || 18;
             }
 
             selectTheme(theme) {
@@ -1853,7 +2712,7 @@
                 
                 document.getElementById('datetimeText').textContent = now.toLocaleDateString('sw-TZ', options);
                 
-                setTimeout(() => this.updateDateTime(), 60000);
+                setTimeout(() => this.updateDateTime(), 30000);
             }
 
             switchPage(page) {
@@ -1887,9 +2746,10 @@
                 
                 if (this.products.length === 0) {
                     productsGrid.innerHTML = `
-                        <div class="empty-state">
+                        <div class="empty-state col-span-full">
                             <i class="fas fa-box-open"></i>
-                            <div>Hakuna bidhaa</div>
+                            <div class="font-medium text-tertiary">Hakuna bidhaa</div>
+                            <div class="text-sm text-muted mt-1">Bonyeza "Ongeza" kuanza</div>
                         </div>
                     `;
                     return;
@@ -1899,16 +2759,22 @@
                     const productCard = document.createElement('div');
                     productCard.className = 'product-card';
                     
-                    const stockClass = product.stock === 0 ? 'out' : product.stock <= 10 ? 'low' : 'ok';
+                    const stockClass = product.stock === 0 ? 'out' : 
+                                     product.stock <= product.minStock ? 'low' : '';
                     const stockIcon = product.stock === 0 ? 'fa-times-circle' : 
-                                     product.stock <= 10 ? 'fa-exclamation-triangle' : 'fa-check-circle';
+                                     product.stock <= product.minStock ? 'fa-exclamation-triangle' : 'fa-check-circle';
                     
                     productCard.innerHTML = `
-                        <div class="product-name">${product.name}</div>
-                        <div class="product-price">TZS ${product.price.toLocaleString()}</div>
-                        <div class="product-stock">
-                            <i class="fas ${stockIcon}"></i>
-                            ${product.stock} zilizobaki
+                        <div>
+                            <div class="product-name">${product.name}</div>
+                            <div class="text-xs text-tertiary mb-2">${product.sku}</div>
+                        </div>
+                        <div>
+                            <div class="product-price">TZS ${product.price.toLocaleString()}</div>
+                            <div class="product-stock ${stockClass}">
+                                <i class="fas ${stockIcon}"></i>
+                                ${product.stock} zilizobaki
+                            </div>
                         </div>
                     `;
                     
@@ -1938,7 +2804,7 @@
                 // Create category tabs
                 Array.from(this.categories).forEach(category => {
                     const tab = document.createElement('button');
-                    tab.className = `category-tab ${category === 'zote' ? 'active' : ''}`;
+                    tab.className = `category-tab ${category === 'all' ? 'active' : ''}`;
                     tab.textContent = this.getCategoryName(category);
                     tab.dataset.category = category;
                     
@@ -1954,11 +2820,13 @@
 
             getCategoryName(category) {
                 const names = {
-                    'zote': 'Zote',
+                    'all': 'Zote',
+                    'general': 'General',
                     'vyakula': 'Vyakula',
                     'vinywaji': 'Vinywaji',
-                    'nyumbani': 'Nyumbani',
-                    'nguo': 'Nguo'
+                    'electronics': 'Electronics',
+                    'nguo': 'Nguo',
+                    'nyumbani': 'Nyumbani'
                 };
                 return names[category] || category;
             }
@@ -1967,21 +2835,24 @@
                 const searchQuery = document.getElementById('productSearch').value.toLowerCase();
                 const productsGrid = document.getElementById('productsGrid');
                 
-                let filteredProducts = category === 'zote' 
+                let filteredProducts = category === 'all' 
                     ? this.products 
                     : this.products.filter(p => p.category === category);
                 
                 if (searchQuery) {
                     filteredProducts = filteredProducts.filter(product => 
-                        product.name.toLowerCase().includes(searchQuery)
+                        product.name.toLowerCase().includes(searchQuery) ||
+                        product.sku.toLowerCase().includes(searchQuery) ||
+                        (product.barcode && product.barcode.includes(searchQuery))
                     );
                 }
                 
                 if (filteredProducts.length === 0) {
                     productsGrid.innerHTML = `
-                        <div class="empty-state">
+                        <div class="empty-state col-span-full">
                             <i class="fas fa-search"></i>
-                            <div>Hakuna bidhaa</div>
+                            <div class="font-medium text-tertiary">Hakuna bidhaa</div>
+                            <div class="text-sm text-muted mt-1">Badilisha utafutaji</div>
                         </div>
                     `;
                     return;
@@ -1992,15 +2863,22 @@
                     const productCard = document.createElement('div');
                     productCard.className = 'product-card';
                     
+                    const stockClass = product.stock === 0 ? 'out' : 
+                                     product.stock <= product.minStock ? 'low' : '';
                     const stockIcon = product.stock === 0 ? 'fa-times-circle' : 
-                                     product.stock <= 10 ? 'fa-exclamation-triangle' : 'fa-check-circle';
+                                     product.stock <= product.minStock ? 'fa-exclamation-triangle' : 'fa-check-circle';
                     
                     productCard.innerHTML = `
-                        <div class="product-name">${product.name}</div>
-                        <div class="product-price">TZS ${product.price.toLocaleString()}</div>
-                        <div class="product-stock">
-                            <i class="fas ${stockIcon}"></i>
-                            ${product.stock} zilizobaki
+                        <div>
+                            <div class="product-name">${product.name}</div>
+                            <div class="text-xs text-tertiary mb-2">${product.sku}</div>
+                        </div>
+                        <div>
+                            <div class="product-price">TZS ${product.price.toLocaleString()}</div>
+                            <div class="product-stock ${stockClass}">
+                                <i class="fas ${stockIcon}"></i>
+                                ${product.stock} zilizobaki
+                            </div>
                         </div>
                     `;
                     
@@ -2017,11 +2895,13 @@
             }
 
             searchProducts(query) {
-                const activeCategory = document.querySelector('.category-tab.active')?.dataset.category || 'zote';
+                const activeCategory = document.querySelector('.category-tab.active')?.dataset.category || 'all';
                 this.filterProductsByCategory(activeCategory);
             }
 
             addToCart(product) {
+                if (this.isProcessing) return;
+                
                 if (product.stock <= 0) {
                     this.showToast('Bidhaa imekwisha!', 'warning');
                     return;
@@ -2046,16 +2926,18 @@
                         sku: product.sku,
                         stock: product.stock
                     });
-                    this.showToast(`${product.name} imeongezwa kwenye kasha`, 'success');
+                    this.showToast(`${product.name} imeongezewa kwenye kasha`, 'success');
                 }
 
                 this.updateCartDisplay();
                 this.updateCartBadge();
                 this.saveData();
                 
-                if (!this.isCartOpen()) {
+                if (!this.isCartOpen) {
                     this.openCart();
                 }
+                
+                this.updateDashboardStats();
             }
 
             updateCartDisplay() {
@@ -2066,7 +2948,8 @@
                     cartItems.innerHTML = `
                         <div class="empty-state">
                             <i class="fas fa-shopping-cart"></i>
-                            <div>Kasha ni tupu</div>
+                            <div class="font-medium text-tertiary">Kasha ni tupu</div>
+                            <div class="text-sm text-muted mt-1">Ongeza bidhaa kuanza</div>
                         </div>
                     `;
                     this.updateCartSummary();
@@ -2079,7 +2962,7 @@
                     cartItem.innerHTML = `
                         <div class="cart-item-details">
                             <div class="cart-item-name">${item.name}</div>
-                            <div>TZS ${item.price.toLocaleString()}</div>
+                            <div class="cart-item-price">TZS ${item.price.toLocaleString()} kila moja</div>
                         </div>
                         <div class="cart-item-actions">
                             <div class="quantity-control">
@@ -2091,6 +2974,7 @@
                                     <i class="fas fa-plus"></i>
                                 </button>
                             </div>
+                            <div class="font-semibold text-lg">TZS ${(item.price * item.quantity).toLocaleString()}</div>
                             <button class="btn btn-icon btn-sm remove-item" data-id="${item.id}">
                                 <i class="fas fa-trash"></i>
                             </button>
@@ -2181,13 +3065,45 @@
                 }
             }
 
+            holdCart() {
+                if (this.cart.length === 0) {
+                    this.showToast('Kasha ni tupu!', 'warning');
+                    return;
+                }
+                
+                const cartId = Date.now();
+                this.heldCarts.push({
+                    id: cartId,
+                    items: [...this.cart],
+                    timestamp: new Date().toISOString(),
+                    cashier: this.currentUser || 'Unknown'
+                });
+                
+                this.cart = [];
+                this.updateCartDisplay();
+                this.updateCartBadge();
+                this.saveData();
+                
+                this.showToast(`Kasha #${cartId} imesimamishwa`, 'success');
+            }
+
+            saveCart() {
+                if (this.cart.length === 0) {
+                    this.showToast('Kasha ni tupu!', 'warning');
+                    return;
+                }
+                
+                localStorage.setItem('tanzania_pos_saved_cart', JSON.stringify(this.cart));
+                this.showToast('Kasha imehifadhiwa', 'success');
+            }
+
             clearCart() {
                 if (this.cart.length === 0) {
                     this.showToast('Kasha tayari ni tupu!', 'info');
                     return;
                 }
                 
-                if (confirm('Futa kasha yote?')) {
+                if (confirm('Futa kasha yote? Kitendo hiki hakiwezi kufutwa.')) {
                     this.cart = [];
                     this.updateCartDisplay();
                     this.updateCartBadge();
@@ -2196,20 +3112,18 @@
                 }
             }
 
-            isCartOpen() {
-                return document.getElementById('cartDrawer').classList.contains('open');
-            }
-
             openCart() {
                 document.getElementById('cartDrawer').classList.add('open');
+                this.isCartOpen = true;
             }
 
             closeCart() {
                 document.getElementById('cartDrawer').classList.remove('open');
+                this.isCartOpen = false;
             }
 
             toggleCart() {
-                if (this.isCartOpen()) {
+                if (this.isCartOpen) {
                     this.closeCart();
                 } else {
                     this.openCart();
@@ -2227,6 +3141,7 @@
                 document.getElementById('amountTendered').value = '';
                 document.getElementById('paymentChange').textContent = 'TZS 0';
                 
+                // Auto-select cash
                 document.querySelectorAll('.payment-method').forEach(m => m.classList.remove('active'));
                 document.querySelector('.payment-method[data-method="cash"]').classList.add('active');
                 
@@ -2258,18 +3173,23 @@
                 changeElement.textContent = `TZS ${change >= 0 ? change.toLocaleString() : '0'}`;
                 
                 if (change >= 0) {
-                    changeElement.style.color = 'var(--success)';
+                    changeElement.className = 'font-semibold text-success';
                 } else {
-                    changeElement.style.color = 'var(--danger)';
+                    changeElement.className = 'font-semibold text-danger';
                 }
             }
 
             async processPayment() {
+                if (this.isProcessing) return;
+                
+                this.isProcessing = true;
+                
                 const amount = parseFloat(document.getElementById('amountTendered').value) || 0;
                 const total = this.calculateCartTotal();
                 
                 if (amount < total) {
                     this.showToast(`Inahitaji TZS ${(total - amount).toLocaleString()} zaidi`, 'warning');
+                    this.isProcessing = false;
                     return;
                 }
 
@@ -2288,16 +3208,20 @@
                     id: Date.now(),
                     date: new Date().toISOString(),
                     items: this.cart.map(item => ({
+                        id: item.id,
                         name: item.name,
                         price: item.price,
-                        quantity: item.quantity
+                        quantity: item.quantity,
+                        sku: item.sku
                     })),
                     subtotal: this.cart.reduce((sum, item) => sum + (item.price * item.quantity), 0),
                     tax: total - this.cart.reduce((sum, item) => sum + (item.price * item.quantity), 0),
                     total: total,
                     paymentMethod: paymentMethod,
-                    cashier: this.currentUser || 'Mfanyakazi',
-                    change: amount - total
+                    amountTendered: amount,
+                    change: amount - total,
+                    cashier: this.currentUser || 'System',
+                    store: this.settings.storeName || 'Duka La Tanzania'
                 };
 
                 // Update product stocks
@@ -2333,40 +3257,68 @@
                 confirmBtn.innerHTML = originalText;
                 confirmBtn.disabled = false;
                 
-                this.showToast('Malipo yamefanikiwa!', 'success');
+                this.showToast('Malipo yamefanikiwa! Risiti imepigwa.', 'success');
                 
                 // Print receipt
                 this.printReceipt(sale);
+                
+                this.isProcessing = false;
             }
 
             printReceipt(sale) {
                 const receiptWindow = window.open('', '_blank');
+                const date = new Date(sale.date);
+                const formattedDate = date.toLocaleDateString('sw-TZ');
+                const formattedTime = date.toLocaleTimeString('sw-TZ', { hour: '2-digit', minute: '2-digit' });
+                
                 const receiptContent = `
+                    <!DOCTYPE html>
                     <html>
                     <head>
                         <title>Risiti #${sale.id}</title>
                         <style>
-                            body { font-family: monospace; padding: 20px; }
-                            .receipt { max-width: 300px; margin: 0 auto; }
+                            body { 
+                                font-family: monospace; 
+                                padding: 20px; 
+                                max-width: 300px; 
+                                margin: 0 auto;
+                                font-size: 12px;
+                            }
+                            .receipt { width: 100%; }
                             .header { text-align: center; margin-bottom: 20px; }
                             .item { display: flex; justify-content: space-between; margin-bottom: 5px; }
-                            .total { font-weight: bold; margin-top: 10px; padding-top: 10px; border-top: 1px dashed #000; }
+                            .total { font-weight: bold; margin-top: 10px; padding-top: 10px; border-top: 2px dashed #000; }
+                            .footer { text-align: center; margin-top: 20px; font-size: 10px; color: #666; }
+                            @media print {
+                                @page { margin: 0; size: auto; }
+                                body { margin: 0; }
+                            }
                         </style>
                     </head>
-                    <body>
+                    <body onload="window.print(); window.close();">
                         <div class="receipt">
                             <div class="header">
-                                <h3>${this.settings.storeName || 'Duka La Tanzania'}</h3>
-                                <p>${new Date(sale.date).toLocaleString('sw-TZ')}</p>
-                                <p>#${sale.id}</p>
+                                <h2 style="margin-bottom: 5px;">${this.settings.storeName || 'Duka La Tanzania'}</h2>
+                                <p style="margin: 2px 0;">${this.settings.storeAddress || ''}</p>
+                                <p style="margin: 2px 0;">${this.settings.storePhone || ''}</p>
+                                <hr style="border: none; border-top: 1px dashed #ccc; margin: 10px 0;">
+                                <p style="margin: 2px 0;">${formattedDate} ${formattedTime}</p>
+                                <p style="margin: 2px 0;">Risiti: #${sale.id}</p>
+                                <p style="margin: 2px 0;">Mfanyakazi: ${sale.cashier}</p>
+                                <hr style="border: none; border-top: 1px dashed #ccc; margin: 10px 0;">
                             </div>
                             
                             ${sale.items.map(item => `
                                 <div class="item">
-                                    <span>${item.name} x${item.quantity}</span>
-                                    <span>TZS ${(item.price * item.quantity).toLocaleString()}</span>
+                                    <div>
+                                        <div>${item.name}</div>
+                                        <div style="font-size: 10px;">${item.quantity} × TZS ${item.price.toLocaleString()}</div>
+                                    </div>
+                                    <div>TZS ${(item.price * item.quantity).toLocaleString()}</div>
                                 </div>
                             `).join('')}
+                            
+                            <hr style="border: none; border-top: 1px dashed #ccc; margin: 10px 0;">
                             
                             <div class="item">
                                 <span>Jumla:</span>
@@ -2386,16 +3338,19 @@
                                        sale.paymentMethod === 'mobile' ? 'M-Pesa' : 'Kadi'}</span>
                             </div>
                             <div class="item">
+                                <span>Kiasi Kilichotolewa:</span>
+                                <span>TZS ${sale.amountTendered.toLocaleString()}</span>
+                            </div>
+                            <div class="item">
                                 <span>Rudisha:</span>
                                 <span>TZS ${sale.change.toLocaleString()}</span>
                             </div>
-                            <div class="item">
-                                <span>Mfanyakazi:</span>
-                                <span>${sale.cashier}</span>
-                            </div>
-                            <div class="header" style="margin-top: 20px;">
-                                <p>ASANTE KWA KUNUNUA!</p>
-                                <p>${this.settings.storeAddress || ''}</p>
+                            
+                            <hr style="border: none; border-top: 1px dashed #ccc; margin: 15px 0;">
+                            
+                            <div class="footer">
+                                <p>${this.settings.receiptFooter || 'Asante kwa kununua! Karibu tena.'}</p>
+                                <p>${new Date().toISOString().split('T')[0]}</p>
                             </div>
                         </div>
                     </body>
@@ -2404,13 +3359,13 @@
                 
                 receiptWindow.document.write(receiptContent);
                 receiptWindow.document.close();
-                receiptWindow.print();
-                receiptWindow.close();
             }
 
             updateSalesHistory() {
                 const period = document.getElementById('historyPeriod').value;
+                const paymentMethod = document.getElementById('historyPaymentMethod').value;
                 const searchQuery = document.getElementById('historySearch').value.toLowerCase();
+                const sortBy = document.getElementById('historySort').value;
                 
                 let filteredSales = this.sales;
                 
@@ -2443,18 +3398,48 @@
                             new Date(sale.date) >= monthAgo
                         );
                         break;
+                    case 'year':
+                        const yearAgo = new Date(now.getTime() - 365 * 24 * 60 * 60 * 1000);
+                        filteredSales = filteredSales.filter(sale => 
+                            new Date(sale.date) >= yearAgo
+                        );
+                        break;
                 }
                 
-                // Filter by search
-                if (searchQuery) {
+                // Filter by payment method
+                if (paymentMethod !== 'all') {
                     filteredSales = filteredSales.filter(sale => 
-                        sale.cashier.toLowerCase().includes(searchQuery) ||
-                        sale.items.some(item => item.name.toLowerCase().includes(searchQuery))
+                        sale.paymentMethod === paymentMethod
                     );
                 }
                 
-                // Sort by date
-                filteredSales.sort((a, b) => new Date(b.date) - new Date(a.date));
+                // Filter by search query
+                if (searchQuery) {
+                    filteredSales = filteredSales.filter(sale => 
+                        sale.cashier.toLowerCase().includes(searchQuery) ||
+                        sale.id.toString().includes(searchQuery) ||
+                        sale.items.some(item => 
+                            item.name.toLowerCase().includes(searchQuery) ||
+                            item.sku.toLowerCase().includes(searchQuery)
+                        )
+                    );
+                }
+                
+                // Sort sales
+                switch(sortBy) {
+                    case 'newest':
+                        filteredSales.sort((a, b) => new Date(b.date) - new Date(a.date));
+                        break;
+                    case 'oldest':
+                        filteredSales.sort((a, b) => new Date(a.date) - new Date(b.date));
+                        break;
+                    case 'highest':
+                        filteredSales.sort((a, b) => b.total - a.total);
+                        break;
+                    case 'lowest':
+                        filteredSales.sort((a, b) => a.total - b.total);
+                        break;
+                }
                 
                 // Update table
                 const tableBody = document.getElementById('historyTable').querySelector('tbody');
@@ -2463,10 +3448,10 @@
                 if (filteredSales.length === 0) {
                     const emptyRow = document.createElement('tr');
                     emptyRow.innerHTML = `
-                        <td colspan="6" class="text-center py-8">
+                        <td colspan="7" class="text-center py-8">
                             <div class="empty-state">
                                 <i class="fas fa-history"></i>
-                                <div>Hakuna mauzo</div>
+                                <div class="font-medium text-tertiary">Hakuna mauzo</div>
                             </div>
                         </td>
                     `;
@@ -2484,23 +3469,98 @@
                         `${item.name} x${item.quantity}`
                     ).join(', ');
                     
-                    const paymentClass = sale.paymentMethod === 'cash' ? 'payment-cash' : 
-                                        sale.paymentMethod === 'mobile' ? 'payment-mobile' : 'payment-card';
+                    let paymentBadgeClass = 'payment-cash';
+                    
+                    if (sale.paymentMethod === 'card') {
+                        paymentBadgeClass = 'payment-card';
+                    } else if (sale.paymentMethod === 'mobile') {
+                        paymentBadgeClass = 'payment-mobile';
+                    }
                     
                     row.innerHTML = `
                         <td>
-                            <div>${formattedDate}</div>
-                            <div class="text-sm">${formattedTime}</div>
+                            <div class="font-medium">${formattedDate}</div>
+                            <div class="text-xs text-tertiary">${formattedTime}</div>
                         </td>
                         <td><span class="sale-id">#${sale.id}</span></td>
                         <td title="${itemsText}">${sale.items.length} bidhaa</td>
-                        <td>${sale.cashier}</td>
-                        <td><span class="payment-method-badge ${paymentClass}">${sale.paymentMethod}</span></td>
+                        <td class="font-medium">${sale.cashier}</td>
+                        <td><span class="payment-method-badge ${paymentBadgeClass}">${sale.paymentMethod}</span></td>
                         <td class="sale-total">TZS ${sale.total.toLocaleString()}</td>
+                        <td>
+                            <button class="btn btn-outline btn-sm view-sale-btn" data-sale-id="${sale.id}" title="Angalia">
+                                <i class="fas fa-eye"></i>
+                            </button>
+                        </td>
                     `;
                     
                     tableBody.appendChild(row);
                 });
+                
+                // Add event listeners for view buttons
+                tableBody.querySelectorAll('.view-sale-btn').forEach(btn => {
+                    btn.addEventListener('click', (e) => {
+                        const saleId = parseInt(e.target.closest('button').dataset.saleId);
+                        this.viewSaleDetails(saleId);
+                    });
+                });
+            }
+
+            viewSaleDetails(saleId) {
+                const sale = this.sales.find(s => s.id === saleId);
+                if (!sale) return;
+                
+                const date = new Date(sale.date);
+                const formattedDate = date.toLocaleString('sw-TZ');
+                
+                let details = `
+                    <div class="mb-4">
+                        <h4 class="font-bold text-lg">Risiti #${sale.id}</h4>
+                        <p class="text-sm text-tertiary">${formattedDate}</p>
+                    </div>
+                    
+                    <div class="mb-4">
+                        <h5 class="font-semibold mb-2">Bidhaa:</h5>
+                        ${sale.items.map(item => `
+                            <div class="flex justify-between mb-2 p-2 bg-tertiary rounded">
+                                <div>
+                                    <div>${item.name}</div>
+                                    <div class="text-xs text-tertiary">${item.quantity} × TZS ${item.price.toLocaleString()}</div>
+                                </div>
+                                <div class="font-semibold">TZS ${(item.price * item.quantity).toLocaleString()}</div>
+                            </div>
+                        `).join('')}
+                    </div>
+                    
+                    <div class="bg-tertiary p-4 rounded-lg">
+                        <div class="flex justify-between mb-2">
+                            <span>Jumla:</span>
+                            <span>TZS ${sale.subtotal.toLocaleString()}</span>
+                        </div>
+                        <div class="flex justify-between mb-2">
+                            <span>Kodi (${this.settings.taxRate || 18}%):</span>
+                            <span>TZS ${sale.tax.toLocaleString()}</span>
+                        </div>
+                        <div class="flex justify-between font-bold text-lg pt-2 border-t border-border">
+                            <span>JUMLA:</span>
+                            <span>TZS ${sale.total.toLocaleString()}</span>
+                        </div>
+                        <div class="flex justify-between text-sm pt-2">
+                            <span>Njia ya Malipo:</span>
+                            <span class="font-medium">${sale.paymentMethod}</span>
+                        </div>
+                        <div class="flex justify-between text-sm">
+                            <span>Kiasi Kilichotolewa:</span>
+                            <span class="font-medium">TZS ${sale.amountTendered.toLocaleString()}</span>
+                        </div>
+                        <div class="flex justify-between text-sm">
+                            <span>Rudisha:</span>
+                            <span class="font-medium text-success">TZS ${sale.change.toLocaleString()}</span>
+                        </div>
+                    </div>
+                `;
+                
+                alert(`Maelezo ya Mauzo:\n\nRisiti: #${sale.id}\nTarehe: ${formattedDate}\nMfanyakazi: ${sale.cashier}\nJumla: TZS ${sale.total.toLocaleString()}`);
             }
 
             updateDashboardStats() {
@@ -2527,19 +3587,50 @@
                 tableBody.innerHTML = '';
                 
                 const filter = document.getElementById('inventoryFilter').value;
+                const sortBy = document.getElementById('inventorySort').value;
                 
                 let filteredProducts = this.products.filter(product => 
                     product.name.toLowerCase().includes(query.toLowerCase()) ||
-                    (product.sku && product.sku.toLowerCase().includes(query.toLowerCase()))
+                    product.sku.toLowerCase().includes(query.toLowerCase()) ||
+                    product.category.toLowerCase().includes(query.toLowerCase())
                 );
                 
                 // Apply filter
                 switch(filter) {
                     case 'low':
-                        filteredProducts = filteredProducts.filter(p => p.stock <= 10 && p.stock > 0);
+                        filteredProducts = filteredProducts.filter(p => p.stock <= p.minStock && p.stock > 0);
                         break;
                     case 'out':
                         filteredProducts = filteredProducts.filter(p => p.stock === 0);
+                        break;
+                    case 'needReorder':
+                        filteredProducts = filteredProducts.filter(p => p.stock <= p.minStock);
+                        break;
+                    case 'bestSellers':
+                        // Simple best sellers based on stock levels
+                        filteredProducts.sort((a, b) => a.stock - b.stock).slice(0, 10);
+                        break;
+                }
+                
+                // Apply sorting
+                switch(sortBy) {
+                    case 'name':
+                        filteredProducts.sort((a, b) => a.name.localeCompare(b.name));
+                        break;
+                    case 'name_desc':
+                        filteredProducts.sort((a, b) => b.name.localeCompare(a.name));
+                        break;
+                    case 'stock_asc':
+                        filteredProducts.sort((a, b) => a.stock - b.stock);
+                        break;
+                    case 'stock_desc':
+                        filteredProducts.sort((a, b) => b.stock - a.stock);
+                        break;
+                    case 'price_asc':
+                        filteredProducts.sort((a, b) => a.price - b.price);
+                        break;
+                    case 'price_desc':
+                        filteredProducts.sort((a, b) => b.price - a.price);
                         break;
                 }
                 
@@ -2549,7 +3640,7 @@
                         <td colspan="6" class="text-center py-8">
                             <div class="empty-state">
                                 <i class="fas fa-box-open"></i>
-                                <div>Hakuna bidhaa</div>
+                                <div class="font-medium text-tertiary">Hakuna bidhaa</div>
                             </div>
                         </td>
                     `;
@@ -2561,30 +3652,40 @@
                     const row = document.createElement('tr');
                     
                     const stockStatus = product.stock === 0 ? 'out' : 
-                                      product.stock <= 10 ? 'low' : 'ok';
+                                      product.stock <= product.minStock ? 'low' : 'ok';
                     const stockBadgeClass = `stock-${stockStatus}`;
+                    const stockBadgeText = product.stock === 0 ? 'Imekwisha' : 
+                                          product.stock <= product.minStock ? 'Chini' : 'Sawa';
                     
                     const inventoryValue = product.price * product.stock;
                     
                     row.innerHTML = `
                         <td>
                             <div class="font-medium">${product.name}</div>
-                            ${product.sku ? `<div class="text-sm">${product.sku}</div>` : ''}
+                            <div class="text-xs text-tertiary">${product.sku}</div>
                         </td>
-                        <td>${this.getCategoryName(product.category)}</td>
+                        <td>
+                            <span class="text-xs font-medium px-2 py-1 rounded bg-tertiary">
+                                ${this.getCategoryName(product.category)}
+                            </span>
+                        </td>
                         <td>
                             <span class="stock-badge ${stockBadgeClass}">
                                 ${product.stock}
                             </span>
+                            <div class="text-xs text-tertiary mt-1">${stockBadgeText}</div>
                         </td>
-                        <td>TZS ${product.price.toLocaleString()}</td>
-                        <td>TZS ${inventoryValue.toLocaleString()}</td>
+                        <td class="font-semibold">TZS ${product.price.toLocaleString()}</td>
+                        <td class="font-semibold">TZS ${inventoryValue.toLocaleString()}</td>
                         <td>
                             <div class="flex gap-1">
-                                <button class="btn btn-outline btn-sm edit-product" data-id="${product.id}">
+                                <button class="btn btn-outline btn-sm edit-product" data-id="${product.id}" title="Hariri">
                                     <i class="fas fa-edit"></i>
                                 </button>
-                                <button class="btn btn-outline btn-sm delete-product" data-id="${product.id}">
+                                <button class="btn btn-outline btn-sm adjust-stock" data-id="${product.id}" title="Badilisha Hisabu">
+                                    <i class="fas fa-sliders-h"></i>
+                                </button>
+                                <button class="btn btn-outline btn-sm delete-product" data-id="${product.id}" title="Futa">
                                     <i class="fas fa-trash"></i>
                                 </button>
                             </div>
@@ -2597,6 +3698,10 @@
                 // Add event listeners
                 tableBody.querySelectorAll('.edit-product').forEach(btn => {
                     btn.addEventListener('click', (e) => this.editProduct(e.target.closest('button').dataset.id));
+                });
+                
+                tableBody.querySelectorAll('.adjust-stock').forEach(btn => {
+                    btn.addEventListener('click', (e) => this.adjustStock(e.target.closest('button').dataset.id));
                 });
                 
                 tableBody.querySelectorAll('.delete-product').forEach(btn => {
@@ -2613,24 +3718,31 @@
                 
                 if (product) {
                     document.querySelector('.modal-header h3').textContent = 'Hariri Bidhaa';
-                    document.getElementById('saveProductBtn').innerHTML = '<i class="fas fa-save"></i> Hifadhi';
+                    document.getElementById('saveProductBtn').innerHTML = '<i class="fas fa-save"></i> Sasisha Bidhaa';
                     
+                    document.getElementById('productSKU').value = product.sku;
+                    document.getElementById('productBarcode').value = product.barcode || '';
                     document.getElementById('productName').value = product.name;
                     document.getElementById('productPrice').value = product.price;
+                    document.getElementById('productCost').value = product.cost || '';
                     document.getElementById('productStock').value = product.stock;
-                    document.getElementById('productCategory').value = product.category || 'zote';
+                    document.getElementById('productCategory').value = product.category || 'general';
+                    document.getElementById('productMinStock').value = product.minStock || 10;
+                    document.getElementById('productDescription').value = product.description || '';
                     
                     form.dataset.editId = product.id;
                 } else {
-                    document.querySelector('.modal-header h3').textContent = 'Ongeza Bidhaa';
-                    document.getElementById('saveProductBtn').innerHTML = '<i class="fas fa-plus"></i> Ongeza';
+                    document.querySelector('.modal-header h3').textContent = 'Ongeza Bidhaa Mpya';
+                    document.getElementById('saveProductBtn').innerHTML = '<i class="fas fa-plus"></i> Ongeza Bidhaa';
                     
                     form.reset();
                     delete form.dataset.editId;
                     
                     // Generate SKU
                     const nextId = this.products.length > 0 ? Math.max(...this.products.map(p => p.id)) + 1 : 1;
-                    document.getElementById('productCategory').value = 'zote';
+                    document.getElementById('productSKU').value = `PRD${String(nextId).padStart(3, '0')}`;
+                    document.getElementById('productCategory').value = 'general';
+                    document.getElementById('productMinStock').value = 10;
                 }
                 
                 document.getElementById('productModal').classList.remove('hidden');
@@ -2644,39 +3756,36 @@
                 const form = document.getElementById('productForm');
                 const isEdit = form.dataset.editId;
                 
-                if (!document.getElementById('productName').value.trim()) {
-                    this.showToast('Jina la bidhaa linahitajika', 'error');
-                    return;
-                }
-                
-                const price = parseFloat(document.getElementById('productPrice').value);
-                if (!price || price <= 0) {
-                    this.showToast('Bei sahihi inahitajika', 'error');
-                    return;
-                }
-                
-                const stock = parseInt(document.getElementById('productStock').value);
-                if (isNaN(stock) || stock < 0) {
-                    this.showToast('Hisabu sahihi inahitajika', 'error');
+                if (!this.validateProductForm()) {
                     return;
                 }
                 
                 const productData = {
                     id: isEdit ? parseInt(isEdit) : this.products.length > 0 ? Math.max(...this.products.map(p => p.id)) + 1 : 1,
+                    sku: document.getElementById('productSKU').value,
+                    barcode: document.getElementById('productBarcode').value || Date.now().toString().slice(-12),
                     name: document.getElementById('productName').value,
                     category: document.getElementById('productCategory').value,
-                    price: price,
-                    stock: stock,
-                    sku: `PRD${String(Date.now()).slice(-6)}`
+                    price: parseFloat(document.getElementById('productPrice').value),
+                    cost: parseFloat(document.getElementById('productCost').value) || 0,
+                    stock: parseInt(document.getElementById('productStock').value),
+                    minStock: parseInt(document.getElementById('productMinStock').value) || 10,
+                    description: document.getElementById('productDescription').value,
+                    updatedAt: new Date().toISOString()
                 };
+                
+                if (!isEdit) {
+                    productData.createdAt = new Date().toISOString();
+                }
                 
                 if (isEdit) {
                     const index = this.products.findIndex(p => p.id === parseInt(isEdit));
                     if (index !== -1) {
-                        this.products[index] = productData;
+                        this.products[index] = { ...this.products[index], ...productData };
                     }
                 } else {
                     this.products.push(productData);
+                    this.categories.add(productData.category);
                 }
                 
                 this.saveData();
@@ -2685,7 +3794,36 @@
                 this.updateInventoryTable();
                 this.hideProductModal();
                 
-                this.showToast(`Bidhaa ${isEdit ? 'imehaririwa' : 'imeongezwa'}!`, 'success');
+                this.showToast(`Bidhaa ${isEdit ? 'imesasishwa' : 'imeongezwa'}!`, 'success');
+            }
+
+            validateProductForm() {
+                const sku = document.getElementById('productSKU').value;
+                const name = document.getElementById('productName').value;
+                const price = document.getElementById('productPrice').value;
+                const stock = document.getElementById('productStock').value;
+                
+                if (!sku.trim()) {
+                    this.showToast('SKU inahitajika', 'error');
+                    return false;
+                }
+                
+                if (!name.trim()) {
+                    this.showToast('Jina la bidhaa linahitajika', 'error');
+                    return false;
+                }
+                
+                if (!price || parseFloat(price) <= 0) {
+                    this.showToast('Bei sahihi inahitajika', 'error');
+                    return false;
+                }
+                
+                if (!stock || parseInt(stock) < 0) {
+                    this.showToast('Hisabu sahihi inahitajika', 'error');
+                    return false;
+                }
+                
+                return true;
             }
 
             editProduct(productId) {
@@ -2695,8 +3833,36 @@
                 }
             }
 
+            adjustStock(productId) {
+                const product = this.products.find(p => p.id === parseInt(productId));
+                if (!product) return;
+                
+                const adjustment = prompt(`Badilisha hisabu ya ${product.name}\nSasa: ${product.stock}\nWeka mabadiliko (+/-):`, '0');
+                
+                if (adjustment !== null) {
+                    const adjustmentValue = parseInt(adjustment);
+                    if (!isNaN(adjustmentValue)) {
+                        const newStock = product.stock + adjustmentValue;
+                        if (newStock < 0) {
+                            this.showToast('Hisabu haiwezi kuwa chini ya sifuri', 'error');
+                            return;
+                        }
+                        
+                        product.stock = newStock;
+                        this.saveData();
+                        this.updateProductsDisplay();
+                        this.updateInventoryTable();
+                        
+                        this.showToast(`Hisabu imebadilishwa: ${adjustmentValue >= 0 ? '+' : ''}${adjustmentValue}`, 'success');
+                    }
+                }
+            }
+
             deleteProduct(productId) {
                 if (!confirm('Una uhakika unataka kufuta bidhaa hii?')) return;
+                
+                const product = this.products.find(p => p.id === parseInt(productId));
+                if (!product) return;
                 
                 this.products = this.products.filter(p => p.id !== parseInt(productId));
                 this.saveData();
@@ -2712,23 +3878,27 @@
                 let filteredSales = this.sales;
                 
                 const now = new Date();
-                let startDate;
+                let startDate = new Date();
                 
                 switch(period) {
                     case 'today':
                         startDate = new Date(now.getFullYear(), now.getMonth(), now.getDate());
                         break;
+                    case 'yesterday':
+                        startDate = new Date(now.getFullYear(), now.getMonth(), now.getDate() - 1);
+                        break;
                     case 'week':
-                        startDate = new Date(now.getFullYear(), now.getMonth(), now.getDate() - 7);
+                        startDate = new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000);
                         break;
                     case 'month':
                         startDate = new Date(now.getFullYear(), now.getMonth() - 1, now.getDate());
                         break;
+                    case 'quarter':
+                        startDate = new Date(now.getFullYear(), now.getMonth() - 3, now.getDate());
+                        break;
                     case 'year':
                         startDate = new Date(now.getFullYear() - 1, now.getMonth(), now.getDate());
                         break;
-                    default:
-                        startDate = new Date(now.getFullYear(), now.getMonth(), now.getDate());
                 }
                 
                 filteredSales = this.sales.filter(sale => 
@@ -2764,11 +3934,36 @@
                     }
                 });
                 
+                // Calculate growth (simplified)
+                const previousStart = new Date(startDate.getTime() - (now.getTime() - startDate.getTime()));
+                const previousSales = this.sales.filter(sale => {
+                    const saleDate = new Date(sale.date);
+                    return saleDate >= previousStart && saleDate < startDate;
+                });
+                
+                const previousRevenue = previousSales.reduce((sum, sale) => sum + sale.total, 0);
+                const previousCount = previousSales.length;
+                
+                const revenueGrowth = previousRevenue > 0 ? ((totalRevenue - previousRevenue) / previousRevenue * 100).toFixed(1) : 0;
+                const salesGrowth = previousCount > 0 ? ((totalSales - previousCount) / previousCount * 100).toFixed(1) : 0;
+                const avgTransactionGrowth = previousCount > 0 && previousRevenue > 0 ? 
+                    ((avgTransaction - (previousRevenue / previousCount)) / (previousRevenue / previousCount) * 100).toFixed(1) : 0;
+                
                 // Update DOM
                 document.getElementById('reportTotalRevenue').textContent = `TZS ${totalRevenue.toLocaleString()}`;
                 document.getElementById('reportTotalSales').textContent = totalSales.toLocaleString();
                 document.getElementById('reportAvgTransaction').textContent = `TZS ${avgTransaction.toLocaleString()}`;
-                document.getElementById('reportTopProduct').textContent = topProduct;
+                document.getElementById('reportTopProduct').textContent = topProduct.length > 15 ? topProduct.substring(0, 12) + '...' : topProduct;
+                
+                // Update growth indicators
+                const revenueGrowthEl = document.getElementById('revenueGrowth');
+                revenueGrowthEl.innerHTML = `${revenueGrowth > 0 ? '<i class="fas fa-arrow-up text-success"></i>' : '<i class="fas fa-arrow-down text-danger"></i>'} ${Math.abs(revenueGrowth)}%`;
+                
+                const salesGrowthEl = document.getElementById('salesGrowth');
+                salesGrowthEl.innerHTML = `${salesGrowth > 0 ? '<i class="fas fa-arrow-up text-success"></i>' : '<i class="fas fa-arrow-down text-danger"></i>'} ${Math.abs(salesGrowth)}%`;
+                
+                const avgTransactionGrowthEl = document.getElementById('avgTransactionGrowth');
+                avgTransactionGrowthEl.innerHTML = `${avgTransactionGrowth > 0 ? '<i class="fas fa-arrow-up text-success"></i>' : '<i class="fas fa-arrow-down text-danger"></i>'} ${Math.abs(avgTransactionGrowth)}%`;
                 
                 // Update chart
                 this.updateSalesChart(filteredSales, period);
@@ -2782,57 +3977,35 @@
                 let data = [];
                 
                 const now = new Date();
-                const formatDate = (date) => {
-                    if (period === 'today') {
-                        return date.toLocaleTimeString('sw-TZ', { hour: '2-digit' }) + ':00';
-                    } else if (period === 'week') {
-                        return date.toLocaleDateString('sw-TZ', { weekday: 'short' });
-                    } else {
-                        return date.toLocaleDateString('sw-TZ', { day: 'numeric', month: 'short' });
-                    }
-                };
                 
-                // Create labels based on period
                 if (period === 'today') {
+                    // Hourly data for today
                     for (let i = 0; i < 24; i++) {
-                        const date = new Date(now.getFullYear(), now.getMonth(), now.getDate(), i);
-                        labels.push(formatDate(date));
+                        labels.push(`${i}:00`);
                         data.push(0);
                     }
-                } else if (period === 'week') {
-                    for (let i = 6; i >= 0; i--) {
-                        const date = new Date(now.getTime() - i * 24 * 60 * 60 * 1000);
-                        labels.push(formatDate(date));
-                        data.push(0);
-                    }
+                    
+                    sales.forEach(sale => {
+                        const hour = new Date(sale.date).getHours();
+                        data[hour] += sale.total;
+                    });
                 } else {
-                    const days = period === 'month' ? 30 : 12;
+                    // Daily data for longer periods
+                    const days = period === 'week' ? 7 : period === 'month' ? 30 : 365;
                     for (let i = days - 1; i >= 0; i--) {
                         const date = new Date(now.getTime() - i * 24 * 60 * 60 * 1000);
-                        labels.push(formatDate(date));
+                        labels.push(date.toLocaleDateString('sw-TZ', { day: 'numeric', month: 'short' }));
                         data.push(0);
                     }
+                    
+                    sales.forEach(sale => {
+                        const saleDate = new Date(sale.date);
+                        const diff = Math.floor((now - saleDate) / (1000 * 60 * 60 * 24));
+                        if (diff >= 0 && diff < days) {
+                            data[days - 1 - diff] += sale.total;
+                        }
+                    });
                 }
-                
-                // Fill data
-                sales.forEach(sale => {
-                    const saleDate = new Date(sale.date);
-                    let index;
-                    
-                    if (period === 'today') {
-                        index = saleDate.getHours();
-                    } else if (period === 'week') {
-                        const diff = Math.floor((now - saleDate) / (1000 * 60 * 60 * 24));
-                        index = 6 - diff;
-                    } else {
-                        const diff = Math.floor((now - saleDate) / (1000 * 60 * 60 * 24));
-                        index = (period === 'month' ? 29 : 11) - diff;
-                    }
-                    
-                    if (index >= 0 && index < data.length) {
-                        data[index] += sale.total;
-                    }
-                });
                 
                 // Destroy existing chart if it exists
                 if (this.salesChart) {
@@ -2850,7 +4023,8 @@
                             borderColor: 'var(--primary)',
                             backgroundColor: 'rgba(0, 104, 55, 0.1)',
                             fill: true,
-                            tension: 0.4
+                            tension: 0.4,
+                            borderWidth: 2
                         }]
                     },
                     options: {
@@ -2859,6 +4033,13 @@
                         plugins: {
                             legend: {
                                 display: false
+                            },
+                            tooltip: {
+                                callbacks: {
+                                    label: function(context) {
+                                        return `TZS ${context.parsed.y.toLocaleString()}`;
+                                    }
+                                }
                             }
                         },
                         scales: {
@@ -2868,6 +4049,14 @@
                                     callback: function(value) {
                                         return 'TZS ' + value.toLocaleString();
                                     }
+                                },
+                                grid: {
+                                    color: 'var(--border)'
+                                }
+                            },
+                            x: {
+                                grid: {
+                                    color: 'var(--border)'
                                 }
                             }
                         }
@@ -2880,7 +4069,10 @@
                     products: this.products,
                     sales: this.sales,
                     settings: this.settings,
-                    timestamp: new Date().toISOString()
+                    heldCarts: this.heldCarts,
+                    timestamp: new Date().toISOString(),
+                    version: '1.0.0',
+                    system: 'Tanzania POS'
                 };
                 
                 const dataStr = JSON.stringify(backup, null, 2);
@@ -2912,18 +4104,20 @@
                         try {
                             const backup = JSON.parse(event.target.result);
                             
-                            if (confirm('Hii itabadilisha data yote. Una uhakika?')) {
+                            if (confirm('Hii itabadilisha data yote yako ya sasa. Una uhakika?')) {
                                 this.products = backup.products || [];
                                 this.sales = backup.sales || [];
                                 this.settings = backup.settings || {};
+                                this.heldCarts = backup.heldCarts || [];
                                 
                                 this.saveData();
                                 this.updateProductsDisplay();
                                 this.updateCategories();
                                 this.updateInventoryTable();
+                                this.updateSalesHistory();
                                 this.updateDashboardStats();
                                 this.updateReports();
-                                this.loadSettings();
+                                this.loadSettingsUI();
                                 
                                 this.showToast('Data imerejeshwa!', 'success');
                             }
@@ -2938,12 +4132,92 @@
                 input.click();
             }
 
+            exportAllData() {
+                const data = {
+                    products: this.products,
+                    sales: this.sales,
+                    settings: this.settings,
+                    exportDate: new Date().toISOString()
+                };
+                
+                const dataStr = JSON.stringify(data, null, 2);
+                const dataBlob = new Blob([dataStr], { type: 'application/json' });
+                const url = URL.createObjectURL(dataBlob);
+                
+                const a = document.createElement('a');
+                a.href = url;
+                const date = new Date().toISOString().split('T')[0];
+                a.download = `tanzania_pos_data_${date}.json`;
+                document.body.appendChild(a);
+                a.click();
+                document.body.removeChild(a);
+                URL.revokeObjectURL(url);
+                
+                this.showToast('Data yote imepakuliwa!', 'success');
+            }
+
+            importData() {
+                const input = document.createElement('input');
+                input.type = 'file';
+                input.accept = '.json';
+                
+                input.onchange = (e) => {
+                    const file = e.target.files[0];
+                    const reader = new FileReader();
+                    
+                    reader.onload = (event) => {
+                        try {
+                            const importData = JSON.parse(event.target.result);
+                            
+                            if (confirm('Unganisha data hii na data yako ya sasa?')) {
+                                // Merge products
+                                if (importData.products) {
+                                    importData.products.forEach(newProduct => {
+                                        const existingIndex = this.products.findIndex(p => p.id === newProduct.id);
+                                        if (existingIndex === -1) {
+                                            this.products.push(newProduct);
+                                        }
+                                    });
+                                }
+                                
+                                // Merge sales
+                                if (importData.sales) {
+                                    importData.sales.forEach(newSale => {
+                                        const existingIndex = this.sales.findIndex(s => s.id === newSale.id);
+                                        if (existingIndex === -1) {
+                                            this.sales.push(newSale);
+                                        }
+                                    });
+                                }
+                                
+                                this.saveData();
+                                this.updateProductsDisplay();
+                                this.updateInventoryTable();
+                                this.updateSalesHistory();
+                                this.updateDashboardStats();
+                                this.updateReports();
+                                
+                                this.showToast('Data imeingizwa!', 'success');
+                            }
+                        } catch (error) {
+                            this.showToast('Faili sio sahihi!', 'error');
+                        }
+                    };
+                    
+                    reader.readAsText(file);
+                };
+                
+                input.click();
+            }
+
             resetData() {
-                if (confirm('⚠️ UNAHAKIKA UNATAKA KUFUTA DATA YOTE?\n\nHii itafuta bidhaa, mauzo na mipangilio yote.')) {
+                if (confirm('⚠️ ONYO: Hii itafuta DATA YOTE na kurudisha data ya sampuli.\n\nUna uhakika kabisa?')) {
                     localStorage.clear();
                     this.products = [];
                     this.sales = [];
                     this.cart = [];
+                    this.heldCarts = [];
+                    this.categories = new Set(['all']);
                     this.settings = {};
                     
                     this.createSampleData();
@@ -2952,11 +4226,12 @@
                     this.updateProductsDisplay();
                     this.updateCategories();
                     this.updateInventoryTable();
+                    this.updateSalesHistory();
                     this.updateDashboardStats();
                     this.updateReports();
-                    this.loadSettings();
+                    this.loadSettingsUI();
                     
-                    this.showToast('Data yote imefutwa', 'warning');
+                    this.showToast('Data yote imefutwa na data ya sampuli imewekwa', 'warning');
                 }
             }
 
@@ -2974,12 +4249,24 @@
                 document.body.removeChild(a);
                 URL.revokeObjectURL(url);
                 
-                this.showToast('Historia imepakuliwa!', 'success');
+                this.showToast('Historia ya mauzo imepakuliwa!', 'success');
             }
 
-            scanBarcode() {
-                // Simulate barcode scanning
-                this.showToast('Skana ya barcode inatumika...', 'info');
+            printReport() {
+                this.showToast('Uchapaji wa ripoti utafanyika hapo baadaye!', 'info');
+            }
+
+            quickSale() {
+                if (this.cart.length === 0) {
+                    this.showToast('Ongeza bidhaa kwenye kasha kwanza', 'info');
+                    return;
+                }
+                
+                this.showPaymentModal();
+            }
+
+            showScanner() {
+                this.showToast('Skana ya msimbo wa mstari inatumika...', 'info');
                 
                 // Simulate scanning after 1 second
                 setTimeout(() => {
@@ -2990,28 +4277,64 @@
                 }, 1000);
             }
 
-            showToast(message, type = 'info') {
+            bulkImport() {
+                this.showToast('Ingizo la bidhaa nyingi utafanyika hapo baadaye!', 'info');
+            }
+
+            changePassword() {
+                this.showToast('Kubadilisha nenosiri kutafanyika hapo baadaye!', 'info');
+            }
+
+            hideAllModals() {
+                document.querySelectorAll('.modal-overlay').forEach(modal => {
+                    modal.classList.add('hidden');
+                });
+                this.closeCart();
+            }
+
+            showToast(message, type = 'info', duration = 4000) {
                 const toastContainer = document.getElementById('toastContainer');
                 
                 const toast = document.createElement('div');
                 toast.className = `toast ${type}`;
                 toast.innerHTML = `
-                    <div>
+                    <div class="toast-icon">
                         <i class="fas fa-${type === 'success' ? 'check-circle' : 
                                           type === 'error' ? 'exclamation-circle' : 
-                                          type === 'warning' ? 'exclamation-triangle' : 'info-circle'}"></i>
+                                          type === 'warning' ? 'exclamation-triangle' : 
+                                          'info-circle'}"></i>
                     </div>
-                    <div>${message}</div>
+                    <div class="toast-content">
+                        <div class="toast-title">${type.charAt(0).toUpperCase() + type.slice(1)}</div>
+                        <div class="toast-message">${message}</div>
+                    </div>
+                    <button class="toast-close">
+                        <i class="fas fa-times"></i>
+                    </button>
                 `;
                 
                 toastContainer.appendChild(toast);
                 
-                setTimeout(() => {
-                    toast.classList.add('hidden');
+                // Auto-remove after duration
+                const autoRemove = setTimeout(() => {
+                    toast.classList.add('hiding');
                     setTimeout(() => {
-                        toast.remove();
+                        if (toast.parentNode) {
+                            toast.parentNode.removeChild(toast);
+                        }
                     }, 300);
-                }, 3000);
+                }, duration);
+                
+                // Close button
+                toast.querySelector('.toast-close').addEventListener('click', () => {
+                    clearTimeout(autoRemove);
+                    toast.classList.add('hiding');
+                    setTimeout(() => {
+                        if (toast.parentNode) {
+                            toast.parentNode.removeChild(toast);
+                        }
+                    }, 300);
+                });
             }
 
             debounce(func, wait) {
@@ -3030,6 +4353,18 @@
         // Initialize the POS system
         document.addEventListener('DOMContentLoaded', () => {
             window.posSystem = new TanzaniaPOS();
+            
+            // Check for auto-login
+            const lastLogin = localStorage.getItem('tanzania_pos_last_login');
+            if (lastLogin) {
+                try {
+                    const loginData = JSON.parse(lastLogin);
+                    document.getElementById('loginUsername').value = loginData.user;
+                    document.getElementById('loginRole').value = loginData.role;
+                } catch (e) {
+                    // Ignore parse errors
+                }
+            }
         });
     </script>
 </body>

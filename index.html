@@ -634,14 +634,14 @@
             overflow-y: auto;
             -webkit-overflow-scrolling: touch;
             padding-bottom: var(--space-lg);
-            min-height: 0; /* Critical for flex scroll */
+            min-height: 0;
         }
 
         .products-grid {
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
             gap: var(--space-md);
-            padding: 2px; /* Prevents clipping */
+            padding: 2px;
         }
 
         .product-card {
@@ -661,31 +661,151 @@
             -webkit-backdrop-filter: var(--blur-sm);
         }
 
-        .product-card:active {
-            transform: scale(0.98);
-            opacity: 0.9;
+        /* Sales History Page */
+        .history-page {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            padding: var(--space-lg);
+            gap: var(--space-lg);
         }
 
-        .product-name {
+        .history-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: var(--space-lg);
+            background: var(--bg-surface);
+            border-radius: var(--radius-xl);
+            border: 1px solid var(--border);
+            backdrop-filter: var(--blur-md);
+            -webkit-backdrop-filter: var(--blur-md);
+            flex-shrink: 0;
+        }
+
+        .history-filters {
+            display: flex;
+            flex-direction: column;
+            gap: var(--space-md);
+            padding: var(--space-lg);
+            background: var(--bg-surface);
+            border-radius: var(--radius-xl);
+            border: 1px solid var(--border);
+            backdrop-filter: var(--blur-sm);
+            -webkit-backdrop-filter: var(--blur-sm);
+            flex-shrink: 0;
+        }
+
+        .filter-row {
+            display: flex;
+            gap: var(--space-md);
+            align-items: center;
+        }
+
+        .history-container {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+
+        .history-table-container {
+            flex: 1;
+            overflow: auto;
+            border-radius: var(--radius-xl);
+            border: 1px solid var(--border);
+            background: var(--bg-surface);
+            -webkit-overflow-scrolling: touch;
+            backdrop-filter: var(--blur-sm);
+            -webkit-backdrop-filter: var(--blur-sm);
+            min-height: 0;
+        }
+
+        .history-table {
+            width: 100%;
+            border-collapse: collapse;
+            min-width: 800px;
+        }
+
+        .history-table th {
+            background: var(--bg-tertiary);
+            padding: var(--space-md);
+            text-align: left;
             font-weight: 600;
-            font-size: 15px;
             color: var(--text-primary);
-            line-height: 1.4;
-            margin-bottom: var(--space-sm);
+            border-bottom: 1px solid var(--border);
+            font-size: 13px;
+            position: sticky;
+            top: 0;
+            z-index: 1;
         }
 
-        .product-price {
-            color: var(--system-green);
-            font-weight: 700;
-            font-size: 18px;
-            margin-top: auto;
+        .history-table td {
+            padding: var(--space-md);
+            border-bottom: 1px solid var(--border-light);
+            font-size: 14px;
         }
 
-        .product-stock {
-            color: var(--text-tertiary);
+        .history-table tr:hover {
+            background: var(--bg-tertiary);
+        }
+
+        .sale-id {
+            font-family: monospace;
             font-size: 12px;
-            margin-top: var(--space-xs);
-            opacity: 0.8;
+            color: var(--text-tertiary);
+        }
+
+        .sale-items {
+            max-width: 200px;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+
+        .sale-items:hover {
+            white-space: normal;
+            overflow: visible;
+            position: relative;
+            z-index: 2;
+            background: var(--bg-surface);
+            padding: var(--space-sm);
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+        }
+
+        .payment-method-badge {
+            padding: 2px 8px;
+            border-radius: var(--radius-sm);
+            font-size: 11px;
+            font-weight: 600;
+            text-transform: uppercase;
+        }
+
+        .payment-cash {
+            background: rgba(52, 199, 89, 0.2);
+            color: var(--system-green);
+        }
+
+        .payment-card {
+            background: rgba(0, 122, 255, 0.2);
+            color: var(--system-blue);
+        }
+
+        .payment-mobile {
+            background: rgba(255, 149, 0, 0.2);
+            color: var(--system-orange);
+        }
+
+        .sale-total {
+            font-weight: 600;
+            color: var(--system-green);
+        }
+
+        .view-sale-btn {
+            padding: 4px 8px;
+            font-size: 12px;
         }
 
         /* Cart Drawer - Fixed */
@@ -909,6 +1029,93 @@
             padding-bottom: var(--space-lg);
         }
 
+        /* Sale Details Modal */
+        .sale-details-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: var(--bg-overlay);
+            backdrop-filter: var(--blur-sm);
+            -webkit-backdrop-filter: var(--blur-sm);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+            padding: var(--space-lg);
+        }
+
+        .sale-details-modal.active {
+            display: flex;
+            animation: fadeIn 0.3s ease;
+        }
+
+        .sale-details-content {
+            background: var(--bg-surface);
+            backdrop-filter: var(--blur-xl);
+            -webkit-backdrop-filter: var(--blur-xl);
+            border-radius: var(--radius-2xl);
+            width: 100%;
+            max-width: 500px;
+            max-height: 80vh;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            border: 1px solid var(--glass-border);
+            box-shadow: var(--shadow-2xl);
+        }
+
+        .sale-details-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: var(--space-lg);
+            border-bottom: 1px solid var(--border);
+            background: var(--bg-tertiary);
+        }
+
+        .sale-details-body {
+            flex: 1;
+            overflow-y: auto;
+            padding: var(--space-lg);
+            min-height: 0;
+        }
+
+        .sale-details-footer {
+            padding: var(--space-lg);
+            border-top: 1px solid var(--border);
+            background: var(--bg-tertiary);
+            display: flex;
+            justify-content: flex-end;
+            gap: var(--space-md);
+        }
+
+        .sale-items-list {
+            display: flex;
+            flex-direction: column;
+            gap: var(--space-md);
+            margin: var(--space-lg) 0;
+        }
+
+        .sale-item-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: var(--space-md);
+            background: var(--bg-tertiary);
+            border-radius: var(--radius);
+            border: 1px solid var(--border);
+        }
+
+        .sale-summary {
+            background: var(--bg-tertiary);
+            padding: var(--space-lg);
+            border-radius: var(--radius-xl);
+            margin-top: var(--space-lg);
+            border: 1px solid var(--border);
+        }
+
         /* Modals */
         .modal-overlay {
             position: fixed;
@@ -973,6 +1180,38 @@
             border-radius: 2px;
         }
 
+        /* Stats Cards */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: var(--space-md);
+            margin-bottom: var(--space-lg);
+        }
+
+        .stat-card {
+            background: var(--bg-surface);
+            border-radius: var(--radius-xl);
+            padding: var(--space-lg);
+            border: 1px solid var(--border);
+            text-align: center;
+            backdrop-filter: var(--blur-sm);
+            -webkit-backdrop-filter: var(--blur-sm);
+        }
+
+        .stat-value {
+            font-size: 24px;
+            font-weight: 700;
+            color: var(--primary);
+            margin-bottom: var(--space-xs);
+        }
+
+        .stat-label {
+            font-size: 12px;
+            color: var(--text-tertiary);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
         /* Touch device optimizations */
         @media (hover: none) and (pointer: coarse) {
             .btn:hover {
@@ -1014,6 +1253,10 @@
                 left: auto;
                 right: var(--space-lg);
                 border-radius: var(--radius-2xl);
+            }
+            
+            .sale-details-content {
+                max-width: 500px;
             }
         }
     </style>
@@ -1107,6 +1350,79 @@
                                     <div class="products-grid" id="productsGrid">
                                         <!-- Products will be populated dynamically -->
                                     </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Sales History Page -->
+                    <div id="historyPage" class="page">
+                        <div class="history-page">
+                            <div class="history-header glass-card">
+                                <h2 class="text-lg font-semibold"><i class="fas fa-history"></i> Sales History</h2>
+                                <button id="exportHistoryBtn" class="btn btn-primary btn-sm">
+                                    <i class="fas fa-download"></i> Export
+                                </button>
+                            </div>
+                            
+                            <div class="stats-grid">
+                                <div class="stat-card glass">
+                                    <div class="stat-value" id="totalSalesCount">0</div>
+                                    <div class="stat-label">Total Sales</div>
+                                </div>
+                                <div class="stat-card glass">
+                                    <div class="stat-value" id="totalRevenue">$0.00</div>
+                                    <div class="stat-label">Revenue</div>
+                                </div>
+                                <div class="stat-card glass">
+                                    <div class="stat-value" id="avgSaleValue">$0.00</div>
+                                    <div class="stat-label">Avg Sale</div>
+                                </div>
+                                <div class="stat-card glass">
+                                    <div class="stat-value" id="todaySales">0</div>
+                                    <div class="stat-label">Today</div>
+                                </div>
+                            </div>
+                            
+                            <div class="history-filters glass-card">
+                                <div class="filter-row">
+                                    <select id="historyPeriod" class="form-control">
+                                        <option value="all">All Time</option>
+                                        <option value="today">Today</option>
+                                        <option value="week">This Week</option>
+                                        <option value="month">This Month</option>
+                                        <option value="year">This Year</option>
+                                    </select>
+                                    
+                                    <select id="historyPaymentMethod" class="form-control">
+                                        <option value="all">All Payments</option>
+                                        <option value="cash">Cash</option>
+                                        <option value="card">Card</option>
+                                        <option value="mobile">Mobile</option>
+                                    </select>
+                                    
+                                    <input type="text" id="historySearch" class="form-control" placeholder="Search sales...">
+                                </div>
+                            </div>
+                            
+                            <div class="history-container">
+                                <div class="history-table-container glass-card">
+                                    <table class="history-table" id="historyTable">
+                                        <thead>
+                                            <tr>
+                                                <th>Date & Time</th>
+                                                <th>Sale ID</th>
+                                                <th>Items</th>
+                                                <th>Cashier</th>
+                                                <th>Payment</th>
+                                                <th>Total</th>
+                                                <th>Actions</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <!-- Sales history will be populated dynamically -->
+                                        </tbody>
+                                    </table>
                                 </div>
                             </div>
                         </div>
@@ -1241,6 +1557,11 @@
                     <span class="nav-label">Sales</span>
                 </button>
                 
+                <button class="nav-item" data-page="history">
+                    <i class="fas fa-history nav-icon"></i>
+                    <span class="nav-label">History</span>
+                </button>
+                
                 <button class="nav-item" data-page="inventory">
                     <i class="fas fa-boxes nav-icon"></i>
                     <span class="nav-label">Inventory</span>
@@ -1303,7 +1624,33 @@
             </div>
         </div>
 
-        <!-- Modals -->
+        <!-- Sale Details Modal -->
+        <div id="saleDetailsModal" class="sale-details-modal">
+            <div class="sale-details-content">
+                <div class="sale-details-header">
+                    <h3 class="font-semibold"><i class="fas fa-receipt"></i> Sale Details</h3>
+                    <button id="closeSaleDetails" class="btn btn-icon btn-sm">
+                        <i class="fas fa-times"></i>
+                    </button>
+                </div>
+                
+                <div class="sale-details-body">
+                    <div id="saleDetailsContent">
+                        <!-- Sale details will be populated dynamically -->
+                    </div>
+                </div>
+                
+                <div class="sale-details-footer">
+                    <button id="printSaleReceiptBtn" class="btn btn-primary">
+                        <i class="fas fa-print"></i> Print Receipt
+                    </button>
+                    <button id="closeSaleDetailsBtn" class="btn btn-outline">
+                        Close
+                    </button>
+                </div>
+            </div>
+        </div>
+
         <!-- Payment Modal -->
         <div id="paymentModal" class="modal-overlay hidden">
             <div class="modal-content glass">
@@ -1415,38 +1762,10 @@
                 </div>
             </div>
         </div>
-
-        <!-- Receipt Modal -->
-        <div id="receiptModal" class="modal-overlay hidden">
-            <div class="modal-content glass">
-                <div class="modal-header">
-                    <h3 class="font-semibold"><i class="fas fa-receipt"></i> Receipt</h3>
-                    <button id="closeReceiptModal" class="btn btn-icon btn-sm">
-                        <i class="fas fa-times"></i>
-                    </button>
-                </div>
-                
-                <div class="modal-body">
-                    <div id="receiptContent" class="receipt">
-                        <!-- Receipt content will be generated here -->
-                    </div>
-                </div>
-                
-                <div class="modal-footer">
-                    <button id="printReceiptBtn" class="btn btn-primary">
-                        <i class="fas fa-print"></i> Print
-                    </button>
-                    
-                    <button id="doneBtn" class="btn btn-outline">
-                        Done
-                    </button>
-                </div>
-            </div>
-        </div>
     </div>
 
     <script>
-        // Enhanced POS System with Fixed Scroll and Complete Local Storage
+        // Enhanced POS System with Complete Sales History
         class POSSystem {
             constructor() {
                 this.currentUser = null;
@@ -1454,16 +1773,16 @@
                 this.cart = [];
                 this.products = [];
                 this.sales = [];
-                this.customers = [];
                 this.categories = new Set(['all']);
                 this.isCartOpen = false;
                 this.currentTheme = localStorage.getItem('theme') || 'light';
+                this.currentSaleView = null;
                 
                 this.init();
             }
 
             init() {
-                this.loadAllData(); // Load ALL data from localStorage
+                this.loadAllData();
                 this.setupEventListeners();
                 this.updateDateTime();
                 this.applyTheme(this.currentTheme);
@@ -1477,35 +1796,29 @@
                 this.updateInventoryTable();
                 this.updateCartBadge();
                 this.loadSettingsUI();
+                
+                // Create some demo sales history
+                if (this.sales.length === 0) {
+                    this.createDemoSales();
+                }
             }
 
-            // LOAD ALL DATA FROM LOCALSTORAGE
             loadAllData() {
-                // Load products
                 const storedProducts = localStorage.getItem('pos_products');
                 if (storedProducts) {
                     this.products = JSON.parse(storedProducts);
                 }
                 
-                // Load sales
                 const storedSales = localStorage.getItem('pos_sales');
                 if (storedSales) {
                     this.sales = JSON.parse(storedSales);
                 }
                 
-                // Load cart (current session)
                 const storedCart = localStorage.getItem('pos_current_cart');
                 if (storedCart) {
                     this.cart = JSON.parse(storedCart);
                 }
                 
-                // Load customers
-                const storedCustomers = localStorage.getItem('pos_customers');
-                if (storedCustomers) {
-                    this.customers = JSON.parse(storedCustomers);
-                }
-                
-                // Load users
                 const storedUsers = localStorage.getItem('pos_users');
                 if (storedUsers) {
                     this.users = JSON.parse(storedUsers);
@@ -1513,7 +1826,6 @@
                     this.createDemoUsers();
                 }
                 
-                // Load settings
                 const storedSettings = localStorage.getItem('pos_settings');
                 if (storedSettings) {
                     this.settings = JSON.parse(storedSettings);
@@ -1528,59 +1840,20 @@
                     };
                 }
                 
-                // Load categories
                 const storedCategories = localStorage.getItem('pos_categories');
                 if (storedCategories) {
                     this.categories = new Set(JSON.parse(storedCategories));
                 }
             }
 
-            // SAVE ALL DATA TO LOCALSTORAGE
             saveAllData() {
-                // Save products
                 localStorage.setItem('pos_products', JSON.stringify(this.products));
-                
-                // Save sales
                 localStorage.setItem('pos_sales', JSON.stringify(this.sales));
-                
-                // Save current cart
                 localStorage.setItem('pos_current_cart', JSON.stringify(this.cart));
-                
-                // Save customers
-                localStorage.setItem('pos_customers', JSON.stringify(this.customers));
-                
-                // Save settings
                 localStorage.setItem('pos_settings', JSON.stringify(this.settings));
-                
-                // Save categories
-                localStorage.setItem('pos_categories', JSON.stringify(Array.from(this.categories)));
-                
-                // Save users
                 localStorage.setItem('pos_users', JSON.stringify(this.users));
-                
-                // Save theme
+                localStorage.setItem('pos_categories', JSON.stringify(Array.from(this.categories)));
                 localStorage.setItem('theme', this.currentTheme);
-            }
-
-            // Save specific data
-            saveProducts() {
-                localStorage.setItem('pos_products', JSON.stringify(this.products));
-            }
-
-            saveSales() {
-                localStorage.setItem('pos_sales', JSON.stringify(this.sales));
-            }
-
-            saveCart() {
-                localStorage.setItem('pos_current_cart', JSON.stringify(this.cart));
-            }
-
-            saveSettings() {
-                localStorage.setItem('pos_settings', JSON.stringify(this.settings));
-            }
-
-            saveCustomers() {
-                localStorage.setItem('pos_customers', JSON.stringify(this.customers));
             }
 
             createDemoData() {
@@ -1668,6 +1941,64 @@
                 this.saveAllData();
             }
 
+            createDemoSales() {
+                const now = new Date();
+                const demoSales = [
+                    {
+                        id: 1001,
+                        date: new Date(now.getTime() - 24 * 60 * 60 * 1000).toISOString(),
+                        items: [
+                            { id: 1, name: 'Coca-Cola 500ml', price: 1.50, quantity: 2, sku: 'PROD001' },
+                            { id: 2, name: 'Lays Chips', price: 2.00, quantity: 1, sku: 'PROD002' }
+                        ],
+                        subtotal: 5.00,
+                        tax: 0.50,
+                        total: 5.50,
+                        paymentMethod: 'cash',
+                        amountTendered: 10.00,
+                        change: 4.50,
+                        cashier: 'John Cashier',
+                        store: 'Retail Store'
+                    },
+                    {
+                        id: 1002,
+                        date: new Date(now.getTime() - 12 * 60 * 60 * 1000).toISOString(),
+                        items: [
+                            { id: 3, name: 'Milk 1L', price: 2.50, quantity: 1, sku: 'PROD003' },
+                            { id: 4, name: 'Bread', price: 1.20, quantity: 2, sku: 'PROD004' },
+                            { id: 5, name: 'Mineral Water', price: 1.00, quantity: 3, sku: 'PROD005' }
+                        ],
+                        subtotal: 7.90,
+                        tax: 0.79,
+                        total: 8.69,
+                        paymentMethod: 'card',
+                        amountTendered: 10.00,
+                        change: 1.31,
+                        cashier: 'Jane Manager',
+                        store: 'Retail Store'
+                    },
+                    {
+                        id: 1003,
+                        date: new Date(now.getTime() - 6 * 60 * 60 * 1000).toISOString(),
+                        items: [
+                            { id: 6, name: 'Chocolate Bar', price: 1.80, quantity: 5, sku: 'PROD006' },
+                            { id: 1, name: 'Coca-Cola 500ml', price: 1.50, quantity: 3, sku: 'PROD001' }
+                        ],
+                        subtotal: 13.50,
+                        tax: 1.35,
+                        total: 14.85,
+                        paymentMethod: 'mobile',
+                        amountTendered: 20.00,
+                        change: 5.15,
+                        cashier: 'John Cashier',
+                        store: 'Retail Store'
+                    }
+                ];
+                
+                this.sales = demoSales;
+                this.saveAllData();
+            }
+
             createDemoUsers() {
                 this.users = [
                     {
@@ -1692,7 +2023,7 @@
                         id: 3,
                         username: 'manager',
                         password: 'manager123',
-                        name: 'Store Manager',
+                        name: 'Jane Manager',
                         role: 'manager',
                         email: 'manager@example.com',
                         createdAt: new Date().toISOString()
@@ -1762,12 +2093,12 @@
                 // Settings
                 document.getElementById('storeName').addEventListener('change', (e) => {
                     this.settings.storeName = e.target.value;
-                    this.saveSettings();
+                    this.saveAllData();
                 });
 
                 document.getElementById('taxRate').addEventListener('change', (e) => {
                     this.settings.taxRate = parseFloat(e.target.value);
-                    this.saveSettings();
+                    this.saveAllData();
                     this.updateCartDisplay();
                 });
 
@@ -1775,13 +2106,37 @@
                     option.addEventListener('click', (e) => this.selectTheme(e.target.closest('.theme-option').dataset.theme));
                 });
 
+                // Backup/Restore
                 document.getElementById('backupBtn').addEventListener('click', () => this.backupData());
                 document.getElementById('restoreBtn').addEventListener('click', () => this.restoreData());
 
-                // Receipt modal
-                document.getElementById('closeReceiptModal').addEventListener('click', () => this.hideReceiptModal());
-                document.getElementById('doneBtn').addEventListener('click', () => this.hideReceiptModal());
-                document.getElementById('printReceiptBtn').addEventListener('click', () => this.printReceipt());
+                // Export history
+                document.getElementById('exportHistoryBtn').addEventListener('click', () => this.exportHistory());
+
+                // History filters
+                document.getElementById('historyPeriod').addEventListener('change', () => {
+                    this.updateSalesHistory();
+                });
+
+                document.getElementById('historyPaymentMethod').addEventListener('change', () => {
+                    this.updateSalesHistory();
+                });
+
+                document.getElementById('historySearch').addEventListener('input',
+                    this.debounce((e) => this.updateSalesHistory(), 300)
+                );
+
+                // Sale details modal
+                document.getElementById('closeSaleDetails').addEventListener('click', () => this.hideSaleDetails());
+                document.getElementById('closeSaleDetailsBtn').addEventListener('click', () => this.hideSaleDetails());
+                document.getElementById('printSaleReceiptBtn').addEventListener('click', () => this.printSaleReceipt());
+
+                // Reports
+                document.getElementById('reportPeriod').addEventListener('change', () => {
+                    if (document.getElementById('reportsPage').classList.contains('active')) {
+                        this.generateReports();
+                    }
+                });
 
                 // Close cart when clicking outside
                 document.addEventListener('click', (e) => {
@@ -1810,17 +2165,9 @@
                         this.closeCart();
                     }
                 });
-
-                // Initialize report period selector
-                document.getElementById('reportPeriod').addEventListener('change', () => {
-                    if (document.getElementById('reportsPage').classList.contains('active')) {
-                        this.generateReports();
-                    }
-                });
             }
 
             loadSettingsUI() {
-                // Load store settings
                 document.getElementById('storeName').value = this.settings.storeName || 'Retail Store';
                 document.getElementById('taxRate').value = this.settings.taxRate || 10;
             }
@@ -1848,14 +2195,12 @@
                     
                     this.showNotification(`Welcome, ${user.name}!`);
                     
-                    // Save login state
                     localStorage.setItem('pos_last_login', JSON.stringify({
                         user: user.username,
                         role: user.role,
                         timestamp: new Date().toISOString()
                     }));
                     
-                    // Load cart from previous session
                     this.updateCartDisplay();
                     this.updateCartBadge();
                     
@@ -1866,7 +2211,6 @@
             }
 
             logout() {
-                // Save current session
                 this.saveAllData();
                 
                 this.currentUser = null;
@@ -1881,6 +2225,359 @@
                 document.body.style.overflow = 'auto';
             }
 
+            // SALES HISTORY FUNCTIONS
+            updateSalesHistory() {
+                const period = document.getElementById('historyPeriod').value;
+                const paymentMethod = document.getElementById('historyPaymentMethod').value;
+                const searchQuery = document.getElementById('historySearch').value.toLowerCase();
+                
+                let filteredSales = this.sales;
+                
+                // Filter by period
+                const now = new Date();
+                switch(period) {
+                    case 'today':
+                        const today = now.toDateString();
+                        filteredSales = filteredSales.filter(sale => 
+                            new Date(sale.date).toDateString() === today
+                        );
+                        break;
+                    case 'week':
+                        const weekAgo = new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000);
+                        filteredSales = filteredSales.filter(sale => 
+                            new Date(sale.date) >= weekAgo
+                        );
+                        break;
+                    case 'month':
+                        const monthAgo = new Date(now.getTime() - 30 * 24 * 60 * 60 * 1000);
+                        filteredSales = filteredSales.filter(sale => 
+                            new Date(sale.date) >= monthAgo
+                        );
+                        break;
+                    case 'year':
+                        const yearAgo = new Date(now.getTime() - 365 * 24 * 60 * 60 * 1000);
+                        filteredSales = filteredSales.filter(sale => 
+                            new Date(sale.date) >= yearAgo
+                        );
+                        break;
+                }
+                
+                // Filter by payment method
+                if (paymentMethod !== 'all') {
+                    filteredSales = filteredSales.filter(sale => 
+                        sale.paymentMethod === paymentMethod
+                    );
+                }
+                
+                // Filter by search query
+                if (searchQuery) {
+                    filteredSales = filteredSales.filter(sale => 
+                        sale.cashier.toLowerCase().includes(searchQuery) ||
+                        sale.id.toString().includes(searchQuery) ||
+                        sale.items.some(item => item.name.toLowerCase().includes(searchQuery))
+                    );
+                }
+                
+                // Sort by date (newest first)
+                filteredSales.sort((a, b) => new Date(b.date) - new Date(a.date));
+                
+                // Update stats
+                this.updateSalesStats(filteredSales);
+                
+                // Update table
+                const tableBody = document.getElementById('historyTable').querySelector('tbody');
+                tableBody.innerHTML = '';
+                
+                filteredSales.forEach(sale => {
+                    const row = document.createElement('tr');
+                    const date = new Date(sale.date);
+                    const formattedDate = date.toLocaleDateString('en-US', {
+                        month: 'short',
+                        day: 'numeric',
+                        year: 'numeric'
+                    });
+                    const formattedTime = date.toLocaleTimeString('en-US', {
+                        hour: '2-digit',
+                        minute: '2-digit'
+                    });
+                    
+                    const itemsText = sale.items.map(item => 
+                        `${item.name} x${item.quantity}`
+                    ).join(', ');
+                    
+                    let paymentBadgeClass = 'payment-cash';
+                    if (sale.paymentMethod === 'card') {
+                        paymentBadgeClass = 'payment-card';
+                    } else if (sale.paymentMethod === 'mobile') {
+                        paymentBadgeClass = 'payment-mobile';
+                    }
+                    
+                    row.innerHTML = `
+                        <td>
+                            <div class="font-medium">${formattedDate}</div>
+                            <div class="text-sm text-tertiary">${formattedTime}</div>
+                        </td>
+                        <td>
+                            <span class="sale-id">#${sale.id}</span>
+                        </td>
+                        <td>
+                            <div class="sale-items" title="${itemsText}">
+                                ${itemsText}
+                            </div>
+                        </td>
+                        <td class="font-medium">${sale.cashier}</td>
+                        <td>
+                            <span class="payment-method-badge ${paymentBadgeClass}">
+                                ${sale.paymentMethod}
+                            </span>
+                        </td>
+                        <td class="sale-total">$${sale.total.toFixed(2)}</td>
+                        <td>
+                            <button class="btn btn-outline btn-sm view-sale-btn" data-sale-id="${sale.id}">
+                                <i class="fas fa-eye"></i> View
+                            </button>
+                        </td>
+                    `;
+                    
+                    tableBody.appendChild(row);
+                });
+                
+                // Add event listeners to view buttons
+                tableBody.querySelectorAll('.view-sale-btn').forEach(btn => {
+                    btn.addEventListener('click', (e) => {
+                        const saleId = parseInt(e.target.closest('button').dataset.saleId);
+                        this.showSaleDetails(saleId);
+                    });
+                });
+            }
+
+            updateSalesStats(sales) {
+                const totalSales = sales.length;
+                const totalRevenue = sales.reduce((sum, sale) => sum + sale.total, 0);
+                const avgSaleValue = totalSales > 0 ? totalRevenue / totalSales : 0;
+                
+                const today = new Date().toDateString();
+                const todaySales = sales.filter(sale => 
+                    new Date(sale.date).toDateString() === today
+                ).length;
+                
+                document.getElementById('totalSalesCount').textContent = totalSales;
+                document.getElementById('totalRevenue').textContent = `$${totalRevenue.toFixed(2)}`;
+                document.getElementById('avgSaleValue').textContent = `$${avgSaleValue.toFixed(2)}`;
+                document.getElementById('todaySales').textContent = todaySales;
+            }
+
+            showSaleDetails(saleId) {
+                const sale = this.sales.find(s => s.id === saleId);
+                if (!sale) return;
+                
+                this.currentSaleView = sale;
+                
+                const date = new Date(sale.date);
+                const formattedDateTime = date.toLocaleString('en-US', {
+                    month: 'long',
+                    day: 'numeric',
+                    year: 'numeric',
+                    hour: '2-digit',
+                    minute: '2-digit'
+                });
+                
+                let paymentBadgeClass = 'payment-cash';
+                if (sale.paymentMethod === 'card') {
+                    paymentBadgeClass = 'payment-card';
+                } else if (sale.paymentMethod === 'mobile') {
+                    paymentBadgeClass = 'payment-mobile';
+                }
+                
+                document.getElementById('saleDetailsContent').innerHTML = `
+                    <div class="mb-4">
+                        <div class="flex justify-between items-center mb-2">
+                            <div>
+                                <h4 class="font-bold text-lg">Sale #${sale.id}</h4>
+                                <p class="text-sm text-tertiary">${formattedDateTime}</p>
+                            </div>
+                            <span class="payment-method-badge ${paymentBadgeClass}">
+                                ${sale.paymentMethod.toUpperCase()}
+                            </span>
+                        </div>
+                        <div class="text-sm text-tertiary">
+                            Cashier: ${sale.cashier} • Store: ${sale.store || 'Retail Store'}
+                        </div>
+                    </div>
+                    
+                    <div class="sale-items-list">
+                        ${sale.items.map(item => `
+                            <div class="sale-item-row">
+                                <div>
+                                    <div class="font-medium">${item.name}</div>
+                                    <div class="text-sm text-tertiary">SKU: ${item.sku}</div>
+                                </div>
+                                <div class="text-right">
+                                    <div class="font-medium">${item.quantity} × $${item.price.toFixed(2)}</div>
+                                    <div class="font-semibold text-system-green">
+                                        $${(item.quantity * item.price).toFixed(2)}
+                                    </div>
+                                </div>
+                            </div>
+                        `).join('')}
+                    </div>
+                    
+                    <div class="sale-summary">
+                        <div class="flex justify-between mb-2">
+                            <span>Subtotal:</span>
+                            <span>$${sale.subtotal.toFixed(2)}</span>
+                        </div>
+                        <div class="flex justify-between mb-2">
+                            <span>Tax:</span>
+                            <span>$${sale.tax.toFixed(2)}</span>
+                        </div>
+                        <div class="flex justify-between font-bold text-lg mb-4 pt-2 border-t border-border">
+                            <span>Total:</span>
+                            <span>$${sale.total.toFixed(2)}</span>
+                        </div>
+                        <div class="flex justify-between mb-2">
+                            <span>Amount Tendered:</span>
+                            <span>$${sale.amountTendered.toFixed(2)}</span>
+                        </div>
+                        <div class="flex justify-between font-medium">
+                            <span>Change:</span>
+                            <span class="text-system-green">$${sale.change.toFixed(2)}</span>
+                        </div>
+                    </div>
+                `;
+                
+                document.getElementById('saleDetailsModal').classList.add('active');
+            }
+
+            hideSaleDetails() {
+                document.getElementById('saleDetailsModal').classList.remove('active');
+                this.currentSaleView = null;
+            }
+
+            printSaleReceipt() {
+                if (!this.currentSaleView) return;
+                
+                const sale = this.currentSaleView;
+                const date = new Date(sale.date);
+                const formattedDateTime = date.toLocaleString('en-US', {
+                    month: 'short',
+                    day: 'numeric',
+                    year: 'numeric',
+                    hour: '2-digit',
+                    minute: '2-digit'
+                });
+                
+                const receiptContent = `
+                    <div style="font-family: monospace; padding: 20px; max-width: 300px;">
+                        <div style="text-align: center; margin-bottom: 20px;">
+                            <h3 style="font-weight: bold; margin-bottom: 5px;">${this.settings.storeName}</h3>
+                            <p style="font-size: 12px; color: #666;">${formattedDateTime}</p>
+                            <p style="font-size: 12px; color: #666;">Invoice: #${sale.id}</p>
+                            <p style="font-size: 12px; color: #666;">Cashier: ${sale.cashier}</p>
+                        </div>
+                        
+                        <div style="border-top: 1px solid #000; border-bottom: 1px solid #000; padding: 10px 0; margin: 10px 0;">
+                            ${sale.items.map(item => `
+                                <div style="display: flex; justify-content: space-between; margin-bottom: 5px; font-size: 12px;">
+                                    <span>${item.name} x${item.quantity}</span>
+                                    <span>$${(item.price * item.quantity).toFixed(2)}</span>
+                                </div>
+                            `).join('')}
+                        </div>
+                        
+                        <div style="margin-bottom: 20px;">
+                            <div style="display: flex; justify-content: space-between; margin-bottom: 5px; font-size: 12px;">
+                                <span>Subtotal:</span>
+                                <span>$${sale.subtotal.toFixed(2)}</span>
+                            </div>
+                            <div style="display: flex; justify-content: space-between; margin-bottom: 5px; font-size: 12px;">
+                                <span>Tax:</span>
+                                <span>$${sale.tax.toFixed(2)}</span>
+                            </div>
+                            <div style="display: flex; justify-content: space-between; font-weight: bold; font-size: 14px; margin: 10px 0;">
+                                <span>Total:</span>
+                                <span>$${sale.total.toFixed(2)}</span>
+                            </div>
+                            <div style="display: flex; justify-content: space-between; margin-bottom: 5px; font-size: 12px;">
+                                <span>Payment:</span>
+                                <span>${sale.paymentMethod.toUpperCase()}</span>
+                            </div>
+                            <div style="display: flex; justify-content: space-between; margin-bottom: 5px; font-size: 12px;">
+                                <span>Amount Tendered:</span>
+                                <span>$${sale.amountTendered.toFixed(2)}</span>
+                            </div>
+                            <div style="display: flex; justify-content: space-between; font-size: 12px;">
+                                <span>Change:</span>
+                                <span>$${sale.change.toFixed(2)}</span>
+                            </div>
+                        </div>
+                        
+                        <div style="text-align: center; border-top: 1px solid #000; padding-top: 10px;">
+                            <p style="font-size: 11px; color: #666;">${this.settings.receiptFooter || 'Thank you for your business!'}</p>
+                        </div>
+                    </div>
+                `;
+                
+                const printWindow = window.open('', '_blank');
+                printWindow.document.write(`
+                    <!DOCTYPE html>
+                    <html>
+                    <head>
+                        <title>Receipt #${sale.id}</title>
+                        <style>
+                            body { margin: 0; padding: 20px; }
+                            @media print {
+                                body { padding: 0; }
+                            }
+                        </style>
+                    </head>
+                    <body>
+                        ${receiptContent}
+                    </body>
+                    </html>
+                `);
+                
+                printWindow.document.close();
+                printWindow.focus();
+                printWindow.print();
+                printWindow.close();
+            }
+
+            exportHistory() {
+                const dataStr = JSON.stringify(this.sales, null, 2);
+                const dataBlob = new Blob([dataStr], { type: 'application/json' });
+                const url = URL.createObjectURL(dataBlob);
+                
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = `sales_history_${new Date().toISOString().split('T')[0]}.json`;
+                document.body.appendChild(a);
+                a.click();
+                document.body.removeChild(a);
+                URL.revokeObjectURL(url);
+                
+                this.showNotification('Sales history exported successfully!');
+            }
+
+            switchPage(page) {
+                document.querySelectorAll('.nav-item').forEach(item => item.classList.remove('active'));
+                document.querySelector(`[data-page="${page}"]`).classList.add('active');
+                
+                document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+                document.getElementById(page + 'Page').classList.add('active');
+                
+                this.closeCart();
+                
+                if (page === 'history') {
+                    this.updateSalesHistory();
+                } else if (page === 'reports') {
+                    this.generateReports();
+                } else if (page === 'inventory') {
+                    this.updateInventoryTable();
+                }
+            }
+
+            // Existing functions (kept for compatibility)
             updateProductsDisplay() {
                 const productsGrid = document.getElementById('productsGrid');
                 productsGrid.innerHTML = '';
@@ -1927,14 +2624,12 @@
                     tab.addEventListener('click', (e) => {
                         document.querySelectorAll('.category-tab').forEach(t => t.classList.remove('active'));
                         e.target.classList.add('active');
-                        
                         this.filterProductsByCategory(category);
                     });
                     
                     categoryTabs.appendChild(tab);
                 });
                 
-                // Save categories to localStorage
                 this.saveAllData();
             }
 
@@ -1994,58 +2689,6 @@
                 });
             }
 
-            searchInventory(query) {
-                const tableBody = document.getElementById('inventoryTable').querySelector('tbody');
-                tableBody.innerHTML = '';
-                
-                const filter = document.getElementById('inventoryFilter').value;
-                let filteredProducts = this.products.filter(product => 
-                    product.name.toLowerCase().includes(query.toLowerCase()) ||
-                    product.sku.toLowerCase().includes(query.toLowerCase())
-                );
-                
-                if (filter === 'low') {
-                    filteredProducts = filteredProducts.filter(p => p.stock <= p.minStock && p.stock > 0);
-                } else if (filter === 'out') {
-                    filteredProducts = filteredProducts.filter(p => p.stock === 0);
-                }
-                
-                filteredProducts.forEach(product => {
-                    const row = document.createElement('tr');
-                    
-                    row.innerHTML = `
-                        <td>
-                            <div class="font-medium">${product.name}</div>
-                            <div class="text-sm text-tertiary">${product.sku} • ${product.category}</div>
-                        </td>
-                        <td class="${product.stock <= product.minStock ? 'font-medium text-system-orange' : 'font-medium'}">
-                            ${product.stock}
-                            ${product.stock <= product.minStock ? ' ⚠️' : ''}
-                        </td>
-                        <td class="font-semibold">$${product.price.toFixed(2)}</td>
-                        <td>
-                            <button class="btn btn-outline btn-sm edit-product" data-id="${product.id}">
-                                <i class="fas fa-edit"></i>
-                            </button>
-                            <button class="btn btn-outline btn-sm delete-product" data-id="${product.id}">
-                                <i class="fas fa-trash"></i>
-                            </button>
-                        </td>
-                    `;
-                    
-                    tableBody.appendChild(row);
-                });
-                
-                // Add event listeners
-                tableBody.querySelectorAll('.edit-product').forEach(btn => {
-                    btn.addEventListener('click', (e) => this.editProduct(e.target.closest('button').dataset.id));
-                });
-                
-                tableBody.querySelectorAll('.delete-product').forEach(btn => {
-                    btn.addEventListener('click', (e) => this.deleteProduct(e.target.closest('button').dataset.id));
-                });
-            }
-
             addToCart(product) {
                 if (product.stock <= 0) {
                     this.showNotification('Product out of stock!', 'error');
@@ -2073,7 +2716,7 @@
 
                 this.updateCartDisplay();
                 this.updateCartBadge();
-                this.saveCart();
+                this.saveAllData();
                 this.showNotification(`${product.name} added to cart`);
                 
                 if (!this.isCartOpen) {
@@ -2166,7 +2809,7 @@
                     
                     this.updateCartDisplay();
                     this.updateCartBadge();
-                    this.saveCart();
+                    this.saveAllData();
                 }
             }
 
@@ -2174,7 +2817,7 @@
                 this.cart = this.cart.filter(item => item.id !== parseInt(productId));
                 this.updateCartDisplay();
                 this.updateCartBadge();
-                this.saveCart();
+                this.saveAllData();
                 this.showNotification('Item removed from cart', 'info');
             }
 
@@ -2206,7 +2849,7 @@
                     this.cart = [];
                     this.updateCartDisplay();
                     this.updateCartBadge();
-                    this.saveCart();
+                    this.saveAllData();
                     this.showNotification('Cart cleared');
                 }
             }
@@ -2279,8 +2922,7 @@
 
                 // Save sale and update products
                 this.sales.push(sale);
-                this.saveSales();
-                this.saveProducts();
+                this.saveAllData();
                 
                 // Update UI
                 this.updateProductsDisplay();
@@ -2293,128 +2935,141 @@
                 this.cart = [];
                 this.updateCartDisplay();
                 this.updateCartBadge();
-                this.saveCart();
+                this.saveAllData();
                 this.hidePaymentModal();
                 
                 this.showNotification('Payment successful!');
             }
 
             showReceipt(sale) {
-                const receiptContent = document.getElementById('receiptContent');
-                receiptContent.innerHTML = `
-                    <div class="text-center mb-4">
-                        <h3 class="font-bold text-lg">${this.settings.storeName}</h3>
-                        <p class="text-sm text-tertiary">${new Date(sale.date).toLocaleString()}</p>
-                        <p class="text-sm text-tertiary">Invoice: #${sale.id}</p>
-                        <p class="text-sm text-tertiary">Cashier: ${sale.cashier}</p>
-                    </div>
-                    
-                    <div class="border-t border-b border-border py-3 my-3">
-                        ${sale.items.map(item => `
-                            <div class="flex justify-between text-sm mb-2">
-                                <span>${item.name} x${item.quantity}</span>
-                                <span>$${(item.price * item.quantity).toFixed(2)}</span>
+                const receiptContent = `
+                    <div style="padding: var(--space-lg); text-align: center;">
+                        <h3 style="font-weight: bold; margin-bottom: 5px;">${this.settings.storeName}</h3>
+                        <p style="font-size: 12px; color: var(--text-tertiary);">
+                            ${new Date(sale.date).toLocaleString()}
+                        </p>
+                        <p style="font-size: 12px; color: var(--text-tertiary);">
+                            Invoice: #${sale.id} • Cashier: ${sale.cashier}
+                        </p>
+                        
+                        <div style="border-top: 1px solid var(--border); border-bottom: 1px solid var(--border); 
+                                 padding: 10px 0; margin: 10px 0;">
+                            ${sale.items.map(item => `
+                                <div style="display: flex; justify-content: space-between; margin-bottom: 5px; font-size: 12px;">
+                                    <span>${item.name} x${item.quantity}</span>
+                                    <span>$${(item.price * item.quantity).toFixed(2)}</span>
+                                </div>
+                            `).join('')}
+                        </div>
+                        
+                        <div style="margin-bottom: 20px;">
+                            <div style="display: flex; justify-content: space-between; margin-bottom: 5px; font-size: 12px;">
+                                <span>Subtotal:</span>
+                                <span>$${sale.subtotal.toFixed(2)}</span>
                             </div>
-                        `).join('')}
-                    </div>
-                    
-                    <div class="space-y-2 text-sm">
-                        <div class="flex justify-between">
-                            <span>Subtotal:</span>
-                            <span>$${sale.subtotal.toFixed(2)}</span>
+                            <div style="display: flex; justify-content: space-between; margin-bottom: 5px; font-size: 12px;">
+                                <span>Tax (${this.settings.taxRate}%):</span>
+                                <span>$${sale.tax.toFixed(2)}</span>
+                            </div>
+                            <div style="display: flex; justify-content: space-between; font-weight: bold; font-size: 14px; margin: 10px 0;">
+                                <span>Total:</span>
+                                <span>$${sale.total.toFixed(2)}</span>
+                            </div>
+                            <div style="display: flex; justify-content: space-between; margin-bottom: 5px; font-size: 12px;">
+                                <span>Payment:</span>
+                                <span>${sale.paymentMethod.toUpperCase()}</span>
+                            </div>
+                            <div style="display: flex; justify-content: space-between; margin-bottom: 5px; font-size: 12px;">
+                                <span>Amount Tendered:</span>
+                                <span>$${sale.amountTendered.toFixed(2)}</span>
+                            </div>
+                            <div style="display: flex; justify-content: space-between; font-size: 12px;">
+                                <span>Change:</span>
+                                <span>$${sale.change.toFixed(2)}</span>
+                            </div>
                         </div>
-                        <div class="flex justify-between">
-                            <span>Tax (${this.settings.taxRate}%):</span>
-                            <span>$${sale.tax.toFixed(2)}</span>
+                        
+                        <div style="text-align: center; border-top: 1px solid var(--border); padding-top: 10px;">
+                            <p style="font-size: 11px; color: var(--text-tertiary);">
+                                ${this.settings.receiptFooter || 'Thank you for your business!'}
+                            </p>
                         </div>
-                        <div class="flex justify-between font-bold text-lg pt-2 border-t border-border">
-                            <span>Total:</span>
-                            <span>$${sale.total.toFixed(2)}</span>
-                        </div>
-                        <div class="flex justify-between">
-                            <span>Payment:</span>
-                            <span>${sale.paymentMethod.toUpperCase()}</span>
-                        </div>
-                        <div class="flex justify-between">
-                            <span>Amount Tendered:</span>
-                            <span>$${sale.amountTendered.toFixed(2)}</span>
-                        </div>
-                        <div class="flex justify-between">
-                            <span>Change:</span>
-                            <span>$${sale.change.toFixed(2)}</span>
-                        </div>
-                    </div>
-                    
-                    <div class="text-center mt-4 pt-4 border-t border-border">
-                        <p class="text-sm font-medium">${this.settings.receiptFooter || 'Thank you for your business!'}</p>
                     </div>
                 `;
                 
-                document.getElementById('receiptModal').classList.remove('hidden');
+                this.showNotification('Receipt generated! Press OK to view.', 'success');
+                
+                // Store receipt for later viewing
+                setTimeout(() => {
+                    const printWindow = window.open('', '_blank');
+                    printWindow.document.write(`
+                        <!DOCTYPE html>
+                        <html>
+                        <head>
+                            <title>Receipt #${sale.id}</title>
+                            <style>
+                                body { font-family: monospace; padding: 20px; max-width: 300px; margin: 0 auto; }
+                            </style>
+                        </head>
+                        <body>
+                            ${receiptContent}
+                        </body>
+                        </html>
+                    `);
+                    printWindow.document.close();
+                    printWindow.focus();
+                }, 1500);
             }
 
-            hideReceiptModal() {
-                document.getElementById('receiptModal').classList.add('hidden');
-            }
-
-            printReceipt() {
-                const receiptContent = document.getElementById('receiptContent').innerHTML;
-                const printWindow = window.open('', '_blank');
+            searchInventory(query) {
+                const tableBody = document.getElementById('inventoryTable').querySelector('tbody');
+                tableBody.innerHTML = '';
                 
-                printWindow.document.write(`
-                    <!DOCTYPE html>
-                    <html>
-                    <head>
-                        <title>Receipt</title>
-                        <style>
-                            body { font-family: 'SF Mono', monospace; padding: 20px; max-width: 300px; margin: 0 auto; }
-                            .text-center { text-align: center; }
-                            .font-bold { font-weight: bold; }
-                            .border-t { border-top: 1px solid #000; }
-                            .border-b { border-bottom: 1px solid #000; }
-                            .my-3 { margin-top: 12px; margin-bottom: 12px; }
-                            .py-3 { padding-top: 12px; padding-bottom: 12px; }
-                            .space-y-2 > * + * { margin-top: 8px; }
-                            .text-sm { font-size: 12px; }
-                            .text-lg { font-size: 16px; }
-                            .flex { display: flex; }
-                            .justify-between { justify-content: space-between; }
-                            .mb-2 { margin-bottom: 8px; }
-                            .mt-4 { margin-top: 16px; }
-                            .pt-4 { padding-top: 16px; }
-                            .pt-2 { padding-top: 8px; }
-                        </style>
-                    </head>
-                    <body>
-                        ${receiptContent}
-                    </body>
-                    </html>
-                `);
+                const filter = document.getElementById('inventoryFilter').value;
+                let filteredProducts = this.products.filter(product => 
+                    product.name.toLowerCase().includes(query.toLowerCase()) ||
+                    product.sku.toLowerCase().includes(query.toLowerCase())
+                );
                 
-                printWindow.document.close();
-                printWindow.focus();
-                printWindow.print();
-                printWindow.close();
-            }
-
-            showScannerModal() {
-                this.showNotification('Point camera at barcode', 'info');
-            }
-
-            switchPage(page) {
-                document.querySelectorAll('.nav-item').forEach(item => item.classList.remove('active'));
-                document.querySelector(`[data-page="${page}"]`).classList.add('active');
-                
-                document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
-                document.getElementById(page + 'Page').classList.add('active');
-                
-                this.closeCart();
-                
-                if (page === 'reports') {
-                    this.generateReports();
-                } else if (page === 'inventory') {
-                    this.updateInventoryTable();
+                if (filter === 'low') {
+                    filteredProducts = filteredProducts.filter(p => p.stock <= p.minStock && p.stock > 0);
+                } else if (filter === 'out') {
+                    filteredProducts = filteredProducts.filter(p => p.stock === 0);
                 }
+                
+                filteredProducts.forEach(product => {
+                    const row = document.createElement('tr');
+                    
+                    row.innerHTML = `
+                        <td>
+                            <div class="font-medium">${product.name}</div>
+                            <div class="text-sm text-tertiary">${product.sku} • ${product.category}</div>
+                        </td>
+                        <td class="${product.stock <= product.minStock ? 'font-medium text-system-orange' : 'font-medium'}">
+                            ${product.stock}
+                            ${product.stock <= product.minStock ? ' ⚠️' : ''}
+                        </td>
+                        <td class="font-semibold">$${product.price.toFixed(2)}</td>
+                        <td>
+                            <button class="btn btn-outline btn-sm edit-product" data-id="${product.id}">
+                                <i class="fas fa-edit"></i>
+                            </button>
+                            <button class="btn btn-outline btn-sm delete-product" data-id="${product.id}">
+                                <i class="fas fa-trash"></i>
+                            </button>
+                        </td>
+                    `;
+                    
+                    tableBody.appendChild(row);
+                });
+                
+                tableBody.querySelectorAll('.edit-product').forEach(btn => {
+                    btn.addEventListener('click', (e) => this.editProduct(e.target.closest('button').dataset.id));
+                });
+                
+                tableBody.querySelectorAll('.delete-product').forEach(btn => {
+                    btn.addEventListener('click', (e) => this.deleteProduct(e.target.closest('button').dataset.id));
+                });
             }
 
             updateInventoryTable() {
@@ -2456,7 +3111,6 @@
                     tableBody.appendChild(row);
                 });
                 
-                // Add event listeners
                 tableBody.querySelectorAll('.edit-product').forEach(btn => {
                     btn.addEventListener('click', (e) => this.editProduct(e.target.closest('button').dataset.id));
                 });
@@ -2527,7 +3181,7 @@
                     this.products.push(productData);
                 }
                 
-                this.saveProducts();
+                this.saveAllData();
                 this.updateProductsDisplay();
                 this.updateCategories();
                 this.updateInventoryTable();
@@ -2547,7 +3201,7 @@
                 if (!confirm('Delete this product?')) return;
                 
                 this.products = this.products.filter(p => p.id !== parseInt(productId));
-                this.saveProducts();
+                this.saveAllData();
                 this.updateProductsDisplay();
                 this.updateCategories();
                 this.updateInventoryTable();
@@ -2558,9 +3212,7 @@
             generateReports() {
                 const period = document.getElementById('reportPeriod').value;
                 let filteredSales = this.sales;
-                let labelFormat = 'MMM DD';
                 
-                // Filter sales by period
                 const now = new Date();
                 switch(period) {
                     case 'today':
@@ -2568,21 +3220,18 @@
                         filteredSales = this.sales.filter(sale => 
                             new Date(sale.date).toDateString() === today
                         );
-                        labelFormat = 'hh:mm A';
                         break;
                     case 'week':
                         const weekAgo = new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000);
                         filteredSales = this.sales.filter(sale => 
                             new Date(sale.date) >= weekAgo
                         );
-                        labelFormat = 'ddd';
                         break;
                     case 'month':
                         const monthAgo = new Date(now.getTime() - 30 * 24 * 60 * 60 * 1000);
                         filteredSales = this.sales.filter(sale => 
                             new Date(sale.date) >= monthAgo
                         );
-                        labelFormat = 'MMM DD';
                         break;
                 }
                 
@@ -2593,13 +3242,11 @@
                 if (salesCanvas) {
                     const salesCtx = salesCanvas.getContext('2d');
                     
-                    // Destroy existing chart
                     if (salesCanvas.chart) {
                         salesCanvas.chart.destroy();
                     }
                     
-                    // Create new chart
-                    const salesData = this.getSalesData(filteredSales, labelFormat);
+                    const salesData = this.getSalesData(filteredSales);
                     salesCanvas.chart = new Chart(salesCtx, {
                         type: 'line',
                         data: {
@@ -2627,12 +3274,10 @@
                 if (productsCanvas) {
                     const productsCtx = productsCanvas.getContext('2d');
                     
-                    // Destroy existing chart
                     if (productsCanvas.chart) {
                         productsCanvas.chart.destroy();
                     }
                     
-                    // Create new chart
                     const topProducts = this.getTopProducts(filteredSales, 5);
                     productsCanvas.chart = new Chart(productsCtx, {
                         type: 'bar',
@@ -2655,24 +3300,16 @@
                 }
             }
 
-            getSalesData(sales, format) {
+            getSalesData(sales) {
                 const dates = [];
                 const amounts = [];
                 
-                // Group sales by time period
+                // Group sales by date
                 const salesByDate = {};
                 
                 sales.forEach(sale => {
                     const date = new Date(sale.date);
-                    let key;
-                    
-                    if (format === 'hh:mm A') {
-                        key = date.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
-                    } else if (format === 'ddd') {
-                        key = date.toLocaleDateString('en-US', { weekday: 'short' });
-                    } else {
-                        key = date.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
-                    }
+                    const key = date.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
                     
                     if (!salesByDate[key]) {
                         salesByDate[key] = 0;
@@ -2680,7 +3317,6 @@
                     salesByDate[key] += sale.total;
                 });
                 
-                // Convert to arrays
                 Object.keys(salesByDate).forEach(key => {
                     dates.push(key);
                     amounts.push(salesByDate[key]);
@@ -2731,7 +3367,6 @@
                 const backup = {
                     products: this.products,
                     sales: this.sales,
-                    customers: this.customers,
                     settings: this.settings,
                     users: this.users,
                     categories: Array.from(this.categories),
@@ -2770,7 +3405,6 @@
                             if (confirm('This will replace all current data. Continue?')) {
                                 this.products = backup.products || [];
                                 this.sales = backup.sales || [];
-                                this.customers = backup.customers || [];
                                 this.settings = backup.settings || {};
                                 this.users = backup.users || [];
                                 this.categories = new Set(backup.categories || ['all']);
@@ -2779,6 +3413,7 @@
                                 this.updateProductsDisplay();
                                 this.updateCategories();
                                 this.updateInventoryTable();
+                                this.updateSalesHistory();
                                 this.loadSettingsUI();
                                 
                                 this.showNotification('Data restored successfully!');
@@ -2795,7 +3430,6 @@
             }
 
             showNotification(message, type = 'success') {
-                // Create notification element
                 const notification = document.createElement('div');
                 notification.className = 'notification';
                 notification.style.cssText = `
@@ -2829,13 +3463,11 @@
                 
                 document.body.appendChild(notification);
                 
-                // Remove after 3 seconds
                 setTimeout(() => {
                     notification.style.animation = 'slideOut 0.3s ease';
                     setTimeout(() => notification.remove(), 300);
                 }, 3000);
                 
-                // Add animation styles
                 if (!document.querySelector('#notification-styles')) {
                     const style = document.createElement('style');
                     style.id = 'notification-styles';
@@ -2907,14 +3539,15 @@
             
             // Prevent default scroll behavior
             document.addEventListener('touchmove', (e) => {
-                // Allow scrolling only in specific containers
                 const scrollableContainers = [
                     '.products-grid-container',
                     '.cart-items-container',
                     '.table-container',
+                    '.history-table-container',
                     '.reports-container',
                     '.settings-container',
-                    '.modal-body'
+                    '.modal-body',
+                    '.sale-details-body'
                 ];
                 
                 const isScrollable = scrollableContainers.some(selector => 

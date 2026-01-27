@@ -317,6 +317,99 @@
             text-transform: uppercase;
         }
 
+        /* Language Selector */
+        .language-selector {
+            position: relative;
+        }
+
+        .lang-btn {
+            background: var(--bg-tertiary);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 0.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            cursor: pointer;
+            min-width: 100px;
+            font-size: 13px;
+            color: var(--text-primary);
+        }
+
+        .lang-dropdown {
+            position: absolute;
+            top: 100%;
+            right: 0;
+            margin-top: 0.5rem;
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            min-width: 140px;
+            box-shadow: var(--shadow);
+            z-index: 100;
+            display: none;
+        }
+
+        .lang-dropdown.show {
+            display: block;
+        }
+
+        .lang-option {
+            padding: 0.75rem 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            cursor: pointer;
+            transition: background 0.2s;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .lang-option:last-child {
+            border-bottom: none;
+        }
+
+        .lang-option:hover {
+            background: var(--bg-tertiary);
+        }
+
+        .lang-option.active {
+            background: var(--primary);
+            color: white;
+        }
+
+        .lang-flag {
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            overflow: hidden;
+        }
+
+        /* Full Screen Button */
+        .fullscreen-btn {
+            background: var(--bg-tertiary);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            width: 36px;
+            height: 36px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            color: var(--text-primary);
+            transition: all 0.2s;
+        }
+
+        .fullscreen-btn:hover {
+            background: var(--border);
+        }
+
+        /* Header Actions Container */
+        .header-actions {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
         /* Bottom Navigation */
         .bottom-nav {
             height: var(--bottom-nav-height);
@@ -1493,17 +1586,17 @@
                 
                 <div class="login-form">
                     <div class="form-group">
-                        <label class="form-label">Jina la Mtumiaji</label>
-                        <input type="text" id="loginUsername" class="form-control" placeholder="Weka jina la mtumiaji" value="admin">
+                        <label class="form-label">Username</label>
+                        <input type="text" id="loginUsername" class="form-control" placeholder="Enter username" value="admin">
                     </div>
                     
                     <div class="form-group">
-                        <label class="form-label">Nenosiri</label>
-                        <input type="password" id="loginPassword" class="form-control" placeholder="Weka nenosiri" value="admin123">
+                        <label class="form-label">Password</label>
+                        <input type="password" id="loginPassword" class="form-control" placeholder="Enter password" value="admin123">
                     </div>
                     
                     <div class="form-group">
-                        <label class="form-label">Wadhifa</label>
+                        <label class="form-label">Role</label>
                         <select id="loginRole" class="form-control">
                             <option value="cashier">Cashier</option>
                             <option value="manager">Manager</option>
@@ -1512,7 +1605,7 @@
                     </div>
                     
                     <button id="loginBtn" class="btn btn-primary w-full">
-                        <i class="fas fa-sign-in-alt"></i> Ingia
+                        <i class="fas fa-sign-in-alt"></i> Login
                     </button>
                     
                     <div class="demo-credentials">
@@ -1537,9 +1630,35 @@
                     <span id="datetimeText"></span>
                 </div>
                 
-                <div class="user-info">
-                    <span id="currentUser">User</span>
-                    <span id="currentRole" class="role-badge">Cashier</span>
+                <div class="header-actions">
+                    <!-- Full Screen Button -->
+                    <div class="fullscreen-btn" id="fullscreenBtn" title="Full Screen">
+                        <i class="fas fa-expand"></i>
+                    </div>
+                    
+                    <!-- Language Selector -->
+                    <div class="language-selector">
+                        <div class="lang-btn" id="langBtn">
+                            <span id="currentLang">EN</span>
+                            <i class="fas fa-chevron-down"></i>
+                        </div>
+                        <div class="lang-dropdown" id="langDropdown">
+                            <div class="lang-option active" data-lang="en">
+                                <div class="lang-flag">🇬🇧</div>
+                                <span>English</span>
+                            </div>
+                            <div class="lang-option" data-lang="sw">
+                                <div class="lang-flag">🇹🇿</div>
+                                <span>Kiswahili</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- User Info -->
+                    <div class="user-info">
+                        <span id="currentUser">User</span>
+                        <span id="currentRole" class="role-badge">Cashier</span>
+                    </div>
                 </div>
             </header>
 
@@ -1551,30 +1670,30 @@
                         <div class="sales-stats">
                             <div class="stat-card-mini">
                                 <div class="stat-value-mini" id="salesToday">TZS 0</div>
-                                <div class="stat-label-mini">Leo</div>
+                                <div class="stat-label-mini" data-en="Today" data-sw="Leo">Today</div>
                             </div>
                             <div class="stat-card-mini">
                                 <div class="stat-value-mini" id="productsSold">0</div>
-                                <div class="stat-label-mini">Bidhaa</div>
+                                <div class="stat-label-mini" data-en="Products" data-sw="Bidhaa">Products</div>
                             </div>
                             <div class="stat-card-mini">
                                 <div class="stat-value-mini" id="transactionsToday">0</div>
-                                <div class="stat-label-mini">Mauzo</div>
+                                <div class="stat-label-mini" data-en="Sales" data-sw="Mauzo">Sales</div>
                             </div>
                             <div class="stat-card-mini">
                                 <div class="stat-value-mini" id="avgSale">TZS 0</div>
-                                <div class="stat-label-mini">Wastani</div>
+                                <div class="stat-label-mini" data-en="Average" data-sw="Wastani">Average</div>
                             </div>
                         </div>
                         
                         <div class="search-container">
                             <input type="text" id="productSearch" class="search-input" 
-                                   placeholder="🔍 Tafuta bidhaa...">
+                                   placeholder="🔍 Search products...">
                             <button id="scanBtn" class="btn btn-primary btn-icon">
                                 <i class="fas fa-barcode"></i>
                             </button>
                             <button id="quickSaleBtn" class="btn btn-success">
-                                <i class="fas fa-bolt"></i> Haraka
+                                <i class="fas fa-bolt"></i> Quick
                             </button>
                         </div>
                         
@@ -1596,10 +1715,10 @@
                 <div id="historyPage" class="page">
                     <div class="history-page">
                         <div class="history-header">
-                            <h2 class="text-lg font-semibold"><i class="fas fa-history"></i> Historia ya Mauzo</h2>
+                            <h2 class="text-lg font-semibold"><i class="fas fa-history"></i> Sales History</h2>
                             <div class="flex gap-2">
                                 <button id="exportHistoryBtn" class="btn btn-primary btn-sm">
-                                    <i class="fas fa-download"></i> Pakua
+                                    <i class="fas fa-download"></i> Export
                                 </button>
                                 <button id="printReportBtn" class="btn btn-outline btn-sm">
                                     <i class="fas fa-print"></i> Print
@@ -1609,28 +1728,28 @@
                         
                         <div class="history-filters">
                             <select id="historyPeriod" class="form-control">
-                                <option value="today">Leo</option>
-                                <option value="yesterday">Jana</option>
-                                <option value="week">Wiki hii</option>
-                                <option value="month">Mwezi huu</option>
-                                <option value="year">Mwaka huu</option>
-                                <option value="all">Wakati wote</option>
+                                <option value="today">Today</option>
+                                <option value="yesterday">Yesterday</option>
+                                <option value="week">This Week</option>
+                                <option value="month">This Month</option>
+                                <option value="year">This Year</option>
+                                <option value="all">All Time</option>
                             </select>
                             
                             <select id="historyPaymentMethod" class="form-control">
-                                <option value="all">Njia zote</option>
-                                <option value="cash">Pesa Taslimu</option>
-                                <option value="card">Kadi</option>
+                                <option value="all">All Methods</option>
+                                <option value="cash">Cash</option>
+                                <option value="card">Card</option>
                                 <option value="mobile">M-Pesa</option>
                             </select>
                             
-                            <input type="text" id="historySearch" class="form-control" placeholder="Tafuta mauzo...">
+                            <input type="text" id="historySearch" class="form-control" placeholder="Search sales...">
                             
                             <select id="historySort" class="form-control">
-                                <option value="newest">Mpya zaidi</option>
-                                <option value="oldest">Zamani zaidi</option>
-                                <option value="highest">Kubwa zaidi</option>
-                                <option value="lowest">Ndogo zaidi</option>
+                                <option value="newest">Newest</option>
+                                <option value="oldest">Oldest</option>
+                                <option value="highest">Highest</option>
+                                <option value="lowest">Lowest</option>
                             </select>
                         </div>
                         
@@ -1638,13 +1757,13 @@
                             <table class="history-table" id="historyTable">
                                 <thead>
                                     <tr>
-                                        <th>Tarehe</th>
-                                        <th>Namba</th>
-                                        <th>Bidhaa</th>
-                                        <th>Mshahara</th>
-                                        <th>Malipo</th>
-                                        <th>Jumla</th>
-                                        <th>Vitendo</th>
+                                        <th>Date</th>
+                                        <th>ID</th>
+                                        <th>Products</th>
+                                        <th>Cashier</th>
+                                        <th>Payment</th>
+                                        <th>Total</th>
+                                        <th>Actions</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -1659,35 +1778,35 @@
                 <div id="inventoryPage" class="page">
                     <div class="inventory-page">
                         <div class="inventory-header">
-                            <h2 class="text-lg font-semibold"><i class="fas fa-boxes"></i> Usimamizi wa Bidhaa</h2>
+                            <h2 class="text-lg font-semibold"><i class="fas fa-boxes"></i> Inventory Management</h2>
                             <div class="flex gap-2">
                                 <button id="bulkImportBtn" class="btn btn-outline btn-sm">
-                                    <i class="fas fa-file-import"></i> Ingiza
+                                    <i class="fas fa-file-import"></i> Import
                                 </button>
                                 <button id="addProductBtn" class="btn btn-primary btn-sm">
-                                    <i class="fas fa-plus"></i> Ongeza
+                                    <i class="fas fa-plus"></i> Add
                                 </button>
                             </div>
                         </div>
                         
                         <div class="inventory-controls">
                             <input type="text" id="inventorySearch" class="form-control" 
-                                   placeholder="Tafuta bidhaa...">
+                                   placeholder="Search products...">
                             <select id="inventoryFilter" class="form-control">
-                                <option value="all">Bidhaa zote</option>
-                                <option value="low">Chini</option>
-                                <option value="out">Imekwisha</option>
-                                <option value="needReorder">Haja ya Kujaza</option>
-                                <option value="bestSellers">Inauzwa Zaidi</option>
+                                <option value="all">All Products</option>
+                                <option value="low">Low Stock</option>
+                                <option value="out">Out of Stock</option>
+                                <option value="needReorder">Need Reorder</option>
+                                <option value="bestSellers">Best Sellers</option>
                             </select>
                             
                             <select id="inventorySort" class="form-control">
-                                <option value="name">Jina (A-Z)</option>
-                                <option value="name_desc">Jina (Z-A)</option>
-                                <option value="stock_asc">Hisabu (Chini-High)</option>
-                                <option value="stock_desc">Hisabu (High-Chini)</option>
-                                <option value="price_asc">Bei (Chini-High)</option>
-                                <option value="price_desc">Bei (High-Chini)</option>
+                                <option value="name">Name (A-Z)</option>
+                                <option value="name_desc">Name (Z-A)</option>
+                                <option value="stock_asc">Stock (Low-High)</option>
+                                <option value="stock_desc">Stock (High-Low)</option>
+                                <option value="price_asc">Price (Low-High)</option>
+                                <option value="price_desc">Price (High-Low)</option>
                             </select>
                         </div>
                         
@@ -1695,12 +1814,12 @@
                             <table class="table" id="inventoryTable">
                                 <thead>
                                     <tr>
-                                        <th>Bidhaa</th>
-                                        <th>Aina</th>
-                                        <th>Hisabu</th>
-                                        <th>Bei</th>
-                                        <th>Thamani</th>
-                                        <th>Vitendo</th>
+                                        <th>Product</th>
+                                        <th>Category</th>
+                                        <th>Stock</th>
+                                        <th>Price</th>
+                                        <th>Value</th>
+                                        <th>Actions</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -1715,15 +1834,15 @@
                 <div id="reportsPage" class="page">
                     <div class="reports-page">
                         <div class="reports-header">
-                            <h2 class="text-lg font-semibold"><i class="fas fa-chart-bar"></i> Taarifa za Uchambuzi</h2>
+                            <h2 class="text-lg font-semibold"><i class="fas fa-chart-bar"></i> Analytics Reports</h2>
                             <div class="flex gap-2">
                                 <select id="reportPeriod" class="form-control">
-                                    <option value="today">Leo</option>
-                                    <option value="yesterday">Jana</option>
-                                    <option value="week">Wiki hii</option>
-                                    <option value="month">Mwezi huu</option>
-                                    <option value="quarter">Robo hii</option>
-                                    <option value="year">Mwaka huu</option>
+                                    <option value="today">Today</option>
+                                    <option value="yesterday">Yesterday</option>
+                                    <option value="week">This Week</option>
+                                    <option value="month">This Month</option>
+                                    <option value="quarter">This Quarter</option>
+                                    <option value="year">This Year</option>
                                 </select>
                             </div>
                         </div>
@@ -1735,7 +1854,7 @@
                                 </div>
                                 <div class="kpi-content">
                                     <div class="kpi-value" id="reportTotalRevenue">TZS 0</div>
-                                    <div class="kpi-label">Mapato</div>
+                                    <div class="kpi-label">Revenue</div>
                                     <div class="text-sm text-tertiary" id="revenueGrowth">
                                         <i class="fas fa-arrow-up text-success"></i> 0%
                                     </div>
@@ -1748,7 +1867,7 @@
                                 </div>
                                 <div class="kpi-content">
                                     <div class="kpi-value" id="reportTotalSales">0</div>
-                                    <div class="kpi-label">Mauzo</div>
+                                    <div class="kpi-label">Sales</div>
                                     <div class="text-sm text-tertiary" id="salesGrowth">
                                         <i class="fas fa-arrow-up text-success"></i> 0%
                                     </div>
@@ -1761,7 +1880,7 @@
                                 </div>
                                 <div class="kpi-content">
                                     <div class="kpi-value" id="reportAvgTransaction">TZS 0</div>
-                                    <div class="kpi-label">Wastani</div>
+                                    <div class="kpi-label">Average</div>
                                     <div class="text-sm text-tertiary" id="avgTransactionGrowth">
                                         <i class="fas fa-arrow-up text-success"></i> 0%
                                     </div>
@@ -1774,7 +1893,7 @@
                                 </div>
                                 <div class="kpi-content">
                                     <div class="kpi-value" id="reportTopProduct">-</div>
-                                    <div class="kpi-label">Inauzwa Zaidi</div>
+                                    <div class="kpi-label">Top Product</div>
                                     <div class="text-sm text-tertiary">
                                         <i class="fas fa-crown text-warning"></i> #1
                                     </div>
@@ -1784,7 +1903,7 @@
                         
                         <div class="chart-container">
                             <div class="chart-header">
-                                <h3 class="chart-title">Utendaji wa Mauzo</h3>
+                                <h3 class="chart-title">Sales Performance</h3>
                             </div>
                             <div class="chart-wrapper">
                                 <canvas id="salesChart"></canvas>
@@ -1800,41 +1919,41 @@
                             <div class="settings-section">
                                 <h3 class="section-title">
                                     <i class="fas fa-store"></i>
-                                    Maelezo ya Duka
+                                    Store Information
                                 </h3>
                                 <div class="glass-card">
                                     <div class="grid grid-cols-2 gap-4 mb-4">
                                         <div class="form-group">
-                                            <label class="form-label">Jina la Duka *</label>
-                                            <input type="text" id="storeName" class="form-control" value="Duka La Tanzania">
+                                            <label class="form-label">Store Name *</label>
+                                            <input type="text" id="storeName" class="form-control" value="Tanzania Shop">
                                         </div>
                                         
                                         <div class="form-group">
-                                            <label class="form-label">Kodi (%) *</label>
+                                            <label class="form-label">Tax Rate (%) *</label>
                                             <input type="number" id="taxRate" class="form-control" value="18" min="0" max="100" step="0.1">
                                         </div>
                                     </div>
                                     
                                     <div class="grid grid-cols-2 gap-4 mb-4">
                                         <div class="form-group">
-                                            <label class="form-label">Namba ya Simu</label>
+                                            <label class="form-label">Phone Number</label>
                                             <input type="tel" id="storePhone" class="form-control" placeholder="+255 123 456 789">
                                         </div>
                                         
                                         <div class="form-group">
-                                            <label class="form-label">Barua Pepe</label>
-                                            <input type="email" id="storeEmail" class="form-control" placeholder="duka@example.com">
+                                            <label class="form-label">Email</label>
+                                            <input type="email" id="storeEmail" class="form-control" placeholder="shop@example.com">
                                         </div>
                                     </div>
                                     
                                     <div class="form-group mb-4">
-                                        <label class="form-label">Anwani</label>
-                                        <textarea id="storeAddress" class="form-control" rows="3" placeholder="123 Mtaa Kuu, Jiji, Tanzania"></textarea>
+                                        <label class="form-label">Address</label>
+                                        <textarea id="storeAddress" class="form-control" rows="3" placeholder="123 Main Street, City, Tanzania"></textarea>
                                     </div>
                                     
                                     <div class="form-group">
-                                        <label class="form-label">Kiunga cha Risiti</label>
-                                        <textarea id="receiptFooter" class="form-control" rows="2" placeholder="Asante kwa kununua!"></textarea>
+                                        <label class="form-label">Receipt Footer</label>
+                                        <textarea id="receiptFooter" class="form-control" rows="2" placeholder="Thank you for shopping!"></textarea>
                                     </div>
                                 </div>
                             </div>
@@ -1842,20 +1961,20 @@
                             <div class="settings-section">
                                 <h3 class="section-title">
                                     <i class="fas fa-palette"></i>
-                                    Muonekano
+                                    Appearance
                                 </h3>
                                 <div class="glass-card">
                                     <div class="theme-selector">
                                         <div class="theme-option active" data-theme="light">
                                             <i class="fas fa-sun"></i>
-                                            <div class="font-semibold mb-1">Mwanga</div>
-                                            <div class="text-sm text-tertiary">Muonekano safi</div>
+                                            <div class="font-semibold mb-1">Light</div>
+                                            <div class="text-sm text-tertiary">Clean appearance</div>
                                         </div>
                                         
                                         <div class="theme-option" data-theme="dark">
                                             <i class="fas fa-moon"></i>
-                                            <div class="font-semibold mb-1">Giza</div>
-                                            <div class="text-sm text-tertiary">Usikinzani mdogo</div>
+                                            <div class="font-semibold mb-1">Dark</div>
+                                            <div class="text-sm text-tertiary">Low contrast</div>
                                         </div>
                                     </div>
                                 </div>
@@ -1864,32 +1983,32 @@
                             <div class="settings-section">
                                 <h3 class="section-title">
                                     <i class="fas fa-database"></i>
-                                    Usimamizi wa Data
+                                    Data Management
                                 </h3>
                                 <div class="glass-card">
                                     <div class="grid grid-cols-2 gap-4 mb-4">
                                         <button id="backupBtn" class="btn btn-outline">
-                                            <i class="fas fa-download"></i> Hifadhi Data
+                                            <i class="fas fa-download"></i> Backup Data
                                         </button>
                                         
                                         <button id="restoreBtn" class="btn btn-outline">
-                                            <i class="fas fa-upload"></i> Rejesha Data
+                                            <i class="fas fa-upload"></i> Restore Data
                                         </button>
                                     </div>
                                     
                                     <div class="grid grid-cols-2 gap-4 mb-4">
                                         <button id="exportDataBtn" class="btn btn-outline">
-                                            <i class="fas fa-file-export"></i> Pakua Zote
+                                            <i class="fas fa-file-export"></i> Export All
                                         </button>
                                         
                                         <button id="importDataBtn" class="btn btn-outline">
-                                            <i class="fas fa-file-import"></i> Ingiza Data
+                                            <i class="fas fa-file-import"></i> Import Data
                                         </button>
                                     </div>
                                     
                                     <div class="mt-4">
                                         <button id="resetDataBtn" class="btn btn-danger w-full">
-                                            <i class="fas fa-trash"></i> Futa Data Zote
+                                            <i class="fas fa-trash"></i> Delete All Data
                                         </button>
                                     </div>
                                 </div>
@@ -1898,16 +2017,16 @@
                             <div class="settings-section">
                                 <h3 class="section-title">
                                     <i class="fas fa-user-cog"></i>
-                                    Akaunti
+                                    Account
                                 </h3>
                                 <div class="glass-card">
                                     <div class="flex flex-col gap-4">
                                         <button id="changePasswordBtn" class="btn btn-outline">
-                                            <i class="fas fa-key"></i> Badilisha Nenosiri
+                                            <i class="fas fa-key"></i> Change Password
                                         </button>
                                         
                                         <button id="logoutBtn" class="btn btn-danger">
-                                            <i class="fas fa-sign-out-alt"></i> Toka
+                                            <i class="fas fa-sign-out-alt"></i> Logout
                                         </button>
                                     </div>
                                 </div>
@@ -1919,7 +2038,7 @@
                                         Tanzania POS v1.0.0
                                     </div>
                                     <div class="text-xs text-muted">
-                                        © 2024 Tanzania POS Solutions. Haki zote zimehifadhiwa.
+                                        © 2024 Tanzania POS Solutions. All rights reserved.
                                     </div>
                                 </div>
                             </div>
@@ -1932,27 +2051,27 @@
             <nav class="bottom-nav">
                 <button class="nav-item active" data-page="sales">
                     <i class="fas fa-shopping-cart nav-icon"></i>
-                    <span class="nav-label">Mauzo</span>
+                    <span class="nav-label" data-en="Sales" data-sw="Mauzo">Sales</span>
                 </button>
                 
                 <button class="nav-item" data-page="history">
                     <i class="fas fa-history nav-icon"></i>
-                    <span class="nav-label">Historia</span>
+                    <span class="nav-label" data-en="History" data-sw="Historia">History</span>
                 </button>
                 
                 <button class="nav-item" data-page="inventory">
                     <i class="fas fa-boxes nav-icon"></i>
-                    <span class="nav-label">Bidhaa</span>
+                    <span class="nav-label" data-en="Inventory" data-sw="Bidhaa">Inventory</span>
                 </button>
                 
                 <button class="nav-item" data-page="reports">
                     <i class="fas fa-chart-bar nav-icon"></i>
-                    <span class="nav-label">Taarifa</span>
+                    <span class="nav-label" data-en="Reports" data-sw="Taarifa">Reports</span>
                 </button>
                 
                 <button class="nav-item" data-page="settings">
                     <i class="fas fa-cog nav-icon"></i>
-                    <span class="nav-label">Mipangilio</span>
+                    <span class="nav-label" data-en="Settings" data-sw="Mipangilio">Settings</span>
                 </button>
             </nav>
 
@@ -1965,13 +2084,13 @@
             <!-- Cart Drawer -->
             <div id="cartDrawer" class="cart-drawer">
                 <div class="cart-header">
-                    <h2 class="font-semibold text-lg"><i class="fas fa-shopping-cart"></i> Kasha</h2>
+                    <h2 class="font-semibold text-lg"><i class="fas fa-shopping-cart"></i> Cart</h2>
                     <div class="flex gap-2">
                         <button id="saveCartBtn" class="btn btn-outline btn-sm">
-                            <i class="fas fa-save"></i> Hifadhi
+                            <i class="fas fa-save"></i> Save
                         </button>
                         <button id="clearCartBtn" class="btn btn-danger btn-sm">
-                            <i class="fas fa-trash"></i> Futa
+                            <i class="fas fa-trash"></i> Clear
                         </button>
                     </div>
                 </div>
@@ -1984,27 +2103,27 @@
                 
                 <div class="cart-summary">
                     <div class="summary-row">
-                        <span>Jumla ya Kiasi:</span>
+                        <span>Subtotal:</span>
                         <span id="cartSubtotal">TZS 0</span>
                     </div>
                     
                     <div class="summary-row">
-                        <span>Kodi (<span id="taxRateDisplay">18</span>%):</span>
+                        <span>Tax (<span id="taxRateDisplay">18</span>%):</span>
                         <span id="cartTax">TZS 0</span>
                     </div>
                     
                     <div class="summary-row total">
-                        <span>Jumla ya Kulipa:</span>
+                        <span>Total to Pay:</span>
                         <span id="cartTotal">TZS 0</span>
                     </div>
                 </div>
                 
                 <div class="cart-actions">
                     <button id="holdCartBtn" class="btn btn-outline flex-1">
-                        <i class="fas fa-pause"></i> Simamisha
+                        <i class="fas fa-pause"></i> Hold
                     </button>
                     <button id="checkoutBtn" class="btn btn-success flex-1">
-                        <i class="fas fa-credit-card"></i> Lipa
+                        <i class="fas fa-credit-card"></i> Checkout
                     </button>
                 </div>
             </div>
@@ -2014,7 +2133,7 @@
         <div id="paymentModal" class="modal-overlay hidden">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h3 class="font-semibold text-lg"><i class="fas fa-credit-card"></i> Malipo</h3>
+                    <h3 class="font-semibold text-lg"><i class="fas fa-credit-card"></i> Payment</h3>
                     <button id="closePaymentModal" class="btn btn-icon btn-sm">
                         <i class="fas fa-times"></i>
                     </button>
@@ -2024,12 +2143,12 @@
                     <div class="payment-methods">
                         <div class="payment-method active" data-method="cash">
                             <i class="fas fa-money-bill-wave"></i>
-                            <div class="font-semibold">Pesa Taslimu</div>
+                            <div class="font-semibold">Cash</div>
                         </div>
                         
                         <div class="payment-method" data-method="card">
                             <i class="fas fa-credit-card"></i>
-                            <div class="font-semibold">Kadi</div>
+                            <div class="font-semibold">Card</div>
                         </div>
                         
                         <div class="payment-method" data-method="mobile">
@@ -2040,18 +2159,18 @@
                     
                     <div class="mt-6">
                         <div class="form-group">
-                            <label class="form-label">Kiasi Kilichotolewa</label>
+                            <label class="form-label">Amount Tendered</label>
                             <input type="number" id="amountTendered" class="form-control" 
                                    placeholder="0.00" step="0.01" min="0">
                         </div>
                         
                         <div class="summary-row mb-2">
-                            <span>Jumla ya Kulipa:</span>
+                            <span>Total to Pay:</span>
                             <span class="font-semibold" id="paymentTotal">TZS 0</span>
                         </div>
                         
                         <div class="summary-row mb-4">
-                            <span>Rudisha:</span>
+                            <span>Change:</span>
                             <span class="font-semibold text-success" id="paymentChange">TZS 0</span>
                         </div>
                         
@@ -2066,11 +2185,11 @@
                 
                 <div class="modal-footer">
                     <button id="cancelPaymentBtn" class="btn btn-outline flex-1">
-                        Ghairi
+                        Cancel
                     </button>
                     
                     <button id="confirmPaymentBtn" class="btn btn-success flex-1">
-                        <i class="fas fa-check"></i> Thibitisha
+                        <i class="fas fa-check"></i> Confirm
                     </button>
                 </div>
             </div>
@@ -2080,7 +2199,7 @@
         <div id="productModal" class="modal-overlay hidden">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h3 class="font-semibold text-lg"><i class="fas fa-box"></i> Usimamizi wa Bidhaa</h3>
+                    <h3 class="font-semibold text-lg"><i class="fas fa-box"></i> Product Management</h3>
                     <button id="closeProductModal" class="btn btn-icon btn-sm">
                         <i class="fas fa-times"></i>
                     </button>
@@ -2095,31 +2214,31 @@
                             </div>
                             
                             <div class="form-group">
-                                <label class="form-label">Msimbo wa Mstari</label>
+                                <label class="form-label">Barcode</label>
                                 <input type="text" id="productBarcode" class="form-control">
                             </div>
                         </div>
                         
                         <div class="form-group mb-4">
-                            <label class="form-label">Jina la Bidhaa *</label>
+                            <label class="form-label">Product Name *</label>
                             <input type="text" id="productName" class="form-control" required>
                         </div>
                         
                         <div class="grid grid-cols-3 gap-4 mb-4">
                             <div class="form-group">
-                                <label class="form-label">Bei *</label>
+                                <label class="form-label">Price *</label>
                                 <input type="number" id="productPrice" class="form-control" 
                                        min="0" step="0.01" required>
                             </div>
                             
                             <div class="form-group">
-                                <label class="form-label">Gharama</label>
+                                <label class="form-label">Cost</label>
                                 <input type="number" id="productCost" class="form-control" 
                                        min="0" step="0.01">
                             </div>
                             
                             <div class="form-group">
-                                <label class="form-label">Hisabu *</label>
+                                <label class="form-label">Stock *</label>
                                 <input type="number" id="productStock" class="form-control" 
                                        min="0" required>
                             </div>
@@ -2127,7 +2246,7 @@
                         
                         <div class="grid grid-cols-2 gap-4 mb-4">
                             <div class="form-group">
-                                <label class="form-label">Aina</label>
+                                <label class="form-label">Category</label>
                                 <select id="productCategory" class="form-control">
                                     <option value="general">General</option>
                                     <option value="vyakula">Vyakula</option>
@@ -2139,14 +2258,14 @@
                             </div>
                             
                             <div class="form-group">
-                                <label class="form-label">Kiwango cha Chini</label>
+                                <label class="form-label">Min Stock</label>
                                 <input type="number" id="productMinStock" class="form-control" 
                                        min="0" value="10">
                             </div>
                         </div>
                         
                         <div class="form-group mb-4">
-                            <label class="form-label">Maelezo</label>
+                            <label class="form-label">Description</label>
                             <textarea id="productDescription" class="form-control" rows="3"></textarea>
                         </div>
                     </form>
@@ -2154,11 +2273,11 @@
                 
                 <div class="modal-footer">
                     <button id="cancelProductBtn" class="btn btn-outline">
-                        Ghairi
+                        Cancel
                     </button>
                     
                     <button id="saveProductBtn" class="btn btn-primary">
-                        <i class="fas fa-save"></i> Hifadhi Bidhaa
+                        <i class="fas fa-save"></i> Save Product
                     </button>
                 </div>
             </div>
@@ -2181,8 +2300,10 @@
                 this.categories = new Set(['all']);
                 this.isCartOpen = false;
                 this.currentTheme = localStorage.getItem('tanzania_pos_theme') || 'light';
+                this.currentLanguage = localStorage.getItem('tanzania_pos_language') || 'en';
                 this.isProcessing = false;
                 this.salesChart = null;
+                this.isFullScreen = false;
                 
                 this.init();
             }
@@ -2192,6 +2313,7 @@
                 this.setupEventListeners();
                 this.updateDateTime();
                 this.applyTheme(this.currentTheme);
+                this.applyLanguage(this.currentLanguage);
                 
                 if (this.products.length === 0) {
                     this.createSampleData();
@@ -2218,6 +2340,7 @@
                 this.heldCarts = JSON.parse(localStorage.getItem('tanzania_pos_held_carts') || '[]');
                 this.settings = JSON.parse(localStorage.getItem('tanzania_pos_settings') || '{}');
                 this.currentTheme = localStorage.getItem('tanzania_pos_theme') || 'light';
+                this.currentLanguage = localStorage.getItem('tanzania_pos_language') || 'en';
                 
                 // Initialize categories
                 this.categories = new Set(['all']);
@@ -2236,6 +2359,7 @@
                 localStorage.setItem('tanzania_pos_held_carts', JSON.stringify(this.heldCarts));
                 localStorage.setItem('tanzania_pos_settings', JSON.stringify(this.settings));
                 localStorage.setItem('tanzania_pos_theme', this.currentTheme);
+                localStorage.setItem('tanzania_pos_language', this.currentLanguage);
             }
 
             createSampleData() {
@@ -2243,8 +2367,8 @@
                     {
                         id: 1,
                         sku: 'SUG001',
-                        name: 'Sukari 1kg',
-                        description: 'Sukari nyeupe 1kg',
+                        name: 'Sugar 1kg',
+                        description: 'White sugar 1kg',
                         category: 'vyakula',
                         price: 2500,
                         cost: 2000,
@@ -2256,8 +2380,8 @@
                     {
                         id: 2,
                         sku: 'FLR001',
-                        name: 'Unga wa Ngano 5kg',
-                        description: 'Unga bora wa ngano',
+                        name: 'Wheat Flour 5kg',
+                        description: 'Premium wheat flour',
                         category: 'vyakula',
                         price: 15000,
                         cost: 12000,
@@ -2269,8 +2393,8 @@
                     {
                         id: 3,
                         sku: 'OIL001',
-                        name: 'Mafuta ya Kupikia 1L',
-                        description: 'Mafuta ya kupikia ya sunflower',
+                        name: 'Cooking Oil 1L',
+                        description: 'Sunflower cooking oil',
                         category: 'vyakula',
                         price: 3500,
                         cost: 2800,
@@ -2282,8 +2406,8 @@
                     {
                         id: 4,
                         sku: 'WTR001',
-                        name: 'Maji 1.5L',
-                        description: 'Maji safi ya kunywa',
+                        name: 'Water 1.5L',
+                        description: 'Pure drinking water',
                         category: 'vinywaji',
                         price: 1500,
                         cost: 1000,
@@ -2296,7 +2420,7 @@
                         id: 5,
                         sku: 'SOD001',
                         name: 'Soda 500ml',
-                        description: 'Soda baridi ya Coca-Cola',
+                        description: 'Cold Coca-Cola soda',
                         category: 'vinywaji',
                         price: 1200,
                         cost: 800,
@@ -2308,8 +2432,8 @@
                     {
                         id: 6,
                         sku: 'SAP001',
-                        name: 'Sabuni ya Kufulia 500g',
-                        description: 'Sabuni nzuri ya kufulia',
+                        name: 'Washing Soap 500g',
+                        description: 'Good quality washing soap',
                         category: 'nyumbani',
                         price: 2800,
                         cost: 2000,
@@ -2321,12 +2445,12 @@
                 ];
                 
                 this.settings = {
-                    storeName: 'Duka La Tanzania',
-                    storeAddress: '123 Mtaa Kuu, Dar es Salaam',
+                    storeName: 'Tanzania Shop',
+                    storeAddress: '123 Main Street, Dar es Salaam',
                     storePhone: '+255 123 456 789',
-                    storeEmail: 'duka@tanzania.com',
+                    storeEmail: 'shop@tanzania.com',
                     taxRate: 18,
-                    receiptFooter: 'Asante kwa kununua! Karibu tena.'
+                    receiptFooter: 'Thank you for shopping! Come again.'
                 };
                 
                 this.saveData();
@@ -2341,8 +2465,8 @@
                         id: 1001,
                         date: new Date(today.getTime() - 24 * 60 * 60 * 1000).toISOString(),
                         items: [
-                            { id: 1, name: 'Sukari 1kg', price: 2500, quantity: 2, sku: 'SUG001' },
-                            { id: 4, name: 'Maji 1.5L', price: 1500, quantity: 3, sku: 'WTR001' }
+                            { id: 1, name: 'Sugar 1kg', price: 2500, quantity: 2, sku: 'SUG001' },
+                            { id: 4, name: 'Water 1.5L', price: 1500, quantity: 3, sku: 'WTR001' }
                         ],
                         subtotal: 9500,
                         tax: 1710,
@@ -2351,15 +2475,15 @@
                         amountTendered: 12000,
                         change: 790,
                         cashier: 'Admin',
-                        store: 'Duka La Tanzania'
+                        store: 'Tanzania Shop'
                     },
                     {
                         id: 1002,
                         date: new Date(today.getTime() - 12 * 60 * 60 * 1000).toISOString(),
                         items: [
-                            { id: 2, name: 'Unga wa Ngano 5kg', price: 15000, quantity: 1, sku: 'FLR001' },
-                            { id: 3, name: 'Mafuta ya Kupikia 1L', price: 3500, quantity: 2, sku: 'OIL001' },
-                            { id: 6, name: 'Sabuni ya Kufulia 500g', price: 2800, quantity: 1, sku: 'SAP001' }
+                            { id: 2, name: 'Wheat Flour 5kg', price: 15000, quantity: 1, sku: 'FLR001' },
+                            { id: 3, name: 'Cooking Oil 1L', price: 3500, quantity: 2, sku: 'OIL001' },
+                            { id: 6, name: 'Washing Soap 500g', price: 2800, quantity: 1, sku: 'SAP001' }
                         ],
                         subtotal: 24800,
                         tax: 4464,
@@ -2368,14 +2492,14 @@
                         amountTendered: 30000,
                         change: 736,
                         cashier: 'Admin',
-                        store: 'Duka La Tanzania'
+                        store: 'Tanzania Shop'
                     },
                     {
                         id: 1003,
                         date: new Date(today.getTime() - 6 * 60 * 60 * 1000).toISOString(),
                         items: [
                             { id: 5, name: 'Soda 500ml', price: 1200, quantity: 5, sku: 'SOD001' },
-                            { id: 1, name: 'Sukari 1kg', price: 2500, quantity: 1, sku: 'SUG001' }
+                            { id: 1, name: 'Sugar 1kg', price: 2500, quantity: 1, sku: 'SUG001' }
                         ],
                         subtotal: 8500,
                         tax: 1530,
@@ -2384,7 +2508,7 @@
                         amountTendered: 10030,
                         change: 0,
                         cashier: 'Cashier',
-                        store: 'Duka La Tanzania'
+                        store: 'Tanzania Shop'
                     }
                 ];
                 
@@ -2475,7 +2599,7 @@
                 document.getElementById('storeName').addEventListener('change', (e) => {
                     this.settings.storeName = e.target.value;
                     this.saveData();
-                    this.showToast('Jina la duka limebadilishwa', 'success');
+                    this.showToast('Store name updated', 'success');
                 });
 
                 document.getElementById('taxRate').addEventListener('change', (e) => {
@@ -2483,7 +2607,7 @@
                     this.saveData();
                     this.updateCartDisplay();
                     this.updateTaxRateDisplay();
-                    this.showToast('Kodi imebadilishwa', 'success');
+                    this.showToast('Tax rate updated', 'success');
                 });
 
                 document.getElementById('storePhone').addEventListener('change', (e) => {
@@ -2595,11 +2719,60 @@
                     if (e.key === 'Escape') {
                         this.hideAllModals();
                     }
+                    
+                    // F11 for fullscreen
+                    if (e.key === 'F11') {
+                        e.preventDefault();
+                        this.toggleFullScreen();
+                    }
+                });
+
+                // Fullscreen button
+                document.getElementById('fullscreenBtn').addEventListener('click', () => this.toggleFullScreen());
+
+                // Language selector
+                document.getElementById('langBtn').addEventListener('click', () => this.toggleLanguageDropdown());
+                document.querySelectorAll('.lang-option').forEach(option => {
+                    option.addEventListener('click', (e) => {
+                        const lang = e.target.closest('.lang-option').dataset.lang;
+                        this.selectLanguage(lang);
+                    });
+                });
+
+                // Close language dropdown when clicking outside
+                document.addEventListener('click', (e) => {
+                    const langBtn = document.getElementById('langBtn');
+                    const langDropdown = document.getElementById('langDropdown');
+                    
+                    if (!langBtn.contains(e.target) && !langDropdown.contains(e.target)) {
+                        langDropdown.classList.remove('show');
+                    }
+                });
+
+                // Fullscreen change event
+                document.addEventListener('fullscreenchange', () => {
+                    this.isFullScreen = !this.isFullScreen;
+                    this.updateFullscreenButton();
+                });
+
+                document.addEventListener('webkitfullscreenchange', () => {
+                    this.isFullScreen = !this.isFullScreen;
+                    this.updateFullscreenButton();
+                });
+
+                document.addEventListener('mozfullscreenchange', () => {
+                    this.isFullScreen = !this.isFullScreen;
+                    this.updateFullscreenButton();
+                });
+
+                document.addEventListener('MSFullscreenChange', () => {
+                    this.isFullScreen = !this.isFullScreen;
+                    this.updateFullscreenButton();
                 });
             }
 
             loadSettingsUI() {
-                document.getElementById('storeName').value = this.settings.storeName || 'Duka La Tanzania';
+                document.getElementById('storeName').value = this.settings.storeName || 'Tanzania Shop';
                 document.getElementById('taxRate').value = this.settings.taxRate || 18;
                 document.getElementById('storePhone').value = this.settings.storePhone || '';
                 document.getElementById('storeEmail').value = this.settings.storeEmail || '';
@@ -2612,10 +2785,163 @@
                     option.classList.remove('active');
                 });
                 document.querySelector(`[data-theme="${this.currentTheme}"]`).classList.add('active');
+                
+                // Set language
+                document.querySelectorAll('.lang-option').forEach(option => {
+                    option.classList.remove('active');
+                });
+                document.querySelector(`[data-lang="${this.currentLanguage}"]`).classList.add('active');
+                document.getElementById('currentLang').textContent = this.currentLanguage === 'en' ? 'EN' : 'SW';
             }
 
             updateTaxRateDisplay() {
                 document.getElementById('taxRateDisplay').textContent = this.settings.taxRate || 18;
+            }
+
+            updateFullscreenButton() {
+                const icon = document.querySelector('#fullscreenBtn i');
+                if (this.isFullScreen) {
+                    icon.className = 'fas fa-compress';
+                    document.getElementById('fullscreenBtn').title = 'Exit Full Screen';
+                } else {
+                    icon.className = 'fas fa-expand';
+                    document.getElementById('fullscreenBtn').title = 'Full Screen';
+                }
+            }
+
+            toggleFullScreen() {
+                if (!document.fullscreenElement) {
+                    if (document.documentElement.requestFullscreen) {
+                        document.documentElement.requestFullscreen();
+                    } else if (document.documentElement.webkitRequestFullscreen) {
+                        document.documentElement.webkitRequestFullscreen();
+                    } else if (document.documentElement.mozRequestFullScreen) {
+                        document.documentElement.mozRequestFullScreen();
+                    } else if (document.documentElement.msRequestFullscreen) {
+                        document.documentElement.msRequestFullscreen();
+                    }
+                    this.isFullScreen = true;
+                } else {
+                    if (document.exitFullscreen) {
+                        document.exitFullscreen();
+                    } else if (document.webkitExitFullscreen) {
+                        document.webkitExitFullscreen();
+                    } else if (document.mozCancelFullScreen) {
+                        document.mozCancelFullScreen();
+                    } else if (document.msExitFullscreen) {
+                        document.msExitFullscreen();
+                    }
+                    this.isFullScreen = false;
+                }
+                this.updateFullscreenButton();
+            }
+
+            toggleLanguageDropdown() {
+                document.getElementById('langDropdown').classList.toggle('show');
+            }
+
+            selectLanguage(lang) {
+                this.currentLanguage = lang;
+                localStorage.setItem('tanzania_pos_language', lang);
+                this.applyLanguage(lang);
+                
+                document.querySelectorAll('.lang-option').forEach(option => {
+                    option.classList.remove('active');
+                });
+                document.querySelector(`[data-lang="${lang}"]`).classList.add('active');
+                document.getElementById('currentLang').textContent = lang === 'en' ? 'EN' : 'SW';
+                
+                document.getElementById('langDropdown').classList.remove('show');
+                
+                const message = lang === 'en' ? 'Language changed to English' : 'Lugha imebadilishwa kuwa Kiswahili';
+                this.showToast(message, 'success');
+            }
+
+            applyLanguage(lang) {
+                // Update all elements with data-en and data-sw attributes
+                document.querySelectorAll('[data-en], [data-sw]').forEach(element => {
+                    if (element.dataset[lang]) {
+                        if (element.tagName === 'INPUT' || element.tagName === 'TEXTAREA') {
+                            element.placeholder = element.dataset[lang];
+                        } else {
+                            element.textContent = element.dataset[lang];
+                        }
+                    }
+                });
+                
+                // Update select options
+                const translations = {
+                    'en': {
+                        'today': 'Today',
+                        'yesterday': 'Yesterday',
+                        'week': 'This Week',
+                        'month': 'This Month',
+                        'year': 'This Year',
+                        'all': 'All Time',
+                        'cash': 'Cash',
+                        'card': 'Card',
+                        'mobile': 'M-Pesa',
+                        'newest': 'Newest',
+                        'oldest': 'Oldest',
+                        'highest': 'Highest',
+                        'lowest': 'Lowest',
+                        'allMethods': 'All Methods'
+                    },
+                    'sw': {
+                        'today': 'Leo',
+                        'yesterday': 'Jana',
+                        'week': 'Wiki hii',
+                        'month': 'Mwezi huu',
+                        'year': 'Mwaka huu',
+                        'all': 'Wakati wote',
+                        'cash': 'Pesa Taslimu',
+                        'card': 'Kadi',
+                        'mobile': 'M-Pesa',
+                        'newest': 'Mpya zaidi',
+                        'oldest': 'Zamani zaidi',
+                        'highest': 'Kubwa zaidi',
+                        'lowest': 'Ndogo zaidi',
+                        'allMethods': 'Njia zote'
+                    }
+                };
+                
+                // Update select options
+                const historyPeriod = document.getElementById('historyPeriod');
+                if (historyPeriod) {
+                    Array.from(historyPeriod.options).forEach(option => {
+                        option.textContent = translations[lang][option.value] || option.textContent;
+                    });
+                }
+                
+                const historyPaymentMethod = document.getElementById('historyPaymentMethod');
+                if (historyPaymentMethod) {
+                    Array.from(historyPaymentMethod.options).forEach(option => {
+                        option.textContent = translations[lang][option.value] || option.textContent;
+                    });
+                }
+                
+                const historySort = document.getElementById('historySort');
+                if (historySort) {
+                    Array.from(historySort.options).forEach(option => {
+                        option.textContent = translations[lang][option.value] || option.textContent;
+                    });
+                }
+                
+                // Update search placeholders
+                const productSearch = document.getElementById('productSearch');
+                if (productSearch) {
+                    productSearch.placeholder = lang === 'en' ? '🔍 Search products...' : '🔍 Tafuta bidhaa...';
+                }
+                
+                const inventorySearch = document.getElementById('inventorySearch');
+                if (inventorySearch) {
+                    inventorySearch.placeholder = lang === 'en' ? 'Search products...' : 'Tafuta bidhaa...';
+                }
+                
+                const historySearch = document.getElementById('historySearch');
+                if (historySearch) {
+                    historySearch.placeholder = lang === 'en' ? 'Search sales...' : 'Tafuta mauzo...';
+                }
             }
 
             login() {
@@ -2643,13 +2969,14 @@
                     loginBtn.innerHTML = '<div class="loading"></div>';
                     
                     setTimeout(() => {
+                        // FIXED: Properly hide login and show POS screen
                         document.getElementById('loginScreen').style.display = 'none';
                         document.getElementById('posScreen').style.display = 'flex';
                         
                         document.getElementById('currentUser').textContent = this.currentUser;
                         document.getElementById('currentRole').textContent = role;
                         
-                        this.showToast(`Karibu, ${this.currentUser}!`, 'success');
+                        this.showToast(`Welcome, ${this.currentUser}!`, 'success');
                         
                         this.updateCartDisplay();
                         this.updateCartBadge();
@@ -2660,13 +2987,13 @@
                         this.isProcessing = false;
                     }, 800);
                 } else {
-                    this.showToast('Jina au nenosiri sio sahihi!', 'error');
+                    this.showToast('Invalid username or password!', 'error');
                     this.isProcessing = false;
                 }
             }
 
             logout() {
-                if (confirm('Unahitaji kutoka?')) {
+                if (confirm('Are you sure you want to logout?')) {
                     this.saveData();
                     
                     this.currentUser = null;
@@ -2678,7 +3005,7 @@
                     
                     this.closeCart();
                     
-                    this.showToast('Umefanikiwa kutoka', 'info');
+                    this.showToast('Logged out successfully', 'info');
                 }
             }
 
@@ -2692,7 +3019,7 @@
                 });
                 document.querySelector(`[data-theme="${theme}"]`).classList.add('active');
                 
-                this.showToast(`Muonekano umegeuzwa`, 'success');
+                this.showToast(`Theme changed to ${theme}`, 'success');
             }
 
             applyTheme(theme) {
@@ -2710,7 +3037,13 @@
                     minute: '2-digit'
                 };
                 
-                document.getElementById('datetimeText').textContent = now.toLocaleDateString('sw-TZ', options);
+                // Format based on language
+                let locale = 'en-US';
+                if (this.currentLanguage === 'sw') {
+                    locale = 'sw-TZ';
+                }
+                
+                document.getElementById('datetimeText').textContent = now.toLocaleDateString(locale, options);
                 
                 setTimeout(() => this.updateDateTime(), 30000);
             }
@@ -2748,8 +3081,8 @@
                     productsGrid.innerHTML = `
                         <div class="empty-state col-span-full">
                             <i class="fas fa-box-open"></i>
-                            <div class="font-medium text-tertiary">Hakuna bidhaa</div>
-                            <div class="text-sm text-muted mt-1">Bonyeza "Ongeza" kuanza</div>
+                            <div class="font-medium text-tertiary">No products</div>
+                            <div class="text-sm text-muted mt-1">Click "Add" to start</div>
                         </div>
                     `;
                     return;
@@ -2773,7 +3106,7 @@
                             <div class="product-price">TZS ${product.price.toLocaleString()}</div>
                             <div class="product-stock ${stockClass}">
                                 <i class="fas ${stockIcon}"></i>
-                                ${product.stock} zilizobaki
+                                ${product.stock} left
                             </div>
                         </div>
                     `;
@@ -2782,7 +3115,7 @@
                         if (product.stock > 0) {
                             this.addToCart(product);
                         } else {
-                            this.showToast('Bidhaa imekwisha!', 'warning');
+                            this.showToast('Product out of stock!', 'warning');
                         }
                     });
                     
@@ -2820,13 +3153,13 @@
 
             getCategoryName(category) {
                 const names = {
-                    'all': 'Zote',
+                    'all': 'All',
                     'general': 'General',
-                    'vyakula': 'Vyakula',
-                    'vinywaji': 'Vinywaji',
+                    'vyakula': 'Food',
+                    'vinywaji': 'Drinks',
                     'electronics': 'Electronics',
-                    'nguo': 'Nguo',
-                    'nyumbani': 'Nyumbani'
+                    'nguo': 'Clothing',
+                    'nyumbani': 'Home'
                 };
                 return names[category] || category;
             }
@@ -2851,8 +3184,8 @@
                     productsGrid.innerHTML = `
                         <div class="empty-state col-span-full">
                             <i class="fas fa-search"></i>
-                            <div class="font-medium text-tertiary">Hakuna bidhaa</div>
-                            <div class="text-sm text-muted mt-1">Badilisha utafutaji</div>
+                            <div class="font-medium text-tertiary">No products found</div>
+                            <div class="text-sm text-muted mt-1">Try a different search</div>
                         </div>
                     `;
                     return;
@@ -2877,7 +3210,7 @@
                             <div class="product-price">TZS ${product.price.toLocaleString()}</div>
                             <div class="product-stock ${stockClass}">
                                 <i class="fas ${stockIcon}"></i>
-                                ${product.stock} zilizobaki
+                                ${product.stock} left
                             </div>
                         </div>
                     `;
@@ -2886,7 +3219,7 @@
                         if (product.stock > 0) {
                             this.addToCart(product);
                         } else {
-                            this.showToast('Bidhaa imekwisha!', 'warning');
+                            this.showToast('Product out of stock!', 'warning');
                         }
                     });
                     
@@ -2903,7 +3236,7 @@
                 if (this.isProcessing) return;
                 
                 if (product.stock <= 0) {
-                    this.showToast('Bidhaa imekwisha!', 'warning');
+                    this.showToast('Product out of stock!', 'warning');
                     return;
                 }
 
@@ -2912,9 +3245,9 @@
                 if (existingItem) {
                     if (existingItem.quantity < product.stock) {
                         existingItem.quantity++;
-                        this.showToast(`${product.name} imeongezewa`, 'success');
+                        this.showToast(`${product.name} quantity increased`, 'success');
                     } else {
-                        this.showToast('Haiwezi kuongezwa zaidi!', 'warning');
+                        this.showToast('Cannot add more!', 'warning');
                         return;
                     }
                 } else {
@@ -2926,7 +3259,7 @@
                         sku: product.sku,
                         stock: product.stock
                     });
-                    this.showToast(`${product.name} imeongezewa kwenye kasha`, 'success');
+                    this.showToast(`${product.name} added to cart`, 'success');
                 }
 
                 this.updateCartDisplay();
@@ -2948,8 +3281,8 @@
                     cartItems.innerHTML = `
                         <div class="empty-state">
                             <i class="fas fa-shopping-cart"></i>
-                            <div class="font-medium text-tertiary">Kasha ni tupu</div>
-                            <div class="text-sm text-muted mt-1">Ongeza bidhaa kuanza</div>
+                            <div class="font-medium text-tertiary">Cart is empty</div>
+                            <div class="text-sm text-muted mt-1">Add products to start</div>
                         </div>
                     `;
                     this.updateCartSummary();
@@ -2962,7 +3295,7 @@
                     cartItem.innerHTML = `
                         <div class="cart-item-details">
                             <div class="cart-item-name">${item.name}</div>
-                            <div class="cart-item-price">TZS ${item.price.toLocaleString()} kila moja</div>
+                            <div class="cart-item-price">TZS ${item.price.toLocaleString()} each</div>
                         </div>
                         <div class="cart-item-actions">
                             <div class="quantity-control">
@@ -3042,7 +3375,7 @@
                         this.removeFromCart(productId);
                         return;
                     } else if (newQuantity > product.stock) {
-                        this.showToast('Haiwezi kuongezwa zaidi!', 'warning');
+                        this.showToast('Cannot add more!', 'warning');
                         return;
                     } else {
                         item.quantity = newQuantity;
@@ -3061,13 +3394,13 @@
                     this.updateCartDisplay();
                     this.updateCartBadge();
                     this.saveData();
-                    this.showToast('Bidhaa imeondolewa', 'info');
+                    this.showToast('Product removed from cart', 'info');
                 }
             }
 
             holdCart() {
                 if (this.cart.length === 0) {
-                    this.showToast('Kasha ni tupu!', 'warning');
+                    this.showToast('Cart is empty!', 'warning');
                     return;
                 }
                 
@@ -3084,31 +3417,31 @@
                 this.updateCartBadge();
                 this.saveData();
                 
-                this.showToast(`Kasha #${cartId} imesimamishwa`, 'success');
+                this.showToast(`Cart #${cartId} held`, 'success');
             }
 
             saveCart() {
                 if (this.cart.length === 0) {
-                    this.showToast('Kasha ni tupu!', 'warning');
+                    this.showToast('Cart is empty!', 'warning');
                     return;
                 }
                 
                 localStorage.setItem('tanzania_pos_saved_cart', JSON.stringify(this.cart));
-                this.showToast('Kasha imehifadhiwa', 'success');
+                this.showToast('Cart saved', 'success');
             }
 
             clearCart() {
                 if (this.cart.length === 0) {
-                    this.showToast('Kasha tayari ni tupu!', 'info');
+                    this.showToast('Cart is already empty!', 'info');
                     return;
                 }
                 
-                if (confirm('Futa kasha yote? Kitendo hiki hakiwezi kufutwa.')) {
+                if (confirm('Clear all items from cart? This action cannot be undone.')) {
                     this.cart = [];
                     this.updateCartDisplay();
                     this.updateCartBadge();
                     this.saveData();
-                    this.showToast('Kasha imefutwa', 'info');
+                    this.showToast('Cart cleared', 'info');
                 }
             }
 
@@ -3132,7 +3465,7 @@
 
             showPaymentModal() {
                 if (this.cart.length === 0) {
-                    this.showToast('Kasha ni tupu!', 'warning');
+                    this.showToast('Cart is empty!', 'warning');
                     return;
                 }
                 
@@ -3188,7 +3521,7 @@
                 const total = this.calculateCartTotal();
                 
                 if (amount < total) {
-                    this.showToast(`Inahitaji TZS ${(total - amount).toLocaleString()} zaidi`, 'warning');
+                    this.showToast(`Need TZS ${(total - amount).toLocaleString()} more`, 'warning');
                     this.isProcessing = false;
                     return;
                 }
@@ -3221,7 +3554,7 @@
                     amountTendered: amount,
                     change: amount - total,
                     cashier: this.currentUser || 'System',
-                    store: this.settings.storeName || 'Duka La Tanzania'
+                    store: this.settings.storeName || 'Tanzania Shop'
                 };
 
                 // Update product stocks
@@ -3257,7 +3590,7 @@
                 confirmBtn.innerHTML = originalText;
                 confirmBtn.disabled = false;
                 
-                this.showToast('Malipo yamefanikiwa! Risiti imepigwa.', 'success');
+                this.showToast('Payment successful! Receipt printed.', 'success');
                 
                 // Print receipt
                 this.printReceipt(sale);
@@ -3275,7 +3608,7 @@
                     <!DOCTYPE html>
                     <html>
                     <head>
-                        <title>Risiti #${sale.id}</title>
+                        <title>Receipt #${sale.id}</title>
                         <style>
                             body { 
                                 font-family: monospace; 
@@ -3298,13 +3631,13 @@
                     <body onload="window.print(); window.close();">
                         <div class="receipt">
                             <div class="header">
-                                <h2 style="margin-bottom: 5px;">${this.settings.storeName || 'Duka La Tanzania'}</h2>
+                                <h2 style="margin-bottom: 5px;">${this.settings.storeName || 'Tanzania Shop'}</h2>
                                 <p style="margin: 2px 0;">${this.settings.storeAddress || ''}</p>
                                 <p style="margin: 2px 0;">${this.settings.storePhone || ''}</p>
                                 <hr style="border: none; border-top: 1px dashed #ccc; margin: 10px 0;">
                                 <p style="margin: 2px 0;">${formattedDate} ${formattedTime}</p>
-                                <p style="margin: 2px 0;">Risiti: #${sale.id}</p>
-                                <p style="margin: 2px 0;">Mfanyakazi: ${sale.cashier}</p>
+                                <p style="margin: 2px 0;">Receipt: #${sale.id}</p>
+                                <p style="margin: 2px 0;">Cashier: ${sale.cashier}</p>
                                 <hr style="border: none; border-top: 1px dashed #ccc; margin: 10px 0;">
                             </div>
                             
@@ -3321,35 +3654,35 @@
                             <hr style="border: none; border-top: 1px dashed #ccc; margin: 10px 0;">
                             
                             <div class="item">
-                                <span>Jumla:</span>
+                                <span>Subtotal:</span>
                                 <span>TZS ${sale.subtotal.toLocaleString()}</span>
                             </div>
                             <div class="item">
-                                <span>Kodi (${this.settings.taxRate || 18}%):</span>
+                                <span>Tax (${this.settings.taxRate || 18}%):</span>
                                 <span>TZS ${sale.tax.toLocaleString()}</span>
                             </div>
                             <div class="item total">
-                                <span>JUMLA:</span>
+                                <span>TOTAL:</span>
                                 <span>TZS ${sale.total.toLocaleString()}</span>
                             </div>
                             <div class="item">
-                                <span>Njia ya Malipo:</span>
-                                <span>${sale.paymentMethod === 'cash' ? 'Pesa Taslimu' : 
-                                       sale.paymentMethod === 'mobile' ? 'M-Pesa' : 'Kadi'}</span>
+                                <span>Payment Method:</span>
+                                <span>${sale.paymentMethod === 'cash' ? 'Cash' : 
+                                       sale.paymentMethod === 'mobile' ? 'M-Pesa' : 'Card'}</span>
                             </div>
                             <div class="item">
-                                <span>Kiasi Kilichotolewa:</span>
+                                <span>Amount Tendered:</span>
                                 <span>TZS ${sale.amountTendered.toLocaleString()}</span>
                             </div>
                             <div class="item">
-                                <span>Rudisha:</span>
+                                <span>Change:</span>
                                 <span>TZS ${sale.change.toLocaleString()}</span>
                             </div>
                             
                             <hr style="border: none; border-top: 1px dashed #ccc; margin: 15px 0;">
                             
                             <div class="footer">
-                                <p>${this.settings.receiptFooter || 'Asante kwa kununua! Karibu tena.'}</p>
+                                <p>${this.settings.receiptFooter || 'Thank you for shopping! Come again.'}</p>
                                 <p>${new Date().toISOString().split('T')[0]}</p>
                             </div>
                         </div>
@@ -3451,7 +3784,7 @@
                         <td colspan="7" class="text-center py-8">
                             <div class="empty-state">
                                 <i class="fas fa-history"></i>
-                                <div class="font-medium text-tertiary">Hakuna mauzo</div>
+                                <div class="font-medium text-tertiary">No sales found</div>
                             </div>
                         </td>
                     `;
@@ -3483,12 +3816,12 @@
                             <div class="text-xs text-tertiary">${formattedTime}</div>
                         </td>
                         <td><span class="sale-id">#${sale.id}</span></td>
-                        <td title="${itemsText}">${sale.items.length} bidhaa</td>
+                        <td title="${itemsText}">${sale.items.length} items</td>
                         <td class="font-medium">${sale.cashier}</td>
                         <td><span class="payment-method-badge ${paymentBadgeClass}">${sale.paymentMethod}</span></td>
                         <td class="sale-total">TZS ${sale.total.toLocaleString()}</td>
                         <td>
-                            <button class="btn btn-outline btn-sm view-sale-btn" data-sale-id="${sale.id}" title="Angalia">
+                            <button class="btn btn-outline btn-sm view-sale-btn" data-sale-id="${sale.id}" title="View">
                                 <i class="fas fa-eye"></i>
                             </button>
                         </td>
@@ -3515,12 +3848,12 @@
                 
                 let details = `
                     <div class="mb-4">
-                        <h4 class="font-bold text-lg">Risiti #${sale.id}</h4>
+                        <h4 class="font-bold text-lg">Receipt #${sale.id}</h4>
                         <p class="text-sm text-tertiary">${formattedDate}</p>
                     </div>
                     
                     <div class="mb-4">
-                        <h5 class="font-semibold mb-2">Bidhaa:</h5>
+                        <h5 class="font-semibold mb-2">Items:</h5>
                         ${sale.items.map(item => `
                             <div class="flex justify-between mb-2 p-2 bg-tertiary rounded">
                                 <div>
@@ -3534,33 +3867,33 @@
                     
                     <div class="bg-tertiary p-4 rounded-lg">
                         <div class="flex justify-between mb-2">
-                            <span>Jumla:</span>
+                            <span>Subtotal:</span>
                             <span>TZS ${sale.subtotal.toLocaleString()}</span>
                         </div>
                         <div class="flex justify-between mb-2">
-                            <span>Kodi (${this.settings.taxRate || 18}%):</span>
+                            <span>Tax (${this.settings.taxRate || 18}%):</span>
                             <span>TZS ${sale.tax.toLocaleString()}</span>
                         </div>
                         <div class="flex justify-between font-bold text-lg pt-2 border-t border-border">
-                            <span>JUMLA:</span>
+                            <span>TOTAL:</span>
                             <span>TZS ${sale.total.toLocaleString()}</span>
                         </div>
                         <div class="flex justify-between text-sm pt-2">
-                            <span>Njia ya Malipo:</span>
+                            <span>Payment Method:</span>
                             <span class="font-medium">${sale.paymentMethod}</span>
                         </div>
                         <div class="flex justify-between text-sm">
-                            <span>Kiasi Kilichotolewa:</span>
+                            <span>Amount Tendered:</span>
                             <span class="font-medium">TZS ${sale.amountTendered.toLocaleString()}</span>
                         </div>
                         <div class="flex justify-between text-sm">
-                            <span>Rudisha:</span>
+                            <span>Change:</span>
                             <span class="font-medium text-success">TZS ${sale.change.toLocaleString()}</span>
                         </div>
                     </div>
                 `;
                 
-                alert(`Maelezo ya Mauzo:\n\nRisiti: #${sale.id}\nTarehe: ${formattedDate}\nMfanyakazi: ${sale.cashier}\nJumla: TZS ${sale.total.toLocaleString()}`);
+                alert(`Sale Details:\n\nReceipt: #${sale.id}\nDate: ${formattedDate}\nCashier: ${sale.cashier}\nTotal: TZS ${sale.total.toLocaleString()}`);
             }
 
             updateDashboardStats() {
@@ -3640,7 +3973,7 @@
                         <td colspan="6" class="text-center py-8">
                             <div class="empty-state">
                                 <i class="fas fa-box-open"></i>
-                                <div class="font-medium text-tertiary">Hakuna bidhaa</div>
+                                <div class="font-medium text-tertiary">No products found</div>
                             </div>
                         </td>
                     `;
@@ -3654,8 +3987,8 @@
                     const stockStatus = product.stock === 0 ? 'out' : 
                                       product.stock <= product.minStock ? 'low' : 'ok';
                     const stockBadgeClass = `stock-${stockStatus}`;
-                    const stockBadgeText = product.stock === 0 ? 'Imekwisha' : 
-                                          product.stock <= product.minStock ? 'Chini' : 'Sawa';
+                    const stockBadgeText = product.stock === 0 ? 'Out' : 
+                                          product.stock <= product.minStock ? 'Low' : 'OK';
                     
                     const inventoryValue = product.price * product.stock;
                     
@@ -3679,13 +4012,13 @@
                         <td class="font-semibold">TZS ${inventoryValue.toLocaleString()}</td>
                         <td>
                             <div class="flex gap-1">
-                                <button class="btn btn-outline btn-sm edit-product" data-id="${product.id}" title="Hariri">
+                                <button class="btn btn-outline btn-sm edit-product" data-id="${product.id}" title="Edit">
                                     <i class="fas fa-edit"></i>
                                 </button>
-                                <button class="btn btn-outline btn-sm adjust-stock" data-id="${product.id}" title="Badilisha Hisabu">
+                                <button class="btn btn-outline btn-sm adjust-stock" data-id="${product.id}" title="Adjust Stock">
                                     <i class="fas fa-sliders-h"></i>
                                 </button>
-                                <button class="btn btn-outline btn-sm delete-product" data-id="${product.id}" title="Futa">
+                                <button class="btn btn-outline btn-sm delete-product" data-id="${product.id}" title="Delete">
                                     <i class="fas fa-trash"></i>
                                 </button>
                             </div>
@@ -3717,8 +4050,8 @@
                 const form = document.getElementById('productForm');
                 
                 if (product) {
-                    document.querySelector('.modal-header h3').textContent = 'Hariri Bidhaa';
-                    document.getElementById('saveProductBtn').innerHTML = '<i class="fas fa-save"></i> Sasisha Bidhaa';
+                    document.querySelector('.modal-header h3').textContent = 'Edit Product';
+                    document.getElementById('saveProductBtn').innerHTML = '<i class="fas fa-save"></i> Update Product';
                     
                     document.getElementById('productSKU').value = product.sku;
                     document.getElementById('productBarcode').value = product.barcode || '';
@@ -3732,8 +4065,8 @@
                     
                     form.dataset.editId = product.id;
                 } else {
-                    document.querySelector('.modal-header h3').textContent = 'Ongeza Bidhaa Mpya';
-                    document.getElementById('saveProductBtn').innerHTML = '<i class="fas fa-plus"></i> Ongeza Bidhaa';
+                    document.querySelector('.modal-header h3').textContent = 'Add New Product';
+                    document.getElementById('saveProductBtn').innerHTML = '<i class="fas fa-plus"></i> Add Product';
                     
                     form.reset();
                     delete form.dataset.editId;
@@ -3794,7 +4127,7 @@
                 this.updateInventoryTable();
                 this.hideProductModal();
                 
-                this.showToast(`Bidhaa ${isEdit ? 'imesasishwa' : 'imeongezwa'}!`, 'success');
+                this.showToast(`Product ${isEdit ? 'updated' : 'added'}!`, 'success');
             }
 
             validateProductForm() {
@@ -3804,22 +4137,22 @@
                 const stock = document.getElementById('productStock').value;
                 
                 if (!sku.trim()) {
-                    this.showToast('SKU inahitajika', 'error');
+                    this.showToast('SKU is required', 'error');
                     return false;
                 }
                 
                 if (!name.trim()) {
-                    this.showToast('Jina la bidhaa linahitajika', 'error');
+                    this.showToast('Product name is required', 'error');
                     return false;
                 }
                 
                 if (!price || parseFloat(price) <= 0) {
-                    this.showToast('Bei sahihi inahitajika', 'error');
+                    this.showToast('Valid price is required', 'error');
                     return false;
                 }
                 
                 if (!stock || parseInt(stock) < 0) {
-                    this.showToast('Hisabu sahihi inahitajika', 'error');
+                    this.showToast('Valid stock is required', 'error');
                     return false;
                 }
                 
@@ -3837,14 +4170,14 @@
                 const product = this.products.find(p => p.id === parseInt(productId));
                 if (!product) return;
                 
-                const adjustment = prompt(`Badilisha hisabu ya ${product.name}\nSasa: ${product.stock}\nWeka mabadiliko (+/-):`, '0');
+                const adjustment = prompt(`Adjust stock for ${product.name}\nCurrent: ${product.stock}\nEnter adjustment (+/-):`, '0');
                 
                 if (adjustment !== null) {
                     const adjustmentValue = parseInt(adjustment);
                     if (!isNaN(adjustmentValue)) {
                         const newStock = product.stock + adjustmentValue;
                         if (newStock < 0) {
-                            this.showToast('Hisabu haiwezi kuwa chini ya sifuri', 'error');
+                            this.showToast('Stock cannot be negative', 'error');
                             return;
                         }
                         
@@ -3853,13 +4186,13 @@
                         this.updateProductsDisplay();
                         this.updateInventoryTable();
                         
-                        this.showToast(`Hisabu imebadilishwa: ${adjustmentValue >= 0 ? '+' : ''}${adjustmentValue}`, 'success');
+                        this.showToast(`Stock adjusted: ${adjustmentValue >= 0 ? '+' : ''}${adjustmentValue}`, 'success');
                     }
                 }
             }
 
             deleteProduct(productId) {
-                if (!confirm('Una uhakika unataka kufuta bidhaa hii?')) return;
+                if (!confirm('Are you sure you want to delete this product?')) return;
                 
                 const product = this.products.find(p => p.id === parseInt(productId));
                 if (!product) return;
@@ -3870,7 +4203,7 @@
                 this.updateCategories();
                 this.updateInventoryTable();
                 
-                this.showToast('Bidhaa imefutwa!', 'success');
+                this.showToast('Product deleted!', 'success');
             }
 
             updateReports() {
@@ -4018,7 +4351,7 @@
                     data: {
                         labels: labels,
                         datasets: [{
-                            label: 'Mapato (TZS)',
+                            label: 'Revenue (TZS)',
                             data: data,
                             borderColor: 'var(--primary)',
                             backgroundColor: 'rgba(0, 104, 55, 0.1)',
@@ -4088,7 +4421,7 @@
                 document.body.removeChild(a);
                 URL.revokeObjectURL(url);
                 
-                this.showToast('Data imehifadhiwa!', 'success');
+                this.showToast('Data backed up successfully!', 'success');
             }
 
             restoreData() {
@@ -4104,7 +4437,7 @@
                         try {
                             const backup = JSON.parse(event.target.result);
                             
-                            if (confirm('Hii itabadilisha data yote yako ya sasa. Una uhakika?')) {
+                            if (confirm('This will replace all your current data. Are you sure?')) {
                                 this.products = backup.products || [];
                                 this.sales = backup.sales || [];
                                 this.settings = backup.settings || {};
@@ -4119,10 +4452,10 @@
                                 this.updateReports();
                                 this.loadSettingsUI();
                                 
-                                this.showToast('Data imerejeshwa!', 'success');
+                                this.showToast('Data restored successfully!', 'success');
                             }
                         } catch (error) {
-                            this.showToast('Faili sio sahihi!', 'error');
+                            this.showToast('Invalid backup file!', 'error');
                         }
                     };
                     
@@ -4153,7 +4486,7 @@
                 document.body.removeChild(a);
                 URL.revokeObjectURL(url);
                 
-                this.showToast('Data yote imepakuliwa!', 'success');
+                this.showToast('All data exported successfully!', 'success');
             }
 
             importData() {
@@ -4169,7 +4502,7 @@
                         try {
                             const importData = JSON.parse(event.target.result);
                             
-                            if (confirm('Unganisha data hii na data yako ya sasa?')) {
+                            if (confirm('Merge this data with your current data?')) {
                                 // Merge products
                                 if (importData.products) {
                                     importData.products.forEach(newProduct => {
@@ -4197,10 +4530,10 @@
                                 this.updateDashboardStats();
                                 this.updateReports();
                                 
-                                this.showToast('Data imeingizwa!', 'success');
+                                this.showToast('Data imported successfully!', 'success');
                             }
                         } catch (error) {
-                            this.showToast('Faili sio sahihi!', 'error');
+                            this.showToast('Invalid file!', 'error');
                         }
                     };
                     
@@ -4211,7 +4544,7 @@
             }
 
             resetData() {
-                if (confirm('⚠️ ONYO: Hii itafuta DATA YOTE na kurudisha data ya sampuli.\n\nUna uhakika kabisa?')) {
+                if (confirm('⚠️ WARNING: This will delete ALL DATA and restore sample data.\n\nAre you absolutely sure?')) {
                     localStorage.clear();
                     this.products = [];
                     this.sales = [];
@@ -4231,7 +4564,7 @@
                     this.updateReports();
                     this.loadSettingsUI();
                     
-                    this.showToast('Data yote imefutwa na data ya sampuli imewekwa', 'warning');
+                    this.showToast('All data reset and sample data loaded', 'warning');
                 }
             }
 
@@ -4243,22 +4576,22 @@
                 const a = document.createElement('a');
                 a.href = url;
                 const date = new Date().toISOString().split('T')[0];
-                a.download = `mauzo_${date}.json`;
+                a.download = `sales_history_${date}.json`;
                 document.body.appendChild(a);
                 a.click();
                 document.body.removeChild(a);
                 URL.revokeObjectURL(url);
                 
-                this.showToast('Historia ya mauzo imepakuliwa!', 'success');
+                this.showToast('Sales history exported successfully!', 'success');
             }
 
             printReport() {
-                this.showToast('Uchapaji wa ripoti utafanyika hapo baadaye!', 'info');
+                this.showToast('Report printing will be implemented soon!', 'info');
             }
 
             quickSale() {
                 if (this.cart.length === 0) {
-                    this.showToast('Ongeza bidhaa kwenye kasha kwanza', 'info');
+                    this.showToast('Add products to cart first', 'info');
                     return;
                 }
                 
@@ -4266,7 +4599,7 @@
             }
 
             showScanner() {
-                this.showToast('Skana ya msimbo wa mstari inatumika...', 'info');
+                this.showToast('Barcode scanner will be implemented soon...', 'info');
                 
                 // Simulate scanning after 1 second
                 setTimeout(() => {
@@ -4278,11 +4611,11 @@
             }
 
             bulkImport() {
-                this.showToast('Ingizo la bidhaa nyingi utafanyika hapo baadaye!', 'info');
+                this.showToast('Bulk import will be implemented soon!', 'info');
             }
 
             changePassword() {
-                this.showToast('Kubadilisha nenosiri kutafanyika hapo baadaye!', 'info');
+                this.showToast('Password change will be implemented soon!', 'info');
             }
 
             hideAllModals() {
@@ -4353,18 +4686,6 @@
         // Initialize the POS system
         document.addEventListener('DOMContentLoaded', () => {
             window.posSystem = new TanzaniaPOS();
-            
-            // Check for auto-login
-            const lastLogin = localStorage.getItem('tanzania_pos_last_login');
-            if (lastLogin) {
-                try {
-                    const loginData = JSON.parse(lastLogin);
-                    document.getElementById('loginUsername').value = loginData.user;
-                    document.getElementById('loginRole').value = loginData.role;
-                } catch (e) {
-                    // Ignore parse errors
-                }
-            }
         });
     </script>
 </body>

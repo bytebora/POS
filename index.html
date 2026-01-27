@@ -183,6 +183,11 @@
             box-shadow: 0 0 0 3px rgba(0, 104, 55, 0.1);
         }
 
+        .form-control.error {
+            border-color: var(--danger);
+            background: rgba(229, 57, 53, 0.05);
+        }
+
         .demo-credentials {
             background: var(--bg-tertiary);
             padding: 1rem;
@@ -1385,6 +1390,12 @@
             border-left-color: var(--info);
         }
 
+        .toast.high-priority {
+            border-left-width: 6px;
+            border-left-color: var(--warning);
+            background: var(--bg-secondary);
+        }
+
         .toast-icon {
             font-size: 20px;
             flex-shrink: 0;
@@ -1571,6 +1582,27 @@
                 height: 70vh;
             }
         }
+
+        /* Accessibility */
+        @media (prefers-reduced-motion: reduce) {
+            * {
+                animation-duration: 0.01ms !important;
+                animation-iteration-count: 1 !important;
+                transition-duration: 0.01ms !important;
+            }
+        }
+
+        .sr-only {
+            position: absolute;
+            width: 1px;
+            height: 1px;
+            padding: 0;
+            margin: -1px;
+            overflow: hidden;
+            clip: rect(0, 0, 0, 0);
+            white-space: nowrap;
+            border: 0;
+        }
     </style>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
@@ -1587,12 +1619,12 @@
                 <div class="login-form">
                     <div class="form-group">
                         <label class="form-label">Username</label>
-                        <input type="text" id="loginUsername" class="form-control" placeholder="Enter username" value="admin">
+                        <input type="text" id="loginUsername" class="form-control" placeholder="Enter username" autocomplete="username">
                     </div>
                     
                     <div class="form-group">
                         <label class="form-label">Password</label>
-                        <input type="password" id="loginPassword" class="form-control" placeholder="Enter password" value="admin123">
+                        <input type="password" id="loginPassword" class="form-control" placeholder="Enter password" autocomplete="current-password">
                     </div>
                     
                     <div class="form-group">
@@ -1600,7 +1632,7 @@
                         <select id="loginRole" class="form-control">
                             <option value="cashier">Cashier</option>
                             <option value="manager">Manager</option>
-                            <option value="admin" selected>Admin</option>
+                            <option value="admin">Admin</option>
                         </select>
                     </div>
                     
@@ -2297,6 +2329,7 @@
                 this.products = [];
                 this.sales = [];
                 this.heldCarts = [];
+                this.users = [];
                 this.categories = new Set(['all']);
                 this.isCartOpen = false;
                 this.currentTheme = localStorage.getItem('tanzania_pos_theme') || 'light';
@@ -2304,65 +2337,314 @@
                 this.isProcessing = false;
                 this.salesChart = null;
                 this.isFullScreen = false;
+                this.sessionToken = null;
+                this.sessionTimeout = null;
+                this.db = null;
+                this.isInitialized = false;
+                this.settings = {
+                    storeName: 'Tanzania Shop',
+                    storeAddress: '',
+                    storePhone: '',
+                    storeEmail: '',
+                    taxRate: 18,
+                    receiptFooter: 'Thank you for shopping! Come again.'
+                };
                 
                 this.init();
             }
 
-            init() {
-                this.loadData();
-                this.setupEventListeners();
-                this.updateDateTime();
-                this.applyTheme(this.currentTheme);
-                this.applyLanguage(this.currentLanguage);
-                
-                if (this.products.length === 0) {
-                    this.createSampleData();
+            async init() {
+                try {
+                    await this.initializeDatabase();
+                    await this.loadData();
+                    this.setupEventListeners();
+                    this.updateDateTime();
+                    this.applyTheme(this.currentTheme);
+                    this.applyLanguage(this.currentLanguage);
+                    this.setupAccessibility();
+                    
+                    if (this.products.length === 0) {
+                        await this.createSampleData();
+                    }
+                    
+                    this.updateProductsDisplay();
+                    this.updateCategories();
+                    this.updateInventoryTable();
+                    this.updateCartBadge();
+                    this.loadSettingsUI();
+                    
+                    if (this.sales.length === 0) {
+                        await this.createSampleSales();
+                    }
+                    
+                    this.updateDashboardStats();
+                    this.setupSessionTimeout();
+                    this.isInitialized = true;
+                    
+                    // Check for existing session
+                    setTimeout(() => this.checkExistingSession(), 500);
+                    
+                    // Run startup checks
+                    setTimeout(() => this.startupChecks(), 1000);
+                    
+                } catch (error) {
+                    console.error('Initialization error:', error);
+                    this.showToast('System initialization failed!', 'error', 5000, 'high');
                 }
-                
-                this.updateProductsDisplay();
-                this.updateCategories();
-                this.updateInventoryTable();
-                this.updateCartBadge();
-                this.loadSettingsUI();
-                
-                if (this.sales.length === 0) {
-                    this.createSampleSales();
-                }
-                
-                this.updateDashboardStats();
             }
 
-            loadData() {
-                // Load all data from localStorage
-                this.products = JSON.parse(localStorage.getItem('tanzania_pos_products') || '[]');
-                this.sales = JSON.parse(localStorage.getItem('tanzania_pos_sales') || '[]');
-                this.cart = JSON.parse(localStorage.getItem('tanzania_pos_cart') || '[]');
-                this.heldCarts = JSON.parse(localStorage.getItem('tanzania_pos_held_carts') || '[]');
-                this.settings = JSON.parse(localStorage.getItem('tanzania_pos_settings') || '{}');
-                this.currentTheme = localStorage.getItem('tanzania_pos_theme') || 'light';
-                this.currentLanguage = localStorage.getItem('tanzania_pos_language') || 'en';
-                
-                // Initialize categories
-                this.categories = new Set(['all']);
-                this.products.forEach(product => {
-                    if (product.category) {
-                        this.categories.add(product.category);
-                    }
+            async initializeDatabase() {
+                return new Promise((resolve, reject) => {
+                    const request = indexedDB.open('TanzaniaPOS', 2);
+                    
+                    request.onerror = (event) => {
+                        console.error('IndexedDB error:', event.target.error);
+                        reject(event.target.error);
+                    };
+                    
+                    request.onsuccess = (event) => {
+                        this.db = event.target.result;
+                        console.log('IndexedDB initialized');
+                        resolve();
+                    };
+                    
+                    request.onupgradeneeded = (event) => {
+                        const db = event.target.result;
+                        
+                        // Create object stores
+                        if (!db.objectStoreNames.contains('products')) {
+                            const productsStore = db.createObjectStore('products', { keyPath: 'id' });
+                            productsStore.createIndex('sku', 'sku', { unique: true });
+                            productsStore.createIndex('category', 'category', { unique: false });
+                            productsStore.createIndex('barcode', 'barcode', { unique: false });
+                        }
+                        
+                        if (!db.objectStoreNames.contains('sales')) {
+                            const salesStore = db.createObjectStore('sales', { keyPath: 'id' });
+                            salesStore.createIndex('date', 'date', { unique: false });
+                            salesStore.createIndex('cashier', 'cashier', { unique: false });
+                        }
+                        
+                        if (!db.objectStoreNames.contains('users')) {
+                            const usersStore = db.createObjectStore('users', { keyPath: 'username' });
+                            usersStore.createIndex('role', 'role', { unique: false });
+                        }
+                        
+                        if (!db.objectStoreNames.contains('settings')) {
+                            db.createObjectStore('settings', { keyPath: 'key' });
+                        }
+                        
+                        if (!db.objectStoreNames.contains('cart')) {
+                            db.createObjectStore('cart', { keyPath: 'id' });
+                        }
+                        
+                        if (!db.objectStoreNames.contains('heldCarts')) {
+                            db.createObjectStore('heldCarts', { keyPath: 'id' });
+                        }
+                    };
                 });
             }
 
-            saveData() {
-                // Save all data to localStorage
-                localStorage.setItem('tanzania_pos_products', JSON.stringify(this.products));
-                localStorage.setItem('tanzania_pos_sales', JSON.stringify(this.sales));
-                localStorage.setItem('tanzania_pos_cart', JSON.stringify(this.cart));
-                localStorage.setItem('tanzania_pos_held_carts', JSON.stringify(this.heldCarts));
-                localStorage.setItem('tanzania_pos_settings', JSON.stringify(this.settings));
-                localStorage.setItem('tanzania_pos_theme', this.currentTheme);
-                localStorage.setItem('tanzania_pos_language', this.currentLanguage);
+            async loadData() {
+                try {
+                    // Load products
+                    this.products = await this.getAllFromStore('products');
+                    
+                    // Load sales
+                    this.sales = await this.getAllFromStore('sales');
+                    
+                    // Load cart
+                    this.cart = await this.getAllFromStore('cart');
+                    
+                    // Load held carts
+                    this.heldCarts = await this.getAllFromStore('heldCarts');
+                    
+                    // Load settings
+                    const settingsArray = await this.getAllFromStore('settings');
+                    settingsArray.forEach(setting => {
+                        this.settings[setting.key] = setting.value;
+                    });
+                    
+                    // Load users
+                    this.users = await this.getAllFromStore('users');
+                    
+                    // Initialize categories
+                    this.categories = new Set(['all']);
+                    this.products.forEach(product => {
+                        if (product.category) {
+                            this.categories.add(product.category);
+                        }
+                    });
+                    
+                    // Initialize default users if none exist
+                    if (this.users.length === 0) {
+                        await this.createDefaultUsers();
+                    }
+                    
+                } catch (error) {
+                    console.error('Error loading data:', error);
+                    this.showToast('Error loading data from database', 'error');
+                }
             }
 
-            createSampleData() {
+            async getAllFromStore(storeName) {
+                return new Promise((resolve, reject) => {
+                    const transaction = this.db.transaction([storeName], 'readonly');
+                    const store = transaction.objectStore(storeName);
+                    const request = store.getAll();
+                    
+                    request.onsuccess = (event) => {
+                        resolve(event.target.result || []);
+                    };
+                    
+                    request.onerror = (event) => {
+                        reject(event.target.error);
+                    };
+                });
+            }
+
+            async saveToStore(storeName, data) {
+                return new Promise((resolve, reject) => {
+                    const transaction = this.db.transaction([storeName], 'readwrite');
+                    const store = transaction.objectStore(storeName);
+                    const request = store.put(data);
+                    
+                    request.onsuccess = () => {
+                        resolve();
+                    };
+                    
+                    request.onerror = (event) => {
+                        reject(event.target.error);
+                    };
+                });
+            }
+
+            async deleteFromStore(storeName, key) {
+                return new Promise((resolve, reject) => {
+                    const transaction = this.db.transaction([storeName], 'readwrite');
+                    const store = transaction.objectStore(storeName);
+                    const request = store.delete(key);
+                    
+                    request.onsuccess = () => {
+                        resolve();
+                    };
+                    
+                    request.onerror = (event) => {
+                        reject(event.target.error);
+                    };
+                });
+            }
+
+            async clearStore(storeName) {
+                return new Promise((resolve, reject) => {
+                    const transaction = this.db.transaction([storeName], 'readwrite');
+                    const store = transaction.objectStore(storeName);
+                    const request = store.clear();
+                    
+                    request.onsuccess = () => {
+                        resolve();
+                    };
+                    
+                    request.onerror = (event) => {
+                        reject(event.target.error);
+                    };
+                });
+            }
+
+            async saveData() {
+                try {
+                    // Save all data to IndexedDB
+                    await this.clearStore('products');
+                    for (const product of this.products) {
+                        await this.saveToStore('products', product);
+                    }
+                    
+                    await this.clearStore('sales');
+                    for (const sale of this.sales) {
+                        await this.saveToStore('sales', sale);
+                    }
+                    
+                    await this.clearStore('cart');
+                    for (const item of this.cart) {
+                        await this.saveToStore('cart', { ...item, id: item.id });
+                    }
+                    
+                    await this.clearStore('heldCarts');
+                    for (const heldCart of this.heldCarts) {
+                        await this.saveToStore('heldCarts', heldCart);
+                    }
+                    
+                    // Save settings
+                    await this.clearStore('settings');
+                    for (const [key, value] of Object.entries(this.settings)) {
+                        await this.saveToStore('settings', { key, value });
+                    }
+                    
+                    // Save users
+                    await this.clearStore('users');
+                    for (const user of this.users) {
+                        await this.saveToStore('users', user);
+                    }
+                    
+                    // Also save to localStorage as backup
+                    localStorage.setItem('tanzania_pos_theme', this.currentTheme);
+                    localStorage.setItem('tanzania_pos_language', this.currentLanguage);
+                    
+                } catch (error) {
+                    console.error('Error saving data:', error);
+                    this.showToast('Error saving data', 'error');
+                }
+            }
+
+            async createDefaultUsers() {
+                // Hash passwords before storing
+                const hashPassword = (password) => {
+                    // Simple hash for demo - in production use bcrypt or similar
+                    let hash = 0;
+                    for (let i = 0; i < password.length; i++) {
+                        const char = password.charCodeAt(i);
+                        hash = ((hash << 5) - hash) + char;
+                        hash = hash & hash;
+                    }
+                    return hash.toString(36);
+                };
+                
+                this.users = [
+                    {
+                        username: 'admin',
+                        passwordHash: hashPassword('admin123'),
+                        name: 'Admin User',
+                        role: 'admin',
+                        permissions: ['all'],
+                        createdAt: new Date().toISOString(),
+                        updatedAt: new Date().toISOString()
+                    },
+                    {
+                        username: 'cashier',
+                        passwordHash: hashPassword('cashier123'),
+                        name: 'Cashier User',
+                        role: 'cashier',
+                        permissions: ['sales', 'cart'],
+                        createdAt: new Date().toISOString(),
+                        updatedAt: new Date().toISOString()
+                    },
+                    {
+                        username: 'manager',
+                        passwordHash: hashPassword('manager123'),
+                        name: 'Manager User',
+                        role: 'manager',
+                        permissions: ['sales', 'inventory', 'reports', 'settings'],
+                        createdAt: new Date().toISOString(),
+                        updatedAt: new Date().toISOString()
+                    }
+                ];
+                
+                for (const user of this.users) {
+                    await this.saveToStore('users', user);
+                }
+            }
+
+            async createSampleData() {
                 this.products = [
                     {
                         id: 1,
@@ -2375,7 +2657,8 @@
                         stock: 50,
                         minStock: 10,
                         barcode: '123456789012',
-                        createdAt: new Date().toISOString()
+                        createdAt: new Date().toISOString(),
+                        updatedAt: new Date().toISOString()
                     },
                     {
                         id: 2,
@@ -2388,7 +2671,8 @@
                         stock: 30,
                         minStock: 5,
                         barcode: '123456789013',
-                        createdAt: new Date().toISOString()
+                        createdAt: new Date().toISOString(),
+                        updatedAt: new Date().toISOString()
                     },
                     {
                         id: 3,
@@ -2401,7 +2685,8 @@
                         stock: 40,
                         minStock: 8,
                         barcode: '123456789014',
-                        createdAt: new Date().toISOString()
+                        createdAt: new Date().toISOString(),
+                        updatedAt: new Date().toISOString()
                     },
                     {
                         id: 4,
@@ -2414,7 +2699,8 @@
                         stock: 100,
                         minStock: 20,
                         barcode: '123456789015',
-                        createdAt: new Date().toISOString()
+                        createdAt: new Date().toISOString(),
+                        updatedAt: new Date().toISOString()
                     },
                     {
                         id: 5,
@@ -2427,7 +2713,8 @@
                         stock: 80,
                         minStock: 15,
                         barcode: '123456789016',
-                        createdAt: new Date().toISOString()
+                        createdAt: new Date().toISOString(),
+                        updatedAt: new Date().toISOString()
                     },
                     {
                         id: 6,
@@ -2440,7 +2727,8 @@
                         stock: 60,
                         minStock: 12,
                         barcode: '123456789017',
-                        createdAt: new Date().toISOString()
+                        createdAt: new Date().toISOString(),
+                        updatedAt: new Date().toISOString()
                     }
                 ];
                 
@@ -2453,10 +2741,10 @@
                     receiptFooter: 'Thank you for shopping! Come again.'
                 };
                 
-                this.saveData();
+                await this.saveData();
             }
 
-            createSampleSales() {
+            async createSampleSales() {
                 const now = new Date();
                 const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
                 
@@ -2512,7 +2800,7 @@
                     }
                 ];
                 
-                this.saveData();
+                await this.saveData();
             }
 
             setupEventListeners() {
@@ -2524,6 +2812,11 @@
 
                 // Logout
                 document.getElementById('logoutBtn').addEventListener('click', () => this.logout());
+
+                // Session timeout extension on user activity
+                ['click', 'keypress', 'mousemove', 'scroll'].forEach(event => {
+                    document.addEventListener(event, () => this.extendSession());
+                });
 
                 // Navigation
                 document.querySelectorAll('.nav-item').forEach(item => {
@@ -2769,6 +3062,11 @@
                     this.isFullScreen = !this.isFullScreen;
                     this.updateFullscreenButton();
                 });
+
+                // Window resize handling
+                window.addEventListener('resize', this.throttle(() => {
+                    this.handleResize();
+                }, 250));
             }
 
             loadSettingsUI() {
@@ -2944,37 +3242,92 @@
                 }
             }
 
-            login() {
-                if (this.isProcessing) return;
+            async login() {
+                if (this.isProcessing || !this.isInitialized) return;
+                
                 this.isProcessing = true;
                 
-                const username = document.getElementById('loginUsername').value;
+                const username = document.getElementById('loginUsername').value.trim();
                 const password = document.getElementById('loginPassword').value;
                 const role = document.getElementById('loginRole').value;
 
-                // Simple authentication
-                const validUsers = {
-                    'admin': { password: 'admin123', name: 'Admin' },
-                    'cashier': { password: 'cashier123', name: 'Cashier' },
-                    'manager': { password: 'manager123', name: 'Manager' }
-                };
+                // Clear any previous error states
+                document.getElementById('loginUsername').classList.remove('error');
+                document.getElementById('loginPassword').classList.remove('error');
 
-                if (validUsers[username] && validUsers[username].password === password) {
-                    this.currentUser = validUsers[username].name;
-                    this.currentRole = role;
+                // Validate inputs
+                if (!username || !password) {
+                    this.showToast('Please enter username and password', 'warning');
+                    this.isProcessing = false;
+                    return;
+                }
+
+                try {
+                    // Find user
+                    const user = this.users.find(u => u.username === username);
                     
+                    if (!user) {
+                        this.showToast('Invalid username or password', 'error');
+                        document.getElementById('loginUsername').classList.add('error');
+                        this.isProcessing = false;
+                        return;
+                    }
+
+                    // Verify password
+                    const hashPassword = (password) => {
+                        let hash = 0;
+                        for (let i = 0; i < password.length; i++) {
+                            const char = password.charCodeAt(i);
+                            hash = ((hash << 5) - hash) + char;
+                            hash = hash & hash;
+                        }
+                        return hash.toString(36);
+                    };
+                    
+                    const inputHash = hashPassword(password);
+                    if (inputHash !== user.passwordHash) {
+                        this.showToast('Invalid username or password', 'error');
+                        document.getElementById('loginPassword').classList.add('error');
+                        this.isProcessing = false;
+                        return;
+                    }
+
+                    // Check role
+                    if (user.role !== role) {
+                        this.showToast(`User does not have ${role} role`, 'error');
+                        this.isProcessing = false;
+                        return;
+                    }
+
+                    // Create session
+                    this.currentUser = user.name;
+                    this.currentRole = user.role;
+                    this.sessionToken = this.generateSessionToken();
+                    
+                    // Store session in localStorage (with expiry)
+                    const sessionData = {
+                        token: this.sessionToken,
+                        user: this.currentUser,
+                        role: this.currentRole,
+                        expires: Date.now() + (30 * 60 * 1000) // 30 minutes
+                    };
+                    localStorage.setItem('tanzania_pos_session', JSON.stringify(sessionData));
+
                     // Add loading animation
                     const loginBtn = document.getElementById('loginBtn');
                     const originalHTML = loginBtn.innerHTML;
                     loginBtn.innerHTML = '<div class="loading"></div>';
                     
-                    setTimeout(() => {
-                        // FIXED: Properly hide login and show POS screen
+                    setTimeout(async () => {
+                        // Hide login and show POS screen
                         document.getElementById('loginScreen').style.display = 'none';
                         document.getElementById('posScreen').style.display = 'flex';
                         
                         document.getElementById('currentUser').textContent = this.currentUser;
                         document.getElementById('currentRole').textContent = role;
+                        
+                        // Apply user permissions
+                        this.applyUserPermissions(user);
                         
                         this.showToast(`Welcome, ${this.currentUser}!`, 'success');
                         
@@ -2982,30 +3335,135 @@
                         this.updateCartBadge();
                         this.updateDashboardStats();
                         
+                        // Restart session timeout
+                        this.setupSessionTimeout();
+                        
                         // Restore button
                         loginBtn.innerHTML = originalHTML;
                         this.isProcessing = false;
+                        
+                        // Clear password field
+                        document.getElementById('loginPassword').value = '';
+                        
                     }, 800);
-                } else {
-                    this.showToast('Invalid username or password!', 'error');
+                    
+                } catch (error) {
+                    console.error('Login error:', error);
+                    this.showToast('Login failed. Please try again.', 'error');
                     this.isProcessing = false;
                 }
             }
 
-            logout() {
+            generateSessionToken() {
+                return 'session_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
+            }
+
+            setupSessionTimeout() {
+                // Clear existing timeout
+                if (this.sessionTimeout) {
+                    clearTimeout(this.sessionTimeout);
+                }
+                
+                // Set new timeout (30 minutes)
+                this.sessionTimeout = setTimeout(() => {
+                    if (this.currentUser) {
+                        this.showToast('Session expired. Please login again.', 'warning');
+                        this.logout();
+                    }
+                }, 30 * 60 * 1000); // 30 minutes
+            }
+
+            extendSession() {
+                if (this.currentUser) {
+                    this.setupSessionTimeout();
+                }
+            }
+
+            applyUserPermissions(user) {
+                // Disable/enable features based on permissions
+                const isCashier = user.role === 'cashier';
+                const isManager = user.role === 'manager';
+                const isAdmin = user.role === 'admin';
+                
+                // Hide/show navigation items
+                const navItems = document.querySelectorAll('.nav-item');
+                navItems.forEach(item => {
+                    const page = item.dataset.page;
+                    
+                    if (isCashier && (page === 'inventory' || page === 'reports' || page === 'settings')) {
+                        item.style.display = 'none';
+                    } else if (isManager && page === 'settings') {
+                        item.style.display = 'none';
+                    } else {
+                        item.style.display = 'flex';
+                    }
+                });
+                
+                // Disable buttons based on permissions
+                if (isCashier) {
+                    document.getElementById('addProductBtn').disabled = true;
+                    document.getElementById('bulkImportBtn').disabled = true;
+                    document.getElementById('resetDataBtn').disabled = true;
+                    document.getElementById('exportHistoryBtn').disabled = true;
+                    document.getElementById('backupBtn').disabled = true;
+                    document.getElementById('restoreBtn').disabled = true;
+                    document.getElementById('exportDataBtn').disabled = true;
+                    document.getElementById('importDataBtn').disabled = true;
+                    document.getElementById('changePasswordBtn').disabled = true;
+                }
+                
+                if (isManager) {
+                    document.getElementById('resetDataBtn').disabled = true;
+                    document.getElementById('backupBtn').disabled = true;
+                    document.getElementById('restoreBtn').disabled = true;
+                    document.getElementById('exportDataBtn').disabled = true;
+                    document.getElementById('importDataBtn').disabled = true;
+                }
+            }
+
+            async logout() {
                 if (confirm('Are you sure you want to logout?')) {
-                    this.saveData();
-                    
-                    this.currentUser = null;
-                    this.currentRole = null;
-                    this.cart = [];
-                    
-                    document.getElementById('loginScreen').style.display = 'flex';
-                    document.getElementById('posScreen').style.display = 'none';
-                    
-                    this.closeCart();
-                    
-                    this.showToast('Logged out successfully', 'info');
+                    try {
+                        await this.saveData();
+                        
+                        // Clear session
+                        this.currentUser = null;
+                        this.currentRole = null;
+                        this.cart = [];
+                        this.sessionToken = null;
+                        
+                        // Clear session from localStorage
+                        localStorage.removeItem('tanzania_pos_session');
+                        
+                        // Clear session timeout
+                        if (this.sessionTimeout) {
+                            clearTimeout(this.sessionTimeout);
+                            this.sessionTimeout = null;
+                        }
+                        
+                        // Show login screen
+                        document.getElementById('loginScreen').style.display = 'flex';
+                        document.getElementById('posScreen').style.display = 'none';
+                        
+                        this.closeCart();
+                        this.hideAllModals();
+                        
+                        // Reset navigation
+                        document.querySelectorAll('.nav-item').forEach(item => {
+                            item.style.display = 'flex';
+                        });
+                        
+                        // Enable all buttons
+                        document.querySelectorAll('button').forEach(btn => {
+                            btn.disabled = false;
+                        });
+                        
+                        this.showToast('Logged out successfully', 'info');
+                        
+                    } catch (error) {
+                        console.error('Logout error:', error);
+                        this.showToast('Error during logout', 'error');
+                    }
                 }
             }
 
@@ -3567,7 +4025,7 @@
 
                 // Save sale
                 this.sales.push(sale);
-                this.saveData();
+                await this.saveData();
                 
                 // Update UI
                 this.updateProductsDisplay();
@@ -3583,7 +4041,7 @@
                 this.cart = [];
                 this.updateCartDisplay();
                 this.updateCartBadge();
-                this.saveData();
+                await this.saveData();
                 
                 // Hide modal
                 this.hidePaymentModal();
@@ -4085,7 +4543,7 @@
                 document.getElementById('productModal').classList.add('hidden');
             }
 
-            saveProduct() {
+            async saveProduct() {
                 const form = document.getElementById('productForm');
                 const isEdit = form.dataset.editId;
                 
@@ -4121,7 +4579,7 @@
                     this.categories.add(productData.category);
                 }
                 
-                this.saveData();
+                await this.saveData();
                 this.updateProductsDisplay();
                 this.updateCategories();
                 this.updateInventoryTable();
@@ -4138,23 +4596,45 @@
                 
                 if (!sku.trim()) {
                     this.showToast('SKU is required', 'error');
+                    document.getElementById('productSKU').classList.add('error');
                     return false;
                 }
                 
                 if (!name.trim()) {
                     this.showToast('Product name is required', 'error');
+                    document.getElementById('productName').classList.add('error');
                     return false;
                 }
                 
                 if (!price || parseFloat(price) <= 0) {
                     this.showToast('Valid price is required', 'error');
+                    document.getElementById('productPrice').classList.add('error');
                     return false;
                 }
                 
                 if (!stock || parseInt(stock) < 0) {
                     this.showToast('Valid stock is required', 'error');
+                    document.getElementById('productStock').classList.add('error');
                     return false;
                 }
+                
+                // Check for duplicate SKU
+                const isEdit = document.getElementById('productForm').dataset.editId;
+                const duplicate = this.products.find(p => 
+                    p.sku === sku && (!isEdit || p.id !== parseInt(isEdit))
+                );
+                
+                if (duplicate) {
+                    this.showToast('SKU already exists', 'error');
+                    document.getElementById('productSKU').classList.add('error');
+                    return false;
+                }
+                
+                // Clear error classes
+                document.getElementById('productSKU').classList.remove('error');
+                document.getElementById('productName').classList.remove('error');
+                document.getElementById('productPrice').classList.remove('error');
+                document.getElementById('productStock').classList.remove('error');
                 
                 return true;
             }
@@ -4182,6 +4662,7 @@
                         }
                         
                         product.stock = newStock;
+                        product.updatedAt = new Date().toISOString();
                         this.saveData();
                         this.updateProductsDisplay();
                         this.updateInventoryTable();
@@ -4397,34 +4878,48 @@
                 });
             }
 
-            backupData() {
-                const backup = {
-                    products: this.products,
-                    sales: this.sales,
-                    settings: this.settings,
-                    heldCarts: this.heldCarts,
-                    timestamp: new Date().toISOString(),
-                    version: '1.0.0',
-                    system: 'Tanzania POS'
-                };
-                
-                const dataStr = JSON.stringify(backup, null, 2);
-                const dataBlob = new Blob([dataStr], { type: 'application/json' });
-                const url = URL.createObjectURL(dataBlob);
-                
-                const a = document.createElement('a');
-                a.href = url;
-                const date = new Date().toISOString().split('T')[0];
-                a.download = `tanzania_pos_backup_${date}.json`;
-                document.body.appendChild(a);
-                a.click();
-                document.body.removeChild(a);
-                URL.revokeObjectURL(url);
-                
-                this.showToast('Data backed up successfully!', 'success');
+            async backupData() {
+                try {
+                    const backup = await this.createBackup();
+                    const dataBlob = new Blob([backup], { type: 'application/json' });
+                    const url = URL.createObjectURL(dataBlob);
+                    
+                    const a = document.createElement('a');
+                    a.href = url;
+                    const date = new Date().toISOString().split('T')[0];
+                    a.download = `tanzania_pos_backup_${date}.json`;
+                    document.body.appendChild(a);
+                    a.click();
+                    document.body.removeChild(a);
+                    URL.revokeObjectURL(url);
+                    
+                    this.showToast('Data backed up successfully!', 'success');
+                } catch (error) {
+                    this.showToast('Backup failed: ' + error.message, 'error');
+                }
             }
 
-            restoreData() {
+            async createBackup() {
+                const backup = {
+                    version: '1.0',
+                    timestamp: new Date().toISOString(),
+                    data: {
+                        products: this.products,
+                        sales: this.sales,
+                        users: this.users.map(u => ({
+                            ...u,
+                            passwordHash: '[REDACTED]'
+                        })),
+                        settings: this.settings,
+                        cart: this.cart,
+                        heldCarts: this.heldCarts
+                    }
+                };
+                
+                return JSON.stringify(backup, null, 2);
+            }
+
+            async restoreData() {
                 const input = document.createElement('input');
                 input.type = 'file';
                 input.accept = '.json';
@@ -4433,29 +4928,11 @@
                     const file = e.target.files[0];
                     const reader = new FileReader();
                     
-                    reader.onload = (event) => {
+                    reader.onload = async (event) => {
                         try {
-                            const backup = JSON.parse(event.target.result);
-                            
-                            if (confirm('This will replace all your current data. Are you sure?')) {
-                                this.products = backup.products || [];
-                                this.sales = backup.sales || [];
-                                this.settings = backup.settings || {};
-                                this.heldCarts = backup.heldCarts || [];
-                                
-                                this.saveData();
-                                this.updateProductsDisplay();
-                                this.updateCategories();
-                                this.updateInventoryTable();
-                                this.updateSalesHistory();
-                                this.updateDashboardStats();
-                                this.updateReports();
-                                this.loadSettingsUI();
-                                
-                                this.showToast('Data restored successfully!', 'success');
-                            }
+                            await this.restoreBackup(event.target.result);
                         } catch (error) {
-                            this.showToast('Invalid backup file!', 'error');
+                            this.showToast('Restore failed: ' + error.message, 'error');
                         }
                     };
                     
@@ -4463,6 +4940,64 @@
                 };
                 
                 input.click();
+            }
+
+            async restoreBackup(backupData) {
+                try {
+                    const backup = JSON.parse(backupData);
+                    
+                    if (backup.version !== '1.0') {
+                        throw new Error('Invalid backup version');
+                    }
+                    
+                    // Validate backup structure
+                    const requiredKeys = ['products', 'sales', 'users', 'settings'];
+                    for (const key of requiredKeys) {
+                        if (!backup.data[key]) {
+                            throw new Error(`Invalid backup: missing ${key}`);
+                        }
+                    }
+                    
+                    // Create backup before restore
+                    const currentBackup = await this.createBackup();
+                    localStorage.setItem('tanzania_pos_pre_restore_backup', currentBackup);
+                    
+                    // Restore data
+                    this.products = backup.data.products || [];
+                    this.sales = backup.data.sales || [];
+                    this.settings = backup.data.settings || {};
+                    this.cart = backup.data.cart || [];
+                    this.heldCarts = backup.data.heldCarts || [];
+                    
+                    // Don't restore users from backup (security risk)
+                    
+                    await this.saveData();
+                    
+                    // Update UI
+                    this.updateProductsDisplay();
+                    this.updateCategories();
+                    this.updateInventoryTable();
+                    this.updateSalesHistory();
+                    this.updateDashboardStats();
+                    this.updateReports();
+                    this.loadSettingsUI();
+                    
+                    this.showToast('Backup restored successfully!', 'success');
+                    
+                } catch (error) {
+                    // Try to restore from pre-restore backup
+                    const preRestore = localStorage.getItem('tanzania_pos_pre_restore_backup');
+                    if (preRestore) {
+                        try {
+                            await this.restoreBackup(preRestore);
+                            this.showToast('Restore failed. Reverted to previous state.', 'error');
+                        } catch (revertError) {
+                            this.showToast('Critical restore error! System may be unstable.', 'error');
+                        }
+                    } else {
+                        throw error;
+                    }
+                }
             }
 
             exportAllData() {
@@ -4498,7 +5033,7 @@
                     const file = e.target.files[0];
                     const reader = new FileReader();
                     
-                    reader.onload = (event) => {
+                    reader.onload = async (event) => {
                         try {
                             const importData = JSON.parse(event.target.result);
                             
@@ -4523,7 +5058,7 @@
                                     });
                                 }
                                 
-                                this.saveData();
+                                await this.saveData();
                                 this.updateProductsDisplay();
                                 this.updateInventoryTable();
                                 this.updateSalesHistory();
@@ -4543,28 +5078,51 @@
                 input.click();
             }
 
-            resetData() {
+            async resetData() {
                 if (confirm('⚠️ WARNING: This will delete ALL DATA and restore sample data.\n\nAre you absolutely sure?')) {
-                    localStorage.clear();
-                    this.products = [];
-                    this.sales = [];
-                    this.cart = [];
-                    this.heldCarts = [];
-                    this.categories = new Set(['all']);
-                    this.settings = {};
-                    
-                    this.createSampleData();
-                    this.createSampleSales();
-                    
-                    this.updateProductsDisplay();
-                    this.updateCategories();
-                    this.updateInventoryTable();
-                    this.updateSalesHistory();
-                    this.updateDashboardStats();
-                    this.updateReports();
-                    this.loadSettingsUI();
-                    
-                    this.showToast('All data reset and sample data loaded', 'warning');
+                    try {
+                        // Clear all IndexedDB stores
+                        const storeNames = ['products', 'sales', 'users', 'settings', 'cart', 'heldCarts'];
+                        for (const storeName of storeNames) {
+                            await this.clearStore(storeName);
+                        }
+                        
+                        // Clear localStorage
+                        localStorage.clear();
+                        
+                        // Reset all data
+                        this.products = [];
+                        this.sales = [];
+                        this.cart = [];
+                        this.heldCarts = [];
+                        this.users = [];
+                        this.categories = new Set(['all']);
+                        this.settings = {
+                            storeName: 'Tanzania Shop',
+                            storeAddress: '',
+                            storePhone: '',
+                            storeEmail: '',
+                            taxRate: 18,
+                            receiptFooter: 'Thank you for shopping! Come again.'
+                        };
+                        
+                        // Recreate sample data
+                        await this.createSampleData();
+                        await this.createDefaultUsers();
+                        await this.createSampleSales();
+                        
+                        this.updateProductsDisplay();
+                        this.updateCategories();
+                        this.updateInventoryTable();
+                        this.updateSalesHistory();
+                        this.updateDashboardStats();
+                        this.updateReports();
+                        this.loadSettingsUI();
+                        
+                        this.showToast('All data reset and sample data loaded', 'warning');
+                    } catch (error) {
+                        this.showToast('Reset failed: ' + error.message, 'error');
+                    }
                 }
             }
 
@@ -4625,23 +5183,41 @@
                 this.closeCart();
             }
 
-            showToast(message, type = 'info', duration = 4000) {
+            showToast(message, type = 'info', duration = 4000, priority = 'normal') {
                 const toastContainer = document.getElementById('toastContainer');
                 
+                // Remove low priority toasts if showing high priority
+                if (priority === 'high') {
+                    const existingToasts = toastContainer.querySelectorAll('.toast');
+                    existingToasts.forEach(toast => {
+                        if (!toast.classList.contains('high-priority')) {
+                            toast.classList.add('hiding');
+                            setTimeout(() => toast.remove(), 300);
+                        }
+                    });
+                }
+                
                 const toast = document.createElement('div');
-                toast.className = `toast ${type}`;
+                toast.className = `toast ${type} ${priority}-priority`;
+                toast.setAttribute('role', 'alert');
+                toast.setAttribute('aria-live', 'assertive');
+                
+                const icons = {
+                    success: 'check-circle',
+                    error: 'exclamation-circle',
+                    warning: 'exclamation-triangle',
+                    info: 'info-circle'
+                };
+                
                 toast.innerHTML = `
                     <div class="toast-icon">
-                        <i class="fas fa-${type === 'success' ? 'check-circle' : 
-                                          type === 'error' ? 'exclamation-circle' : 
-                                          type === 'warning' ? 'exclamation-triangle' : 
-                                          'info-circle'}"></i>
+                        <i class="fas fa-${icons[type] || 'info-circle'}"></i>
                     </div>
                     <div class="toast-content">
                         <div class="toast-title">${type.charAt(0).toUpperCase() + type.slice(1)}</div>
-                        <div class="toast-message">${message}</div>
+                        <div class="toast-message">${this.sanitizeInput(message)}</div>
                     </div>
-                    <button class="toast-close">
+                    <button class="toast-close" aria-label="Dismiss notification">
                         <i class="fas fa-times"></i>
                     </button>
                 `;
@@ -4670,22 +5246,209 @@
                 });
             }
 
-            debounce(func, wait) {
+            sanitizeInput(input) {
+                if (typeof input !== 'string') return input;
+                
+                // Remove potentially dangerous characters
+                return input
+                    .replace(/[<>]/g, '')
+                    .replace(/javascript:/gi, '')
+                    .replace(/on\w+=/gi, '')
+                    .trim();
+            }
+
+            debounce(func, wait, immediate = false) {
                 let timeout;
                 return function executedFunction(...args) {
+                    const context = this;
                     const later = () => {
-                        clearTimeout(timeout);
-                        func(...args);
+                        timeout = null;
+                        if (!immediate) func.apply(context, args);
                     };
+                    const callNow = immediate && !timeout;
                     clearTimeout(timeout);
                     timeout = setTimeout(later, wait);
+                    if (callNow) func.apply(context, args);
                 };
+            }
+
+            throttle(func, limit) {
+                let inThrottle;
+                return function(...args) {
+                    const context = this;
+                    if (!inThrottle) {
+                        func.apply(context, args);
+                        inThrottle = true;
+                        setTimeout(() => inThrottle = false, limit);
+                    }
+                };
+            }
+
+            handleResize() {
+                // Handle responsive layout changes
+                if (window.innerWidth < 768) {
+                    // Mobile layout adjustments
+                    document.querySelectorAll('.grid-cols-4').forEach(el => {
+                        if (el.classList.contains('sales-stats')) {
+                            el.style.gridTemplateColumns = 'repeat(2, 1fr)';
+                        }
+                    });
+                } else {
+                    // Desktop layout
+                    document.querySelectorAll('.grid-cols-4').forEach(el => {
+                        if (el.classList.contains('sales-stats')) {
+                            el.style.gridTemplateColumns = 'repeat(4, 1fr)';
+                        }
+                    });
+                }
+            }
+
+            setupAccessibility() {
+                // Add ARIA labels
+                document.querySelectorAll('button').forEach(button => {
+                    if (!button.getAttribute('aria-label')) {
+                        const text = button.textContent || '';
+                        const icon = button.querySelector('i');
+                        if (icon) {
+                            const iconType = icon.className.match(/fa-([\w-]+)/);
+                            if (iconType) {
+                                button.setAttribute('aria-label', iconType[1].replace('-', ' ') + (text ? ': ' + text.trim() : ''));
+                            }
+                        } else if (text.trim()) {
+                            button.setAttribute('aria-label', text.trim());
+                        }
+                    }
+                });
+                
+                // Ensure proper focus management
+                document.addEventListener('keydown', (e) => {
+                    // Trap focus in modals
+                    if (e.key === 'Tab') {
+                        const activeModal = document.querySelector('.modal-overlay:not(.hidden)');
+                        if (activeModal) {
+                            const focusableElements = activeModal.querySelectorAll(
+                                'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])'
+                            );
+                            
+                            if (focusableElements.length) {
+                                const first = focusableElements[0];
+                                const last = focusableElements[focusableElements.length - 1];
+                                
+                                if (e.shiftKey && document.activeElement === first) {
+                                    last.focus();
+                                    e.preventDefault();
+                                } else if (!e.shiftKey && document.activeElement === last) {
+                                    first.focus();
+                                    e.preventDefault();
+                                }
+                            }
+                        }
+                    }
+                });
+            }
+
+            checkExistingSession() {
+                const sessionData = localStorage.getItem('tanzania_pos_session');
+                if (sessionData) {
+                    try {
+                        const session = JSON.parse(sessionData);
+                        
+                        // Check if session is still valid
+                        if (session.expires > Date.now()) {
+                            // Find user
+                            const user = this.users.find(u => u.name === session.user && u.role === session.role);
+                            if (user) {
+                                // Auto-login
+                                this.currentUser = session.user;
+                                this.currentRole = session.role;
+                                this.sessionToken = session.token;
+                                
+                                document.getElementById('currentUser').textContent = this.currentUser;
+                                document.getElementById('currentRole').textContent = this.currentRole;
+                                
+                                document.getElementById('loginScreen').style.display = 'none';
+                                document.getElementById('posScreen').style.display = 'flex';
+                                
+                                // Apply user permissions
+                                this.applyUserPermissions(user);
+                                
+                                this.setupSessionTimeout();
+                                this.showToast(`Welcome back, ${this.currentUser}!`, 'info');
+                            } else {
+                                // Session expired
+                                localStorage.removeItem('tanzania_pos_session');
+                            }
+                        } else {
+                            // Session expired
+                            localStorage.removeItem('tanzania_pos_session');
+                        }
+                    } catch (error) {
+                        console.error('Session check error:', error);
+                        localStorage.removeItem('tanzania_pos_session');
+                    }
+                }
+            }
+
+            async startupChecks() {
+                // Check storage quota
+                try {
+                    if (navigator.storage && navigator.storage.estimate) {
+                        const estimate = await navigator.storage.estimate();
+                        const usage = (estimate.usage / estimate.quota) * 100;
+                        
+                        if (usage > 80) {
+                            this.showToast('Storage space is getting low', 'warning');
+                        }
+                    }
+                } catch (error) {
+                    console.warn('Storage estimate not available');
+                }
+                
+                // Check network status
+                window.addEventListener('online', () => {
+                    this.showToast('Back online', 'success', 2000);
+                });
+                
+                window.addEventListener('offline', () => {
+                    this.showToast('Working offline', 'warning', 5000, 'high');
+                });
+                
+                // Initialize service worker for PWA
+                if ('serviceWorker' in navigator) {
+                    try {
+                        await navigator.serviceWorker.register('/sw.js');
+                        console.log('Service Worker registered');
+                    } catch (error) {
+                        console.warn('Service Worker registration failed:', error);
+                    }
+                }
             }
         }
 
         // Initialize the POS system
-        document.addEventListener('DOMContentLoaded', () => {
-            window.posSystem = new TanzaniaPOS();
+        document.addEventListener('DOMContentLoaded', async () => {
+            try {
+                window.posSystem = new TanzaniaPOS();
+            } catch (error) {
+                console.error('Failed to initialize POS system:', error);
+                
+                // Show error to user
+                const app = document.getElementById('app');
+                app.innerHTML = `
+                    <div class="login-container" style="margin: auto;">
+                        <div class="login-header">
+                            <h1><i class="fas fa-exclamation-triangle"></i> System Error</h1>
+                            <p>Failed to initialize the POS system</p>
+                        </div>
+                        <div class="text-center p-4">
+                            <p class="mb-4">Please try refreshing the page or clear your browser data.</p>
+                            <button onclick="location.reload()" class="btn btn-primary">
+                                <i class="fas fa-redo"></i> Refresh Page
+                            </button>
+                        </div>
+                    </div>
+                `;
+            }
         });
     </script>
 </body>

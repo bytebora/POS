@@ -7,7 +7,6 @@
     <meta name="description" content="Point of Sale System for Tanzanian Retail Businesses">
     <meta name="theme-color" content="#006837">
     <style>
-        /* All CSS from the original file remains exactly the same */
         /* CSS Variables */
         :root {
             --primary: #006837;
@@ -34,6 +33,7 @@
             
             --header-height: 60px;
             --bottom-nav-height: 65px;
+            --safe-area-inset-bottom: env(safe-area-inset-bottom, 0px);
         }
 
         [data-theme="dark"] {
@@ -55,21 +55,32 @@
             padding: 0;
             box-sizing: border-box;
             -webkit-tap-highlight-color: transparent;
+            -webkit-overflow-scrolling: touch;
+        }
+
+        html, body {
+            height: 100%;
+            width: 100%;
+            overflow: hidden;
+            position: fixed; /* Prevents iOS bounce */
         }
 
         body {
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
             background: var(--bg-primary);
             color: var(--text-primary);
-            height: 100vh;
-            overflow: hidden;
             line-height: 1.5;
+            overscroll-behavior: none; /* Prevents pull-to-refresh */
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
         }
 
         #app {
             height: 100vh;
+            height: -webkit-fill-available;
             display: flex;
             flex-direction: column;
+            position: relative;
         }
 
         /* Utility Classes */
@@ -117,6 +128,28 @@
         .overflow-hidden { overflow: hidden; }
         .overflow-auto { overflow: auto; }
 
+        /* MOBILE SCROLL FIXES */
+        .scrollable {
+            overflow-y: auto;
+            -webkit-overflow-scrolling: touch;
+            scrollbar-width: none; /* Firefox */
+            -ms-overflow-style: none; /* IE/Edge */
+        }
+
+        .scrollable::-webkit-scrollbar {
+            display: none; /* Chrome/Safari */
+        }
+
+        .touch-scroll {
+            overflow-y: auto;
+            -webkit-overflow-scrolling: touch;
+            overscroll-behavior: contain;
+        }
+
+        .no-scroll {
+            overflow: hidden;
+        }
+
         /* Login Screen */
         #loginScreen {
             height: 100%;
@@ -125,6 +158,12 @@
             align-items: center;
             justify-content: center;
             padding: 1rem;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            z-index: 10000;
         }
 
         .login-container {
@@ -134,6 +173,9 @@
             width: 100%;
             max-width: 400px;
             box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            max-height: 90vh;
+            overflow-y: auto;
+            -webkit-overflow-scrolling: touch;
         }
 
         .login-header {
@@ -174,8 +216,10 @@
             border-radius: 10px;
             background: var(--bg-secondary);
             color: var(--text-primary);
-            font-size: 15px;
+            font-size: 16px; /* Prevents iOS zoom */
             transition: border-color 0.2s;
+            -webkit-appearance: none;
+            appearance: none;
         }
 
         .form-control:focus {
@@ -211,8 +255,11 @@
             font-size: 14px;
             cursor: pointer;
             transition: all 0.2s;
-            min-height: 44px;
+            min-height: 44px; /* Minimum touch target size */
             font-family: inherit;
+            -webkit-user-select: none;
+            user-select: none;
+            touch-action: manipulation;
         }
 
         .btn:hover {
@@ -271,6 +318,7 @@
             display: none;
             height: 100%;
             flex-direction: column;
+            overflow: hidden;
         }
 
         /* Header */
@@ -283,10 +331,12 @@
             align-items: center;
             justify-content: space-between;
             flex-shrink: 0;
+            position: relative;
+            z-index: 100;
         }
 
         .logo {
-            font-size: 20px;
+            font-size: 18px;
             font-weight: 700;
             color: var(--primary);
             display: flex;
@@ -295,13 +345,15 @@
         }
 
         .logo i {
-            font-size: 24px;
+            font-size: 20px;
         }
 
         .datetime {
-            font-size: 13px;
+            font-size: 12px;
             color: var(--text-tertiary);
             font-weight: 500;
+            text-align: center;
+            flex-shrink: 0;
         }
 
         .user-info {
@@ -311,6 +363,7 @@
             background: var(--bg-tertiary);
             padding: 0.5rem 1rem;
             border-radius: 10px;
+            flex-shrink: 0;
         }
 
         .role-badge {
@@ -337,8 +390,8 @@
             align-items: center;
             gap: 0.5rem;
             cursor: pointer;
-            min-width: 100px;
-            font-size: 13px;
+            min-width: 80px;
+            font-size: 12px;
             color: var(--text-primary);
         }
 
@@ -403,6 +456,7 @@
             cursor: pointer;
             color: var(--text-primary);
             transition: all 0.2s;
+            flex-shrink: 0;
         }
 
         .fullscreen-btn:hover {
@@ -414,18 +468,21 @@
             display: flex;
             align-items: center;
             gap: 0.5rem;
+            flex-shrink: 0;
         }
 
         /* Bottom Navigation */
         .bottom-nav {
-            height: var(--bottom-nav-height);
+            height: calc(var(--bottom-nav-height) + var(--safe-area-inset-bottom));
             background: var(--bg-card);
             border-top: 1px solid var(--border);
             display: flex;
             justify-content: space-around;
-            align-items: center;
-            padding: 0.5rem;
+            align-items: flex-start;
+            padding: 0.5rem 0.5rem calc(0.5rem + var(--safe-area-inset-bottom));
             flex-shrink: 0;
+            position: relative;
+            z-index: 100;
         }
 
         .nav-item {
@@ -441,7 +498,10 @@
             flex: 1;
             border-radius: 8px;
             transition: all 0.2s;
-            font-size: 12px;
+            font-size: 11px;
+            min-width: 0;
+            overflow: hidden;
+            touch-action: manipulation;
         }
 
         .nav-item:hover {
@@ -455,15 +515,17 @@
         }
 
         .nav-icon {
-            font-size: 20px;
+            font-size: 18px;
         }
 
-        /* Main Content */
+        /* Main Content - MOBILE SCROLL FIXED */
         .main-content {
             flex: 1;
-            overflow: hidden;
             display: flex;
             flex-direction: column;
+            overflow: hidden;
+            position: relative;
+            min-height: 0; /* Crucial for flex scrolling */
         }
 
         .page {
@@ -471,6 +533,8 @@
             flex: 1;
             flex-direction: column;
             overflow: hidden;
+            position: relative;
+            min-height: 0;
         }
 
         .page.active {
@@ -483,19 +547,22 @@
             to { opacity: 1; }
         }
 
-        /* Sales Page */
+        /* Sales Page - FIXED SCROLLING */
         .sales-page {
             flex: 1;
             padding: 1rem;
             display: flex;
             flex-direction: column;
             gap: 1rem;
+            overflow: hidden;
+            min-height: 0;
         }
 
         .sales-stats {
             display: grid;
             grid-template-columns: repeat(4, 1fr);
             gap: 0.5rem;
+            flex-shrink: 0;
         }
 
         .stat-card-mini {
@@ -512,14 +579,14 @@
         }
 
         .stat-value-mini {
-            font-size: 16px;
+            font-size: 14px;
             font-weight: 700;
             color: var(--primary);
             margin-bottom: 0.25rem;
         }
 
         .stat-label-mini {
-            font-size: 11px;
+            font-size: 10px;
             color: var(--text-tertiary);
             text-transform: uppercase;
             letter-spacing: 0.5px;
@@ -528,6 +595,7 @@
         .search-container {
             display: flex;
             gap: 0.5rem;
+            flex-shrink: 0;
         }
 
         .search-input {
@@ -537,7 +605,8 @@
             border-radius: 10px;
             background: var(--bg-secondary);
             color: var(--text-primary);
-            font-size: 15px;
+            font-size: 16px;
+            min-width: 0;
         }
 
         .search-input:focus {
@@ -555,6 +624,8 @@
             overflow-x: auto;
             padding: 0.25rem 0;
             -webkit-overflow-scrolling: touch;
+            flex-shrink: 0;
+            scrollbar-width: none;
         }
 
         .category-tabs::-webkit-scrollbar {
@@ -585,11 +656,13 @@
             border-color: var(--primary);
         }
 
+        /* PRODUCTS SECTION - FIXED MOBILE SCROLLING */
         .products-section {
             flex: 1;
-            overflow: hidden;
             display: flex;
             flex-direction: column;
+            min-height: 0;
+            overflow: hidden;
         }
 
         .products-grid-container {
@@ -597,13 +670,15 @@
             overflow-y: auto;
             -webkit-overflow-scrolling: touch;
             padding: 0.25rem;
+            min-height: 0;
         }
 
         .products-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+            grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
             gap: 0.75rem;
             padding: 0.25rem;
+            min-height: min-content;
         }
 
         .product-card {
@@ -617,6 +692,8 @@
             flex-direction: column;
             justify-content: space-between;
             min-height: 120px;
+            touch-action: manipulation;
+            user-select: none;
         }
 
         .product-card:hover {
@@ -630,17 +707,21 @@
             font-size: 14px;
             margin-bottom: 0.5rem;
             line-height: 1.3;
+            overflow: hidden;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
         }
 
         .product-price {
             font-weight: 700;
-            font-size: 16px;
+            font-size: 15px;
             color: var(--primary);
             margin-bottom: 0.25rem;
         }
 
         .product-stock {
-            font-size: 12px;
+            font-size: 11px;
             color: var(--text-tertiary);
             display: flex;
             align-items: center;
@@ -655,13 +736,15 @@
             color: var(--danger);
         }
 
-        /* History Page */
+        /* History Page - FIXED SCROLLING */
         .history-page {
             flex: 1;
             padding: 1rem;
             display: flex;
             flex-direction: column;
             gap: 1rem;
+            overflow: hidden;
+            min-height: 0;
         }
 
         .history-header {
@@ -672,21 +755,24 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
+            flex-shrink: 0;
         }
 
         .history-filters {
             display: flex;
             gap: 0.5rem;
             flex-wrap: wrap;
+            flex-shrink: 0;
         }
 
         .history-table-container {
             flex: 1;
-            overflow: auto;
             background: var(--bg-card);
             border: 1px solid var(--border);
             border-radius: 12px;
             -webkit-overflow-scrolling: touch;
+            overflow: auto;
+            min-height: 0;
         }
 
         .history-table {
@@ -700,7 +786,7 @@
             padding: 0.75rem 1rem;
             text-align: left;
             font-weight: 600;
-            font-size: 12px;
+            font-size: 11px;
             color: var(--text-primary);
             border-bottom: 1px solid var(--border);
             text-transform: uppercase;
@@ -712,7 +798,7 @@
         .history-table td {
             padding: 0.75rem 1rem;
             border-bottom: 1px solid var(--border);
-            font-size: 14px;
+            font-size: 13px;
         }
 
         .history-table tr:hover td {
@@ -724,13 +810,13 @@
             padding: 0.25rem 0.5rem;
             border-radius: 4px;
             font-family: monospace;
-            font-size: 12px;
+            font-size: 11px;
         }
 
         .payment-method-badge {
-            padding: 0.25rem 0.75rem;
+            padding: 0.25rem 0.5rem;
             border-radius: 20px;
-            font-size: 11px;
+            font-size: 10px;
             font-weight: 600;
             text-transform: uppercase;
             letter-spacing: 0.5px;
@@ -757,16 +843,18 @@
         .sale-total {
             font-weight: 700;
             color: var(--success);
-            font-size: 15px;
+            font-size: 13px;
         }
 
-        /* Inventory Page */
+        /* Inventory Page - FIXED SCROLLING */
         .inventory-page {
             flex: 1;
             padding: 1rem;
             display: flex;
             flex-direction: column;
             gap: 1rem;
+            overflow: hidden;
+            min-height: 0;
         }
 
         .inventory-header {
@@ -777,21 +865,24 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
+            flex-shrink: 0;
         }
 
         .inventory-controls {
             display: flex;
             gap: 0.5rem;
             flex-wrap: wrap;
+            flex-shrink: 0;
         }
 
         .table-container {
             flex: 1;
-            overflow: auto;
             background: var(--bg-card);
             border: 1px solid var(--border);
             border-radius: 12px;
             -webkit-overflow-scrolling: touch;
+            overflow: auto;
+            min-height: 0;
         }
 
         .table {
@@ -805,7 +896,7 @@
             padding: 0.75rem 1rem;
             text-align: left;
             font-weight: 600;
-            font-size: 12px;
+            font-size: 11px;
             color: var(--text-primary);
             border-bottom: 1px solid var(--border);
             text-transform: uppercase;
@@ -817,7 +908,7 @@
         .table td {
             padding: 0.75rem 1rem;
             border-bottom: 1px solid var(--border);
-            font-size: 14px;
+            font-size: 13px;
         }
 
         .table tr:hover td {
@@ -825,9 +916,9 @@
         }
 
         .stock-badge {
-            padding: 0.25rem 0.75rem;
+            padding: 0.25rem 0.5rem;
             border-radius: 20px;
-            font-size: 12px;
+            font-size: 11px;
             font-weight: 600;
             display: inline-block;
         }
@@ -850,13 +941,15 @@
             border: 1px solid rgba(229, 57, 53, 0.2);
         }
 
-        /* Reports Page */
+        /* Reports Page - FIXED SCROLLING */
         .reports-page {
             flex: 1;
             padding: 1rem;
             display: flex;
             flex-direction: column;
             gap: 1rem;
+            overflow: hidden;
+            min-height: 0;
         }
 
         .reports-header {
@@ -869,12 +962,14 @@
             align-items: center;
             flex-wrap: wrap;
             gap: 1rem;
+            flex-shrink: 0;
         }
 
         .kpi-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
             gap: 1rem;
+            flex-shrink: 0;
         }
 
         .kpi-card {
@@ -893,13 +988,13 @@
         }
 
         .kpi-icon {
-            width: 48px;
-            height: 48px;
+            width: 40px;
+            height: 40px;
             border-radius: 12px;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 20px;
+            font-size: 18px;
             flex-shrink: 0;
         }
 
@@ -925,17 +1020,20 @@
 
         .kpi-content {
             flex: 1;
+            min-width: 0;
         }
 
         .kpi-value {
-            font-size: 20px;
+            font-size: 16px;
             font-weight: 700;
             color: var(--text-primary);
             line-height: 1.2;
+            overflow: hidden;
+            text-overflow: ellipsis;
         }
 
         .kpi-label {
-            font-size: 12px;
+            font-size: 11px;
             color: var(--text-tertiary);
             text-transform: uppercase;
             letter-spacing: 0.5px;
@@ -944,13 +1042,14 @@
         }
 
         .chart-container {
+            flex: 1;
             background: var(--bg-card);
             border: 1px solid var(--border);
             border-radius: 12px;
             padding: 1rem;
-            min-height: 300px;
             display: flex;
             flex-direction: column;
+            min-height: 0;
         }
 
         .chart-header {
@@ -958,34 +1057,37 @@
             justify-content: space-between;
             align-items: center;
             margin-bottom: 1rem;
+            flex-shrink: 0;
         }
 
         .chart-title {
             font-weight: 600;
-            font-size: 16px;
+            font-size: 14px;
             color: var(--text-primary);
         }
 
         .chart-wrapper {
             flex: 1;
             position: relative;
+            min-height: 0;
         }
 
-        /* Settings Page */
+        /* Settings Page - FIXED SCROLLING */
         .settings-page {
             flex: 1;
             padding: 1rem;
             display: flex;
             flex-direction: column;
-            gap: 1rem;
-            overflow-y: auto;
+            overflow: hidden;
+            min-height: 0;
         }
 
         .settings-container {
             flex: 1;
-            overflow-y: auto;
             -webkit-overflow-scrolling: touch;
+            overflow-y: auto;
             padding-bottom: 1rem;
+            min-height: 0;
         }
 
         .settings-section {
@@ -994,7 +1096,7 @@
 
         .section-title {
             font-weight: 600;
-            font-size: 16px;
+            font-size: 14px;
             color: var(--text-primary);
             margin-bottom: 1rem;
             display: flex;
@@ -1011,7 +1113,7 @@
 
         .theme-selector {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+            grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
             gap: 1rem;
         }
 
@@ -1023,6 +1125,7 @@
             text-align: center;
             transition: all 0.2s;
             background: var(--bg-secondary);
+            touch-action: manipulation;
         }
 
         .theme-option:hover {
@@ -1036,14 +1139,14 @@
         }
 
         .theme-option i {
-            font-size: 32px;
+            font-size: 28px;
             margin-bottom: 0.75rem;
         }
 
         /* Cart */
         .floating-cart-btn {
             position: fixed;
-            bottom: calc(var(--bottom-nav-height) + 1rem);
+            bottom: calc(var(--bottom-nav-height) + 1rem + var(--safe-area-inset-bottom));
             right: 1rem;
             width: 60px;
             height: 60px;
@@ -1059,6 +1162,7 @@
             font-size: 22px;
             z-index: 90;
             transition: all 0.3s;
+            touch-action: manipulation;
         }
 
         .floating-cart-btn:hover {
@@ -1098,6 +1202,8 @@
             z-index: 95;
             box-shadow: 0 -20px 60px rgba(0, 0, 0, 0.2);
             border-radius: 20px 20px 0 0;
+            max-height: calc(100vh - var(--bottom-nav-height) - 60px);
+            overflow: hidden;
         }
 
         .cart-drawer.open {
@@ -1118,12 +1224,14 @@
             overflow-y: auto;
             -webkit-overflow-scrolling: touch;
             padding: 1rem;
+            min-height: 0;
         }
 
         .cart-items {
             display: flex;
             flex-direction: column;
             gap: 0.75rem;
+            min-height: min-content;
         }
 
         .cart-item {
@@ -1138,12 +1246,16 @@
 
         .cart-item-details {
             flex: 1;
+            min-width: 0;
         }
 
         .cart-item-name {
             font-weight: 600;
             color: var(--text-primary);
             margin-bottom: 0.25rem;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
         }
 
         .cart-item-price {
@@ -1155,6 +1267,7 @@
             display: flex;
             align-items: center;
             gap: 1rem;
+            flex-shrink: 0;
         }
 
         .quantity-control {
@@ -1165,6 +1278,7 @@
             padding: 0.5rem;
             border-radius: 8px;
             border: 1px solid var(--border);
+            flex-shrink: 0;
         }
 
         .quantity-btn {
@@ -1180,6 +1294,7 @@
             justify-content: center;
             font-weight: 600;
             transition: all 0.2s;
+            touch-action: manipulation;
         }
 
         .quantity-btn:active {
@@ -1212,7 +1327,7 @@
 
         .summary-row.total {
             font-weight: 700;
-            font-size: 18px;
+            font-size: 16px;
             color: var(--text-primary);
             margin-top: 0.75rem;
             padding-top: 0.75rem;
@@ -1282,6 +1397,7 @@
             overflow-y: auto;
             -webkit-overflow-scrolling: touch;
             padding: 1.5rem;
+            min-height: 0;
         }
 
         .modal-footer {
@@ -1307,6 +1423,7 @@
             text-align: center;
             transition: all 0.2s;
             background: var(--bg-secondary);
+            touch-action: manipulation;
         }
 
         .payment-method:hover {
@@ -1480,25 +1597,6 @@
             to { transform: rotate(360deg); }
         }
 
-        /* Scrollbar */
-        ::-webkit-scrollbar {
-            width: 6px;
-            height: 6px;
-        }
-
-        ::-webkit-scrollbar-track {
-            background: transparent;
-        }
-
-        ::-webkit-scrollbar-thumb {
-            background: var(--border);
-            border-radius: 3px;
-        }
-
-        ::-webkit-scrollbar-thumb:hover {
-            background: var(--text-tertiary);
-        }
-
         /* Touch optimizations */
         @media (hover: none) and (pointer: coarse) {
             .btn:hover {
@@ -1518,7 +1616,7 @@
             }
             
             input, select, textarea {
-                font-size: 16px;
+                font-size: 16px !important; /* Prevents iOS zoom */
             }
             
             .btn {
@@ -1531,6 +1629,22 @@
             
             .floating-cart-btn:active {
                 transform: scale(0.95);
+            }
+            
+            /* Better touch targets for mobile */
+            .category-tab,
+            .nav-item,
+            .quantity-btn {
+                min-height: 44px;
+            }
+            
+            /* Prevent text selection on interactive elements */
+            .product-card,
+            .btn,
+            .nav-item,
+            .category-tab {
+                -webkit-user-select: none;
+                user-select: none;
             }
         }
 
@@ -1553,7 +1667,7 @@
             }
             
             .products-grid {
-                grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+                grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
             }
             
             .history-filters {
@@ -1570,6 +1684,50 @@
             
             .cart-actions {
                 flex-direction: column;
+            }
+            
+            /* Mobile-specific adjustments */
+            .pos-header {
+                padding: 0 0.75rem;
+            }
+            
+            .logo {
+                font-size: 16px;
+            }
+            
+            .logo i {
+                font-size: 18px;
+            }
+            
+            .datetime {
+                font-size: 11px;
+            }
+            
+            .user-info {
+                padding: 0.25rem 0.5rem;
+                font-size: 12px;
+            }
+            
+            .lang-btn {
+                min-width: 60px;
+                padding: 0.25rem;
+                font-size: 11px;
+            }
+            
+            .fullscreen-btn {
+                width: 32px;
+                height: 32px;
+            }
+            
+            /* Better mobile scrolling */
+            .products-grid-container,
+            .history-table-container,
+            .table-container,
+            .cart-items-container,
+            .modal-body,
+            .settings-container {
+                -webkit-overflow-scrolling: touch;
+                overscroll-behavior: contain;
             }
         }
 
@@ -1604,6 +1762,17 @@
             white-space: nowrap;
             border: 0;
         }
+
+        /* iOS Safe Area Insets */
+        @supports (padding: max(0px)) {
+            .bottom-nav {
+                padding-bottom: max(0.5rem, var(--safe-area-inset-bottom));
+            }
+            
+            .floating-cart-btn {
+                bottom: calc(var(--bottom-nav-height) + 1rem + max(0px, var(--safe-area-inset-bottom)));
+            }
+        }
     </style>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <!-- Chart.js for Reports -->
@@ -1613,7 +1782,7 @@
     <div id="app">
         <!-- Login Screen -->
         <div id="loginScreen" style="display: flex;">
-            <div class="login-container">
+            <div class="login-container scrollable">
                 <div class="login-header">
                     <h1><i class="fas fa-store"></i> Tanzania POS</h1>
                     <p>Duka Management System</p>
@@ -1737,7 +1906,7 @@
                         </div>
                         
                         <div class="products-section">
-                            <div class="products-grid-container">
+                            <div class="products-grid-container scrollable">
                                 <div class="products-grid" id="productsGrid">
                                     <!-- Products will be loaded here -->
                                 </div>
@@ -1788,7 +1957,7 @@
                             </select>
                         </div>
                         
-                        <div class="history-table-container">
+                        <div class="history-table-container scrollable">
                             <table class="history-table" id="historyTable">
                                 <thead>
                                     <tr>
@@ -1845,7 +2014,7 @@
                             </select>
                         </div>
                         
-                        <div class="table-container">
+                        <div class="table-container scrollable">
                             <table class="table" id="inventoryTable">
                                 <thead>
                                     <tr>
@@ -1950,7 +2119,7 @@
                 <!-- Settings Page -->
                 <div id="settingsPage" class="page">
                     <div class="settings-page">
-                        <div class="settings-container">
+                        <div class="settings-container scrollable">
                             <div class="settings-section">
                                 <h3 class="section-title">
                                     <i class="fas fa-store"></i>
@@ -2130,7 +2299,7 @@
                     </div>
                 </div>
                 
-                <div class="cart-items-container">
+                <div class="cart-items-container scrollable">
                     <div class="cart-items" id="cartItems">
                         <!-- Cart items will be loaded here -->
                     </div>
@@ -2174,7 +2343,7 @@
                     </button>
                 </div>
                 
-                <div class="modal-body">
+                <div class="modal-body scrollable">
                     <div class="payment-methods">
                         <div class="payment-method active" data-method="cash">
                             <i class="fas fa-money-bill-wave"></i>
@@ -2240,7 +2409,7 @@
                     </button>
                 </div>
                 
-                <div class="modal-body">
+                <div class="modal-body scrollable">
                     <form id="productForm">
                         <div class="grid grid-cols-2 gap-4 mb-4">
                             <div class="form-group">
@@ -3429,6 +3598,12 @@
             // Cart
             elements.floatingCartBtn.addEventListener('click', () => {
                 elements.cartDrawer.classList.toggle('open');
+                // Prevent background scrolling when cart is open
+                if (elements.cartDrawer.classList.contains('open')) {
+                    document.body.classList.add('no-scroll');
+                } else {
+                    document.body.classList.remove('no-scroll');
+                }
             });
             
             elements.clearCartBtn.addEventListener('click', clearCart);
@@ -3436,11 +3611,13 @@
             elements.saveCartBtn.addEventListener('click', () => {
                 showToast('Cart saved for later', 'success');
                 elements.cartDrawer.classList.remove('open');
+                document.body.classList.remove('no-scroll');
             });
             
             elements.holdCartBtn.addEventListener('click', () => {
                 showToast('Cart placed on hold', 'info');
                 elements.cartDrawer.classList.remove('open');
+                document.body.classList.remove('no-scroll');
             });
             
             elements.checkoutBtn.addEventListener('click', () => {
@@ -3449,6 +3626,7 @@
                     return;
                 }
                 elements.cartDrawer.classList.remove('open');
+                document.body.classList.remove('no-scroll');
                 elements.paymentModal.classList.remove('hidden');
                 elements.amountTendered.value = '';
                 elements.paymentChange.textContent = formatCurrency(0);
@@ -3685,6 +3863,16 @@
                     }
                 }
             });
+            
+            // Close cart drawer when clicking outside on mobile
+            document.addEventListener('click', (e) => {
+                if (elements.cartDrawer.classList.contains('open') && 
+                    !e.target.closest('#cartDrawer') && 
+                    !e.target.closest('#floatingCartBtn')) {
+                    elements.cartDrawer.classList.remove('open');
+                    document.body.classList.remove('no-scroll');
+                }
+            });
         }
 
         // ==================== LANGUAGE FUNCTIONS ====================
@@ -3741,6 +3929,15 @@
                 dataStore.cart = JSON.parse(savedCart);
                 updateCart();
             }
+            
+            // Prevent iOS bounce effect
+            document.addEventListener('touchmove', function(e) {
+                if (e.target.classList.contains('scrollable') || 
+                    e.target.closest('.scrollable')) {
+                    return;
+                }
+                e.preventDefault();
+            }, { passive: false });
         }
 
         // Start the app when DOM is loaded

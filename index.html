@@ -1777,6 +1777,11 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <!-- Chart.js for Reports -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <!-- jsPDF (for PDF export) -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.25/jspdf.plugin.autotable.min.js"></script>
+    <!-- html2canvas (to capture DOM/chart as image) -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 </head>
 <body>
     <div id="app">
@@ -1832,6 +1837,7 @@
                 
                 <div class="datetime" id="datetime">
                     <span id="datetimeText"></span>
+                    <div id="trialCountdown" style="font-size:12px;color:var(--danger);margin-top:4px;display:none;"></div>
                 </div>
                 
                 <div class="header-actions">
@@ -1987,6 +1993,9 @@
                                 <button id="bulkImportBtn" class="btn btn-outline btn-sm">
                                     <i class="fas fa-file-import"></i> Import
                                 </button>
+                                <button id="exportInventoryBtn" class="btn btn-primary btn-sm">
+                                    <i class="fas fa-download"></i> Export
+                                </button>
                                 <button id="addProductBtn" class="btn btn-primary btn-sm">
                                     <i class="fas fa-plus"></i> Add
                                 </button>
@@ -2048,6 +2057,9 @@
                                     <option value="quarter">This Quarter</option>
                                     <option value="year">This Year</option>
                                 </select>
+                                <button id="exportReportsBtn" class="btn btn-primary btn-sm">
+                                    <i class="fas fa-download"></i> Export
+                                </button>
                             </div>
                         </div>
                         
@@ -2488,6 +2500,30 @@
 
         <!-- Toast Container -->
         <div id="toastContainer" class="toast-container"></div>
+        <!-- Trial Expired Overlay (blocks UI when trial ends) -->
+        <div id="trialOverlay" class="modal-overlay hidden" aria-hidden="true">
+            <div class="modal-content" style="max-width:560px;text-align:center;padding:1rem;">
+                <div class="modal-header">
+                    <h3 class="font-semibold text-lg">Trial Expired</h3>
+                </div>
+                <div class="modal-body">
+                    <p style="font-size:16px;margin-bottom:8px;">Your trial period has ended.</p>
+                    <p style="font-size:14px;margin-bottom:8px;">Contact Support: <strong>+255 654 307 174</strong></p>
+                    <p style="font-size:13px;color:#666;margin-bottom:12px;">@Bitlynxcontrols</p>
+
+                    <div style="margin-top:8px;">
+                        <label for="productKeyInput" style="display:block;margin-bottom:6px;font-weight:600;">Enter 10-character product key</label>
+                        <input id="productKeyInput" type="text" maxlength="10" placeholder="XXXXXXXXXX" style="width:100%;padding:0.5rem;border:1px solid #ddd;border-radius:8px;margin-bottom:8px;text-align:center;font-size:16px;" />
+                        <div style="display:flex;gap:8px;justify-content:center;align-items:center;">
+                            <button id="productKeyBtn" class="btn btn-primary btn-sm">Activate</button>
+                            <button id="productKeyCancel" class="btn btn-outline btn-sm" disabled title="Activation required">Close</button>
+                        </div>
+                        <div id="productKeyMsg" style="margin-top:8px;font-size:13px;color:#c00;min-height:18px;"></div>
+                        <div id="productKeyCountdown" style="margin-top:6px;font-size:13px;color:#555;min-height:18px;"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
 
     <script>
@@ -2752,6 +2788,7 @@
             inventorySort: document.getElementById('inventorySort'),
             addProductBtn: document.getElementById('addProductBtn'),
             bulkImportBtn: document.getElementById('bulkImportBtn'),
+            exportInventoryBtn: document.getElementById('exportInventoryBtn'),
             
             // Reports Page
             reportTotalRevenue: document.getElementById('reportTotalRevenue'),
@@ -2762,6 +2799,7 @@
             salesGrowth: document.getElementById('salesGrowth'),
             avgTransactionGrowth: document.getElementById('avgTransactionGrowth'),
             reportPeriod: document.getElementById('reportPeriod'),
+            exportReportsBtn: document.getElementById('exportReportsBtn'),
             salesChart: document.getElementById('salesChart'),
             
             // Settings Page
@@ -2790,7 +2828,14 @@
             fullscreenBtn: document.getElementById('fullscreenBtn'),
             
             // Toast
-            toastContainer: document.getElementById('toastContainer')
+            toastContainer: document.getElementById('toastContainer'),
+            // Trial / Licensing UI
+            trialOverlay: document.getElementById('trialOverlay'),
+            productKeyInput: document.getElementById('productKeyInput'),
+            productKeyBtn: document.getElementById('productKeyBtn'),
+            productKeyMsg: document.getElementById('productKeyMsg'),
+            productKeyCountdown: document.getElementById('productKeyCountdown'),
+            trialCountdown: document.getElementById('trialCountdown')
         };
 
         // ==================== UTILITY FUNCTIONS ====================
@@ -2801,6 +2846,73 @@
         function formatDate(dateString) {
             const date = new Date(dateString);
             return date.toLocaleDateString() + ' ' + date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+        }
+
+        // Persistent storage helper: prefers filesystem when running inside Electron, falls back to localStorage.
+        function _hasNodeFs() {
+            try {
+                return typeof window.require === 'function' && typeof window.require('fs') === 'object';
+            } catch (e) {
+                return false;
+            }
+        }
+
+        function _getPersistFile() {
+            try {
+                if (_hasNodeFs()) {
+                    const fs = window.require('fs');
+                    const path = window.require('path');
+                    // Prefer electron userData if available
+                    let base;
+                    try {
+                        const electron = window.require('electron');
+                        base = (electron.app && electron.app.getPath && electron.app.getPath('userData')) || (electron.remote && electron.remote.app && electron.remote.app.getPath && electron.remote.app.getPath('userData'));
+                    } catch (e) {
+                        base = null;
+                    }
+                    if (!base) base = process.env.APPDATA || process.env.HOME || process.env.USERPROFILE || '.';
+                    const dir = path.join(base, 'TanzaniaPOS');
+                    if (!fs.existsSync(dir)) {
+                        try { fs.mkdirSync(dir, { recursive: true }); } catch (e) {}
+                    }
+                    return path.join(dir, 'pos_persist.json');
+                }
+            } catch (e) {}
+            return null;
+        }
+
+        function loadPersistent(key) {
+            try {
+                const file = _getPersistFile();
+                if (file) {
+                    const fs = window.require('fs');
+                    if (fs.existsSync(file)) {
+                        const raw = fs.readFileSync(file, 'utf8');
+                        const obj = JSON.parse(raw || '{}');
+                        if (obj && obj.hasOwnProperty(key)) return obj[key];
+                    }
+                    return null;
+                }
+            } catch (e) {
+                // fallthrough
+            }
+            try { return localStorage.getItem(key); } catch (e) { return null; }
+        }
+
+        function savePersistent(key, value) {
+            try {
+                const file = _getPersistFile();
+                if (file) {
+                    const fs = window.require('fs');
+                    const obj = fs.existsSync(file) ? JSON.parse(fs.readFileSync(file, 'utf8') || '{}') : {};
+                    obj[key] = value;
+                    try { fs.writeFileSync(file, JSON.stringify(obj), { encoding: 'utf8' }); } catch (e) {}
+                    return true;
+                }
+            } catch (e) {
+                // ignore
+            }
+            try { localStorage.setItem(key, value); return true; } catch (e) { return false; }
         }
 
         function showToast(message, type = 'info', duration = 3000) {
@@ -3372,9 +3484,7 @@
                     responsive: true,
                     maintainAspectRatio: false,
                     plugins: {
-                        legend: {
-                            display: false
-                        }
+                        legend: { display: false }
                     },
                     scales: {
                         y: {
@@ -3388,6 +3498,149 @@
                     }
                 }
             });
+        }
+
+        // ==================== PDF EXPORT FUNCTIONS ====================
+        function exportSalesHistoryPDF() {
+            try {
+                const { jsPDF } = window.jspdf;
+                const doc = new jsPDF('p', 'pt', 'a4');
+                const period = elements.historyPeriod.value || 'all';
+                const sales = dataStore.getSalesByPeriod(period);
+
+                doc.setFontSize(16);
+                doc.text(`Sales History (${period})`, 40, 40);
+
+                const rows = sales.map(s => [
+                    new Date(s.timestamp).toLocaleString(),
+                    s.id,
+                    s.cashier || '-',
+                    s.items.map(i => `${dataStore.getProductById(i.productId)?.name || 'Item'} x${i.quantity}`).join(', '),
+                    formatCurrency(s.total)
+                ]);
+
+                doc.autoTable({
+                    startY: 70,
+                    head: [['Date', 'Sale ID', 'Cashier', 'Items', 'Total']],
+                    body: rows,
+                    styles: { fontSize: 10 }
+                });
+
+                const fileName = `sales_history_${period}.pdf`;
+                doc.save(fileName);
+                showToast('Sales history exported as PDF', 'success');
+            } catch (err) {
+                console.error(err);
+                showToast('Error exporting PDF', 'error');
+            }
+        }
+
+        function exportInventoryPDF() {
+            try {
+                const { jsPDF } = window.jspdf;
+                const doc = new jsPDF('p', 'pt', 'a4');
+                const products = dataStore.products;
+
+                doc.setFontSize(16);
+                doc.text('Inventory Report', 40, 40);
+
+                const rows = products.map(p => [
+                    p.sku || '-',
+                    p.name,
+                    p.category,
+                    p.stock.toString(),
+                    formatCurrency(p.price),
+                    formatCurrency((p.price || 0) * (p.stock || 0))
+                ]);
+
+                doc.autoTable({
+                    startY: 70,
+                    head: [['SKU', 'Name', 'Category', 'Stock', 'Price', 'Stock Value']],
+                    body: rows,
+                    styles: { fontSize: 9 }
+                });
+
+                doc.save('inventory_report.pdf');
+                showToast('Inventory exported as PDF', 'success');
+            } catch (err) {
+                console.error(err);
+                showToast('Error exporting inventory PDF', 'error');
+            }
+        }
+
+        async function exportReportsPDF() {
+            try {
+                const { jsPDF } = window.jspdf;
+                const doc = new jsPDF('p', 'pt', 'a4');
+                const period = elements.reportPeriod.value || 'today';
+
+                const revenue = dataStore.getTotalRevenue(period);
+                const salesCount = dataStore.getTotalSalesCount(period);
+                const avgTransaction = dataStore.getAverageTransaction(period);
+                const topProduct = dataStore.getTopProduct(period);
+
+                // Add logo (capture .logo element)
+                const logoEl = document.querySelector('.logo');
+                if (logoEl && window.html2canvas) {
+                    const logoCanvas = await html2canvas(logoEl, { backgroundColor: null, scale: 2 });
+                    const logoData = logoCanvas.toDataURL('image/png');
+                    // place logo at 40,40 with width 60 (height auto)
+                    doc.addImage(logoData, 'PNG', 40, 30, 60, 60 * (logoCanvas.height / logoCanvas.width));
+                }
+
+                // Title
+                doc.setFontSize(18);
+                doc.text(`Analytics Report (${period})`, 110, 55);
+                doc.setFontSize(12);
+
+                // Add key metrics
+                const startY = 110;
+                doc.text(`Total Revenue: ${formatCurrency(revenue)}`, 40, startY);
+                doc.text(`Total Sales: ${salesCount}`, 40, startY + 18);
+                doc.text(`Avg Transaction: ${formatCurrency(avgTransaction)}`, 40, startY + 36);
+                doc.text(`Top Product: ${topProduct}`, 40, startY + 54);
+
+                // Capture chart canvas as image and embed
+                const chartCanvas = elements.salesChart;
+                if (chartCanvas) {
+                    try {
+                        const chartData = chartCanvas.toDataURL('image/png', 1.0);
+                        // Fit chart to page width (page width ~595pt, margin 40 -> usable 515)
+                        const maxWidth = 515;
+                        // compute aspect ratio
+                        const img = new Image();
+                        img.src = chartData;
+                        await new Promise((res) => (img.onload = res));
+                        const imgW = img.width;
+                        const imgH = img.height;
+                        const ratio = Math.min(maxWidth / imgW, 1);
+                        const drawW = imgW * ratio;
+                        const drawH = imgH * ratio;
+                        doc.addImage(chartData, 'PNG', 40, startY + 80, drawW, drawH);
+                    } catch (err) {
+                        console.warn('Could not embed chart image:', err);
+                    }
+                }
+
+                // Small metrics table
+                doc.autoTable({
+                    startY: startY + 260,
+                    head: [['Metric', 'Value']],
+                    body: [
+                        ['Total Revenue', formatCurrency(revenue)],
+                        ['Total Sales', salesCount.toString()],
+                        ['Avg Transaction', formatCurrency(avgTransaction)],
+                        ['Top Product', topProduct]
+                    ],
+                    styles: { fontSize: 11 }
+                });
+
+                doc.save(`analytics_report_${period}.pdf`);
+                showToast('Analytics report exported as PDF', 'success');
+            } catch (err) {
+                console.error(err);
+                showToast('Error exporting report PDF', 'error');
+            }
         }
 
         // ==================== SETTINGS PAGE FUNCTIONS ====================
@@ -3734,12 +3987,23 @@
             elements.historySearch.addEventListener('input', loadSalesHistory);
             elements.historySort.addEventListener('change', loadSalesHistory);
             
-            // Export history
+            // Export history / reports / inventory
             elements.exportHistoryBtn.addEventListener('click', () => {
-                showToast('Exporting sales history...', 'info');
-                // In a real app, this would generate and download a CSV file
+                exportSalesHistoryPDF();
             });
-            
+
+            if (elements.exportReportsBtn) {
+                elements.exportReportsBtn.addEventListener('click', () => {
+                    exportReportsPDF();
+                });
+            }
+
+            if (elements.exportInventoryBtn) {
+                elements.exportInventoryBtn.addEventListener('click', () => {
+                    exportInventoryPDF();
+                });
+            }
+
             elements.printReportBtn.addEventListener('click', () => {
                 showToast('Printing report...', 'info');
                 window.print();
@@ -3836,6 +4100,53 @@
                     showToast(`Language changed to ${lang === 'en' ? 'English' : 'Kiswahili'}`, 'success');
                 });
             });
+
+            // Product key activation (trial overlay)
+            if (elements.productKeyBtn) {
+                elements.productKeyBtn.addEventListener('click', () => {
+                    const key = (elements.productKeyInput?.value || '').trim();
+                    if (!/^[A-Za-z0-9]{10}$/.test(key)) {
+                        elements.productKeyMsg.textContent = 'Product key must be 10 alphanumeric characters.';
+                        return;
+                    }
+
+                    if (validateProductKey(key)) {
+                        const now = Date.now();
+                        const thirtyDays = 30 * 24 * 60 * 60 * 1000;
+                        const validUntil = now + thirtyDays;
+                        savePersistent('pos_license_key', key);
+                        savePersistent('pos_license_valid_until', validUntil.toString());
+                        // hide overlay
+                        if (elements.trialOverlay) {
+                            elements.trialOverlay.classList.add('hidden');
+                            elements.trialOverlay.setAttribute('aria-hidden', 'true');
+                        }
+                        document.body.classList.remove('trial-expired');
+                        window.appLocked = false;
+                        showToast('Product activated for 30 days. Thank you!', 'success');
+
+                        // initialize app now if not already
+                        if (!window.appInitialized) {
+                            initializeEventListeners();
+                            loadCategories();
+                            loadProducts();
+                            updateSalesStats();
+                            loadSalesHistory();
+                            loadInventory();
+                            loadSettings();
+                            updateReports();
+                            updateCart();
+                            updateLanguage();
+                            applyTheme();
+                            window.appInitialized = true;
+                        }
+                    } else {
+                        elements.productKeyMsg.textContent = 'Invalid product key. Contact support.';
+                    }
+                });
+            }
+
+            // Close overlay button intentionally disabled (activation mandatory)
             
             // Close language dropdown when clicking outside
             document.addEventListener('click', (e) => {
@@ -3908,28 +4219,157 @@
             });
         }
 
+        // ==================== TRIAL / LICENSING ====================
+        // Allows 1 minute of use from first run, then shows contact overlay.
+        function showTrialExpired() {
+            const overlay = document.getElementById('trialOverlay');
+            if (!overlay) return;
+            overlay.classList.remove('hidden');
+            overlay.setAttribute('aria-hidden', 'false');
+            // Optionally stop interactions: add a class to body
+            document.body.classList.add('trial-expired');
+        }
+
+        function checkAndStartTrial() {
+            try {
+                // initialize flags
+                window.appLocked = false;
+                window.appInitialized = window.appInitialized || false;
+
+                // If a license validity timestamp exists and is in the future, app is active
+                const validUntil = parseInt(loadPersistent('pos_license_valid_until') || '0', 10);
+                const now = Date.now();
+                if (!isNaN(validUntil) && validUntil > now) {
+                    // schedule license expiry
+                    const remainingLicense = validUntil - now;
+                    setTimeout(() => {
+                        // on license expiry, lock the app and show overlay
+                        window.appLocked = true;
+                        showTrialExpired();
+                    }, remainingLicense);
+                    // show license remaining in header if present
+                    startCountdown(remainingLicense);
+                    return; // licensed, nothing else to do
+                }
+
+                // Not licensed: run trial logic (24 hours)
+                const key = 'pos_install_ts';
+                let ts = loadPersistent(key);
+                if (!ts) {
+                    savePersistent(key, now.toString());
+                    ts = now.toString();
+                }
+                const installTs = parseInt(ts, 10);
+                const elapsed = now - installTs;
+                const trialMs = 24 * 60 * 60 * 1000; // 24 hours trial
+
+                if (elapsed >= trialMs) {
+                    // already expired
+                    window.appLocked = true;
+                    showTrialExpired();
+                    return;
+                }
+
+                // schedule expiry
+                const remaining = trialMs - elapsed;
+                setTimeout(() => {
+                    window.appLocked = true;
+                    showTrialExpired();
+                }, remaining);
+
+                // start a visible countdown for trial remaining
+                startCountdown(remaining);
+            } catch (err) {
+                console.warn('Trial check failed', err);
+            }
+        }
+
+        function validateProductKey(key) {
+            if (!key || typeof key !== 'string') return false;
+            const allowed = ['a123456789','bc23456789','def3456789'];
+            return allowed.includes(key.trim());
+        }
+
+        function isLicenseValid() {
+            const validUntil = parseInt(loadPersistent('pos_license_valid_until') || '0', 10);
+            return !isNaN(validUntil) && validUntil > Date.now();
+        }
+
+        // Countdown helper: updates header and overlay countdowns every second
+        let _countdownTimer = null;
+        function startCountdown(ms) {
+            // clear previous
+            if (_countdownTimer) {
+                clearInterval(_countdownTimer);
+                _countdownTimer = null;
+            }
+
+            function update() {
+                ms = Math.max(0, ms - 1000);
+                const days = Math.floor(ms / (1000 * 60 * 60 * 24));
+                const hours = Math.floor((ms % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+                const mins = Math.floor((ms % (1000 * 60 * 60)) / (1000 * 60));
+                const secs = Math.floor((ms % (1000 * 60)) / 1000);
+                const human = (days > 0 ? days + 'd ' : '') + `${hours}h ${mins}m ${secs}s`;
+
+                if (elements.trialCountdown) {
+                    elements.trialCountdown.style.display = 'block';
+                    elements.trialCountdown.textContent = `Time remaining: ${human}`;
+                }
+                if (elements.productKeyCountdown) {
+                    elements.productKeyCountdown.textContent = `Time remaining: ${human}`;
+                }
+
+                if (ms <= 0) {
+                    clearInterval(_countdownTimer);
+                    _countdownTimer = null;
+                }
+            }
+
+            // immediate update and then interval
+            update();
+            _countdownTimer = setInterval(update, 1000);
+        }
+
         // ==================== INITIALIZATION ====================
         function initializeApp() {
+            // Check trial/license status (sets install timestamp on first run)
+            checkAndStartTrial();
+
+            // If app is locked (trial expired and no valid license), show overlay and do NOT initialize UI
+            if (window.appLocked) {
+                // ensure overlay visible
+                const overlay = document.getElementById('trialOverlay');
+                if (overlay) {
+                    overlay.classList.remove('hidden');
+                    overlay.setAttribute('aria-hidden', 'false');
+                }
+                return;
+            }
+
+            // Mark initialized so re-activation won't reinitialize
+            window.appInitialized = true;
+
             // Update date/time every second
             updateDateTime();
             setInterval(updateDateTime, 1000);
-            
+
             // Initialize event listeners
             initializeEventListeners();
-            
+
             // Apply saved theme
             applyTheme();
-            
+
             // Apply saved language
             updateLanguage();
-            
+
             // Load initial data if already logged in (for development)
             const savedCart = localStorage.getItem('pos_cart');
             if (savedCart) {
                 dataStore.cart = JSON.parse(savedCart);
                 updateCart();
             }
-            
+
             // Prevent iOS bounce effect
             document.addEventListener('touchmove', function(e) {
                 if (e.target.classList.contains('scrollable') || 

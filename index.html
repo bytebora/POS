@@ -1950,7 +1950,7 @@
                                 <option value="all">All Methods</option>
                                 <option value="cash">Cash</option>
                                 <option value="card">Card</option>
-                                <option value="mobile">M-Pesa</option>
+                                <option value="mobile">Mobile Payment</option>
                             </select>
                             
                             <input type="text" id="historySearch" class="form-control" placeholder="Search sales...">
@@ -2369,7 +2369,7 @@
                         
                         <div class="payment-method" data-method="mobile">
                             <i class="fas fa-mobile-alt"></i>
-                            <div class="font-semibold">M-Pesa</div>
+                            <div class="font-semibold">Mobile Payment</div>
                         </div>
                     </div>
                     
@@ -2556,7 +2556,7 @@
             getDefaultSettings() {
                 return {
                     storeName: 'Tanzania Shop',
-                    taxRate: 18,
+                    taxRate: 0,
                     phone: '+255 123 456 789',
                     email: 'shop@example.com',
                     address: '123 Main Street, Dar es Salaam',
@@ -3015,7 +3015,7 @@
             }
             
             // Update totals
-            const taxRate = dataStore.settings.taxRate || 18;
+            const taxRate = dataStore.settings.taxRate || 0;
             const tax = subtotal * (taxRate / 100);
             const total = subtotal + tax;
             
@@ -3279,7 +3279,7 @@
                 const paymentMethodText = {
                     cash: 'Cash',
                     card: 'Card',
-                    mobile: 'M-Pesa'
+                    mobile: 'Mobile Payment'
                 }[sale.paymentMethod] || sale.paymentMethod;
                 
                 row.innerHTML = `
@@ -3646,7 +3646,7 @@
         // ==================== SETTINGS PAGE FUNCTIONS ====================
         function loadSettings() {
             elements.storeName.value = dataStore.settings.storeName || 'Tanzania Shop';
-            elements.taxRate.value = dataStore.settings.taxRate || 18;
+            elements.taxRate.value = dataStore.settings.taxRate || 0;
             elements.storePhone.value = dataStore.settings.phone || '';
             elements.storeEmail.value = dataStore.settings.email || '';
             elements.storeAddress.value = dataStore.settings.address || '';
